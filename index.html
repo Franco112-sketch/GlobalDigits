@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GlobalDigits</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800;900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#07091a;--bg2:#0d1225;--bg3:#111827;--border:#1a2236;--border2:#1e2a40;
+  --text:#e2e8f0;--muted:#64748b;--muted2:#94a3b8;
+  --blue:#3b82f6;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--purple:#8b5cf6;
+  --grad:linear-gradient(135deg,#3b82f6,#06b6d4);
+  --shadow:0 2px 16px rgba(0,0,0,.35);--radius:12px;
+}
+[data-theme="light"]{
+  --bg:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;--border:#e2e8f0;--border2:#cbd5e1;
+  --text:#0f172a;--muted:#64748b;--muted2:#475569;--shadow:0 2px 12px rgba(0,0,0,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;transition:background .2s,color .2s}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:inherit;background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:9px;padding:11px 13px;font-size:14px;width:100%;box-sizing:border-box;outline:none;-webkit-appearance:none}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+a{color:inherit;text-decoration:none}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ── Layout ── */
+#app{display:flex;flex-direction:column;min-height:100vh}
+#main-content{flex:1}
+.page{padding:24px 16px 60px;max-width:1100px;margin:0 auto;width:100%}
+.page-sm{max-width:480px}
+.page-md{max-width:720px}
+
+/* ── Nav ── */
+#topnav{background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;padding:0 16px}
+.nav-inner{max-width:1100px;margin:0 auto;height:56px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.logo{display:flex;align-items:center;gap:8px;cursor:pointer}
+.logo-mark{width:30px;height:30px;background:var(--grad);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:14px;flex-shrink:0}
+.logo-name{font-family:'Syne',sans-serif;font-weight:800;font-size:15px;color:var(--text)}
+.nav-links{display:flex;gap:2px}
+.nl{color:var(--muted2);padding:5px 10px;border-radius:7px;font-size:13px;font-weight:600;transition:.15s}
+.nl:hover,.nl.active{color:var(--blue);background:rgba(59,130,246,.1)}
+.nav-r{display:flex;align-items:center;gap:6px}
+.icon-btn{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--muted2);border:1px solid var(--border);background:none;flex-shrink:0;position:relative;transition:.15s}
+.icon-btn:hover{color:var(--text);border-color:var(--blue)}
+.cart-dot{position:absolute;top:2px;right:2px;background:var(--blue);color:#fff;border-radius:8px;font-size:9px;font-weight:800;padding:1px 4px;line-height:1.4;display:none}
+.btn{border-radius:8px;font-weight:700;font-size:13px;padding:7px 14px;transition:.15s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{opacity:.85}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--grad);color:#fff}
+.btn-outline{border:1px solid var(--border2);color:var(--text);background:none}
+.btn-ghost{background:var(--bg3);border:1px solid var(--border2);color:var(--muted2)}
+.btn-green{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:var(--green)}
+.btn-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red)}
+.btn-yellow{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--yellow)}
+.btn-sm{padding:5px 10px;font-size:12px}
+.btn-lg{padding:12px 26px;font-size:15px;border-radius:10px}
+.btn-full{width:100%;justify-content:center}
+
+/* ── Dropdown ── */
+.udrop{position:relative}
+.udrop-menu{position:absolute;right:0;top:40px;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;width:175px;box-shadow:0 16px 48px rgba(0,0,0,.4);z-index:400;display:none;overflow:hidden}
+.udrop-menu.open{display:block}
+.udrop-menu button{display:block;width:100%;text-align:left;padding:11px 16px;font-size:13px;color:var(--text);font-weight:500}
+.udrop-menu button:hover{background:rgba(59,130,246,.07)}
+.udrop-menu .red{color:var(--red);border-top:1px solid var(--border)}
+
+/* ── Hamburger ── */
+.hbg{display:none;flex-direction:column;gap:5px;padding:5px;align-items:center;justify-content:center}
+.hbg span{display:block;width:19px;height:2px;background:var(--muted2);border-radius:2px}
+.mob-nav{display:none;position:fixed;top:56px;inset-x:0;bottom:0;background:var(--bg2);z-index:190;overflow-y:auto;padding:12px;flex-direction:column;gap:2px}
+.mob-nav.open{display:flex}
+.mnl{color:var(--text);padding:13px 16px;border-radius:9px;font-size:14px;font-weight:600;text-align:left;display:block;width:100%}
+.mnl:hover{background:rgba(59,130,246,.07)}
+.mob-divider{height:1px;background:var(--border);margin:6px 0}
+
+/* ── Ann bar ── */
+#ann-bar{display:none;padding:9px 16px;align-items:center;gap:10px}
+#ann-bar.show{display:flex}
+
+/* ── Offline ── */
+#offline-wrap{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:32px}
+#offline-wrap.show{display:flex}
+
+/* ── Cards ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+.card-sm{padding:14px}
+
+/* ── Grid ── */
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:14px}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.gstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+
+/* ── Product card ── */
+.pcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:transform .2s,box-shadow .2s,border-color .2s;box-shadow:var(--shadow)}
+.pcard:hover{transform:translateY(-2px);border-color:var(--blue)}
+.pcard-img{background:linear-gradient(135deg,#0d1a30,#0a1424);padding:28px 16px;text-align:center;font-size:42px;line-height:1;position:relative}
+.pcard-body{padding:14px}
+.ptags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;text-transform:uppercase}
+.tag-g{background:rgba(16,185,129,.12);color:#10b981}
+.tag-r{background:rgba(239,68,68,.12);color:#ef4444}
+.tag-b{background:rgba(59,130,246,.1);color:#60a5fa}
+.tag-p{background:rgba(139,92,246,.1);color:#a78bfa}
+.pname{color:var(--text);font-weight:700;font-size:13px;margin-bottom:4px}
+.pdesc{color:var(--muted);font-size:11px;line-height:1.5;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pfooter{display:flex;justify-content:space-between;align-items:center}
+.pprice{color:var(--blue);font-weight:800;font-size:16px}
+.wheart{position:absolute;top:8px;right:8px;background:rgba(0,0,0,.45);border-radius:50%;width:30px;height:30px;display:flex;align-items:center;justify-content:center;transition:.2s}
+.wheart:hover{background:rgba(239,68,68,.3)}
+
+/* ── Badges ── */
+.bdg{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap;display:inline-block}
+.bdg-y{background:rgba(245,158,11,.12);color:#f59e0b}
+.bdg-b{background:rgba(59,130,246,.12);color:#3b82f6}
+.bdg-g{background:rgba(16,185,129,.12);color:#10b981}
+.bdg-p{background:rgba(139,92,246,.12);color:#8b5cf6}
+.bdg-r{background:rgba(239,68,68,.12);color:#ef4444}
+
+/* ── Forms ── */
+.fg{margin-bottom:13px}
+.fl{color:var(--muted);font-size:11px;font-weight:700;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.4px}
+
+/* ── Alerts ── */
+.alert{padding:11px 14px;border-radius:9px;font-size:13px;line-height:1.5;margin-bottom:14px}
+.alert-b{background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);color:#93c5fd}
+.alert-y{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#fbbf24}
+.alert-g{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#6ee7b7}
+.alert-r{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#fca5a5}
+
+/* ── Toast ── */
+#toaster{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none;width:min(360px,calc(100vw - 32px))}
+.tst{padding:11px 18px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;color:#fff;animation:tup .25s ease}
+.tst-s{background:#10b981}.tst-e{background:#ef4444}.tst-w{background:#f59e0b}.tst-i{background:#3b82f6}
+@keyframes tup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Modal ── */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;display:flex;align-items:center;justify-content:center;padding:16px}
+.mbox{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;animation:tup .2s ease}
+.mhead{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;border-bottom:1px solid var(--border)}
+.mhead h3{color:var(--text);font-weight:800;font-size:15px;margin:0}
+.mbody{padding:18px}
+
+/* ── Auth ── */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg)}
+.auth-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:clamp(22px,5vw,36px);width:100%;max-width:420px;box-shadow:var(--shadow)}
+.auth-logo{width:44px;height:44px;background:var(--grad);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:19px;margin:0 auto 12px}
+.auth-title{font-family:'Syne',sans-serif;color:var(--text);font-weight:800;font-size:20px;text-align:center;margin-bottom:4px}
+.auth-sub{color:var(--muted);font-size:12px;text-align:center;margin-bottom:22px}
+.auth-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--red);padding:9px 13px;border-radius:8px;margin-bottom:12px;font-size:13px;display:none}
+.auth-sw{text-align:center;color:var(--muted);font-size:13px;margin-top:14px}
+.auth-sw button{color:#60a5fa;font-weight:600;font-size:13px}
+
+/* ── Hero ── */
+.hero{position:relative;overflow:hidden;padding:clamp(60px,10vw,100px) 16px clamp(50px,8vw,80px);text-align:center}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(59,130,246,.13),transparent 60%),radial-gradient(ellipse at 70% 30%,rgba(6,182,212,.09),transparent 60%);pointer-events:none}
+.hero-inner{max-width:760px;margin:0 auto;position:relative}
+.hero-badge{display:inline-block;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.3);color:#60a5fa;padding:5px 14px;border-radius:20px;font-size:12px;font-weight:700;margin-bottom:20px}
+.hero-title{font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(26px,5.5vw,52px);font-weight:900;line-height:1.1;margin-bottom:16px;letter-spacing:-1px}
+.hero-grad{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{color:var(--muted2);font-size:clamp(14px,2.5vw,16px);line-height:1.7;max-width:500px;margin:0 auto 28px}
+.hero-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ── Stat card ── */
+.stcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.stlabel{color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.stval{font-family:'Syne',sans-serif;font-weight:900;font-size:20px}
+
+/* ── Orders ── */
+.ord-row{border-bottom:1px solid var(--border);padding:12px 0}
+.ord-row:last-child{border-bottom:none;padding-bottom:0}
+.ord-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;flex-wrap:wrap;gap:6px}
+.ord-id{font-family:monospace;font-weight:700;font-size:12px;color:var(--text)}
+.ord-body{margin-top:10px;background:var(--bg3);border-radius:8px;padding:12px}
+.delivery-box{margin-top:10px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.25);border-radius:8px;padding:10px 12px}
+
+/* ── Cart ── */
+.cart-row{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:13px 15px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+
+/* ── Tabs ── */
+.tabs{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;-ms-overflow-style:none;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:6px 14px;border-radius:7px;font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0;border:1px solid var(--border2);color:var(--muted2);background:none}
+.tab.active{background:var(--grad);border-color:transparent;color:#fff}
+
+/* ── Referral code box ── */
+.ref-code{background:var(--bg3);border:2px dashed var(--border2);border-radius:10px;padding:16px;text-align:center;font-family:monospace;font-size:20px;font-weight:700;color:var(--blue);letter-spacing:3px;margin:14px 0}
+
+/* ── Section header ── */
+.sechead{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+.sectitle{font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800}
+.secsub{color:var(--muted);font-size:12px;margin-top:2px}
+
+/* ── Footer ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:28px 16px 18px}
+.fg-grid{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;margin-bottom:20px}
+.fg-bottom{max-width:1100px;margin:0 auto;border-top:1px solid var(--border);padding-top:14px;text-align:center;color:var(--muted);font-size:11px}
+.flink{display:block;color:var(--muted);font-size:12px;padding:2px 0;background:none;text-align:left}
+.flink:hover{color:var(--text)}
+.ftitle{color:var(--text);font-weight:700;margin-bottom:8px;font-size:13px}
+
+/* ── Pay box ── */
+.pay-box{background:var(--bg3);border-radius:9px;padding:14px}
+.pay-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.pay-row:last-child{border-bottom:none}
+
+/* ── Verified badge ── */
+.verified-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#10b981;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.unverified-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#f59e0b;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.ban-badge{display:inline-flex;align-items:center;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#ef4444;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.susp-badge{display:inline-flex;align-items:center;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:#f59e0b;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+
+/* ── Responsive ── */
+@media(max-width:640px){
+  .nav-links,.nav-r .btn-outline,.nav-r .btn-primary,.nav-r .udrop{display:none!important}
+  .hbg{display:flex!important}
+  .g2{grid-template-columns:1fr}
+  .hero-btns{flex-direction:column;align-items:stretch}
+}
+@media(max-width:420px){
+  .g4,.gstats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="offline-wrap">
+    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    <h2 style="color:var(--text);font-size:22px;font-weight:800">Site Temporarily Offline</h2>
+    <p style="color:var(--muted);max-width:360px;line-height:1.6" id="offline-msg-el">We're under maintenance. Check back soon.</p>
+    <p style="color:var(--muted);font-size:12px">Contact support on WhatsApp for urgent orders</p>
+  </div>
+
+  <div id="ann-bar">
+    <span id="ann-icon-el" style="display:flex;align-items:center;flex-shrink:0"></span>
+    <div style="flex:1;font-size:13px"><span id="ann-title-el" style="color:var(--text);font-weight:700"></span> <span id="ann-body-el" style="color:var(--muted2)"></span></div>
+    <button onclick="dismissAnn()" style="color:var(--muted);display:flex;align-items:center;flex-shrink:0">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+
+  <nav id="topnav">
+    <div class="nav-inner">
+      <div class="logo" onclick="nav('home')">
+        <div class="logo-mark">G</div>
+        <span class="logo-name">GlobalDigits</span>
+      </div>
+      <div class="nav-links">
+        <button class="nl" data-p="home" onclick="nav('home')">Home</button>
+        <button class="nl" data-p="shop" onclick="nav('shop')">Shop</button>
+        <button class="nl" data-p="support" onclick="nav('support')">Support</button>
+        <button class="nl" data-p="news" onclick="nav('news')">Updates</button>
+      </div>
+      <div class="nav-r">
+        <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle theme">
+          <svg id="icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg id="icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="icon-btn" onclick="nav('cart')" title="Cart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+          <span class="cart-dot" id="cart-count">0</span>
+        </button>
+        <div id="auth-btns" style="display:flex;gap:6px">
+          <button class="btn btn-outline btn-sm" onclick="nav('login')">Login</button>
+          <button class="btn btn-primary btn-sm" onclick="nav('register')">Sign Up</button>
+        </div>
+        <div class="udrop" id="user-drop-wrap" style="display:none">
+          <button class="btn btn-primary btn-sm" id="user-name-btn" onclick="toggleUserDrop()">Me ▾</button>
+          <div class="udrop-menu" id="user-drop">
+            <button onclick="nav('dashboard');closeUserDrop()">Dashboard</button>
+            <button onclick="nav('orders');closeUserDrop()">My Orders</button>
+            <button onclick="nav('profile');closeUserDrop()">Profile</button>
+            <button onclick="nav('wishlist');closeUserDrop()">Wishlist</button>
+            <button onclick="nav('referral');closeUserDrop()">Refer & Earn</button>
+            <button class="red" onclick="doLogout()">Logout</button>
+          </div>
+        </div>
+        <button class="hbg" id="hbg-btn" onclick="toggleMobNav()">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mob-nav" id="mob-nav">
+    <button class="mnl" onclick="nav('home');closeMobNav()">Home</button>
+    <button class="mnl" onclick="nav('shop');closeMobNav()">Shop</button>
+    <button class="mnl" onclick="nav('support');closeMobNav()">Support</button>
+    <button class="mnl" onclick="nav('news');closeMobNav()">Updates</button>
+    <div class="mob-divider"></div>
+    <div id="mob-auth-btns">
+      <button class="mnl" onclick="nav('login');closeMobNav()">Login</button>
+      <button class="mnl" style="background:var(--grad);color:#fff;border-radius:9px;margin-top:6px" onclick="nav('register');closeMobNav()">Create Account</button>
+    </div>
+    <div id="mob-user-links" style="display:none">
+      <button class="mnl" onclick="nav('dashboard');closeMobNav()">Dashboard</button>
+      <button class="mnl" onclick="nav('orders');closeMobNav()">My Orders</button>
+      <button class="mnl" onclick="nav('profile');closeMobNav()">Profile</button>
+      <button class="mnl" onclick="nav('wishlist');closeMobNav()">Wishlist</button>
+      <button class="mnl" onclick="nav('referral');closeMobNav()">Refer & Earn</button>
+      <button class="mnl" style="color:var(--red)" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+
+  <div id="main-content"></div>
+
+  <footer>
+    <div class="fg-grid">
+      <div>
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+          <div class="logo-mark" style="width:26px;height:26px;font-size:12px">G</div>
+          <span style="color:var(--text);font-weight:800;font-size:14px">GlobalDigits</span>
+        </div>
+        <p style="color:var(--muted);font-size:12px;line-height:1.6">Your trusted marketplace for foreign numbers and social media services.</p>
+      </div>
+      <div>
+        <div class="ftitle">Quick Links</div>
+        <button class="flink" onclick="nav('home')">Home</button>
+        <button class="flink" onclick="nav('shop')">Marketplace</button>
+        <button class="flink" onclick="nav('support')">Support</button>
+        <button class="flink" onclick="nav('news')">Updates</button>
+      </div>
+      <div>
+        <div class="ftitle">Account</div>
+        <button class="flink" onclick="nav('dashboard')">Dashboard</button>
+        <button class="flink" onclick="nav('orders')">My Orders</button>
+        <button class="flink" onclick="nav('wishlist')">Wishlist</button>
+        <button class="flink" onclick="nav('referral')">Refer & Earn</button>
+      </div>
+      <div>
+        <div class="ftitle">Contact</div>
+        <p style="color:var(--muted);font-size:12px;line-height:1.9">
+          WhatsApp: +234 808 175 6825<br>
+          Phone: 09163386884<br>
+          Hours: 8AM–5PM WAT
+        </p>
+      </div>
+    </div>
+    <div class="fg-bottom">© 2025 GlobalDigits · <button class="flink" style="display:inline;color:var(--muted)" onclick="nav('terms')">Terms & Privacy</button></div>
+  </footer>
+
+  <div id="toaster"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// SUPABASE
+// ══════════════════════════════════════════
+const SB = 'https://ujpfrenwvawvqveejxuc.supabase.co';
+const SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqcGZyZW53dmF3dnF2ZWVqeHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NDE5MTUsImV4cCI6MjA4OTAxNzkxNX0.uUI9WE6VOpBels2tVTRvKIYM5mhcl7vYyJqI5VBi3Us';
+const H = () => ({'Content-Type':'application/json','apikey':SK,'Authorization':'Bearer '+SK,'Prefer':'return=representation'});
+async function dbGet(t,q=''){const r=await fetch(SB+'/rest/v1/'+t+'?'+q,{headers:H()});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function dbPost(t,b){const r=await fetch(SB+'/rest/v1/'+t,{method:'POST',headers:H(),body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function dbPatch(t,q,b){const r=await fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:H(),body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const S = {
+  page:'home', user:null, products:[], orders:[], anns:[], wishlist:[],
+  cart:[], selProd:null, loading:true, siteOn:true, offMsg:'',
+  pay:{bank:'KUDA',accountNumber:'2054598735',accountName:'CHIKEZIE CHISOM KINGSLEY'},
+  contact:{wa1:'+234 808 175 6825',wa2:'+1 343 298 5811',phone:'09163386884',hours:'8AM–5PM WAT'}
+};
+try{S.user=JSON.parse(localStorage.getItem('gd_u')||'null');}catch(e){}
+try{S.cart=JSON.parse(localStorage.getItem('gd_c')||'[]');}catch(e){}
+try{S.wishlist=JSON.parse(localStorage.getItem('gd_w')||'[]');}catch(e){}
+
+const fmt = n => '₦'+Number(n).toLocaleString('en-NG');
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const genId = () => 'GD-'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).substr(2,4).toUpperCase();
+const cartTotal = () => S.cart.reduce((s,i)=>s+i.price*i.qty,0);
+const cartCount = () => S.cart.reduce((s,i)=>s+i.qty,0);
+const saveCart = () => localStorage.setItem('gd_c',JSON.stringify(S.cart));
+const saveWish = () => localStorage.setItem('gd_w',JSON.stringify(S.wishlist));
+const saveUser = () => S.user ? localStorage.setItem('gd_u',JSON.stringify(S.user)) : localStorage.removeItem('gd_u');
+
+const SLABELS = {'pending-payment':'Pending Payment','payment-pending-approval':'Pending Approval','payment-approved':'Approved','delivered':'Delivered','cancelled':'Cancelled'};
+const SBADGES = {'pending-payment':'bdg-y','payment-pending-approval':'bdg-b','payment-approved':'bdg-g','delivered':'bdg-p','cancelled':'bdg-r'};
+const sBadge = s => `<span class="bdg ${SBADGES[s]||'bdg-y'}">${SLABELS[s]||s}</span>`;
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function toast(msg, type='s') {
+  const d = document.createElement('div');
+  d.className = 'tst tst-'+type;
+  d.textContent = msg;
+  document.getElementById('toaster').appendChild(d);
+  setTimeout(()=>d.remove(), 3400);
+}
+
+// ══════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════
+function toggleTheme() {
+  const light = document.documentElement.getAttribute('data-theme') === 'light';
+  document.documentElement.setAttribute('data-theme', light ? 'dark' : 'light');
+  localStorage.setItem('gd_theme', light ? 'dark' : 'light');
+  document.getElementById('icon-sun').style.display = light ? 'block' : 'none';
+  document.getElementById('icon-moon').style.display = light ? 'none' : 'block';
+}
+(function(){
+  const t = localStorage.getItem('gd_theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  if (t === 'light') {
+    window.addEventListener('DOMContentLoaded', () => {
+      const s = document.getElementById('icon-sun');
+      const m = document.getElementById('icon-moon');
+      if(s) s.style.display = 'none';
+      if(m) m.style.display = 'block';
+    });
+  }
+})();
+
+// ══════════════════════════════════════════
+// NAV
+// ══════════════════════════════════════════
+function nav(page) {
+  S.page = page;
+  closeUserDrop();
+  closeMobNav();
+  window.scrollTo(0,0);
+  render();
+}
+function toggleUserDrop(){document.getElementById('user-drop').classList.toggle('open');}
+function closeUserDrop(){document.getElementById('user-drop').classList.remove('open');}
+function toggleMobNav(){document.getElementById('mob-nav').classList.toggle('open');}
+function closeMobNav(){document.getElementById('mob-nav').classList.remove('open');}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.udrop')) closeUserDrop();
+  if(!e.target.closest('#mob-nav')&&!e.target.closest('#hbg-btn')) closeMobNav();
+});
+
+// ══════════════════════════════════════════
+// DATA LOADING
+// ══════════════════════════════════════════
+async function loadData() {
+  try {
+    const [prods,anns,ss] = await Promise.all([
+      dbGet('products','order=id.asc'),
+      dbGet('announcements','active=eq.true&order=created_at.desc'),
+      dbGet('settings','key=eq.site_settings')
+    ]);
+    S.products = prods;
+    S.anns = anns;
+    if(ss[0]){S.siteOn = ss[0].value.online !== false; S.offMsg = ss[0].value.offline_msg||'';}
+    try {
+      const [pd,cd] = await Promise.all([dbGet('settings','key=eq.payment_details'),dbGet('settings','key=eq.contact_info')]);
+      if(pd[0]) S.pay = pd[0].value;
+      if(cd[0]) { const c=cd[0].value; S.contact={wa1:c.whatsapp1,wa2:c.whatsapp2,phone:c.phone,hours:c.hours}; }
+    } catch(e){}
+  } catch(e){ console.error('loadData:',e.message); }
+  S.loading = false;
+  render();
+}
+
+async function loadOrders() {
+  if(!S.user) return;
+  try {
+    const [orders, fresh] = await Promise.all([
+      dbGet('orders','user_id=eq.'+S.user.id+'&order=created_at.desc'),
+      dbGet('users','id=eq.'+S.user.id+'&select=*')
+    ]);
+    S.orders = orders;
+    if(fresh[0]){ S.user = fresh[0]; saveUser(); }
+    renderPage();
+  } catch(e){ console.error('loadOrders:',e.message); }
+}
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function render() {
+  syncNav();
+  syncCartBadge();
+  syncSiteStatus();
+  renderPage();
+}
+
+function renderPage() {
+  const el = document.getElementById('main-content');
+  if(!el) return;
+  if(S.loading){ el.innerHTML = `<div style="min-height:60vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px"><div style="width:40px;height:40px;background:var(--grad);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:17px">G</div><div style="color:var(--muted);font-size:13px">Loading...</div></div>`; return; }
+  const pages = {home:pgHome,shop:pgShop,product:pgProduct,cart:pgCart,checkout:pgCheckout,login:pgLogin,register:pgRegister,dashboard:pgDashboard,orders:pgOrders,profile:pgProfile,wishlist:pgWishlist,referral:pgReferral,support:pgSupport,news:pgNews,terms:pgTerms};
+  el.innerHTML = (pages[S.page]||pgHome)();
+  bindEvents();
+}
+
+function syncNav() {
+  document.querySelectorAll('[data-p]').forEach(b => b.classList.toggle('active', b.dataset.p === S.page));
+  const u = S.user;
+  const ab = document.getElementById('auth-btns');
+  const ud = document.getElementById('user-drop-wrap');
+  const mb = document.getElementById('mob-auth-btns');
+  const mu = document.getElementById('mob-user-links');
+  if(ab) ab.style.display = u ? 'none' : 'flex';
+  if(ud) ud.style.display = u ? 'block' : 'none';
+  if(mb) mb.style.display = u ? 'none' : 'flex';
+  if(mu) mu.style.display = u ? 'flex' : 'none';
+  if(mb) mb.style.flexDirection = 'column';
+  if(mu) mu.style.flexDirection = 'column';
+  const nb = document.getElementById('user-name-btn');
+  if(nb && u) nb.textContent = u.name.split(' ')[0]+' ▾';
+}
+
+function syncCartBadge() {
+  const c = document.getElementById('cart-count');
+  if(!c) return;
+  const n = cartCount();
+  c.textContent = n;
+  c.style.display = n > 0 ? 'block' : 'none';
+}
+
+function syncSiteStatus() {
+  const wrap = document.getElementById('offline-wrap');
+  const mc = document.getElementById('main-content');
+  const nav = document.getElementById('topnav');
+  const footer = document.querySelector('footer');
+  if(!S.siteOn && !S.user) {
+    wrap.classList.add('show');
+    document.getElementById('offline-msg-el').textContent = S.offMsg || 'We are under maintenance. Check back soon.';
+    if(mc) mc.style.display = 'none';
+    if(nav) nav.style.display = 'none';
+    if(footer) footer.style.display = 'none';
+  } else {
+    wrap.classList.remove('show');
+    if(mc) mc.style.display = '';
+    if(nav) nav.style.display = '';
+    if(footer) footer.style.display = '';
+  }
+  // Ann bar
+  const bar = document.getElementById('ann-bar');
+  if(S.anns.length) {
+    const a = S.anns[0];
+    const dismissed = JSON.parse(sessionStorage.getItem('gd_d')||'[]');
+    if(!dismissed.includes(String(a.id))) {
+      bar.classList.add('show');
+      bar._aid = a.id;
+      const colors = {info:'rgba(59,130,246,.12)',promo:'rgba(245,158,11,.12)',urgent:'rgba(239,68,68,.12)'};
+      bar.style.background = colors[a.color]||colors.info;
+      const icons = {
+        info:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+        promo:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+        urgent:'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
+      };
+      document.getElementById('ann-icon-el').innerHTML = icons[a.color]||icons.info;
+      document.getElementById('ann-title-el').textContent = a.title+':';
+      document.getElementById('ann-body-el').textContent = a.message;
+    } else bar.classList.remove('show');
+  } else bar.classList.remove('show');
+}
+
+function dismissAnn() {
+  const bar = document.getElementById('ann-bar');
+  if(bar._aid) {
+    const d = JSON.parse(sessionStorage.getItem('gd_d')||'[]');
+    d.push(String(bar._aid));
+    sessionStorage.setItem('gd_d',JSON.stringify(d));
+  }
+  bar.classList.remove('show');
+}
+
+// ══════════════════════════════════════════
+// BIND EVENTS (called after every render)
+// ══════════════════════════════════════════
+function bindEvents() {
+  // Login form
+  const lf = document.getElementById('login-form');
+  if(lf) { lf.onsubmit = e => { e.preventDefault(); handleLogin(); }; }
+  // Register form
+  const rf = document.getElementById('reg-form');
+  if(rf) { rf.onsubmit = e => { e.preventDefault(); handleRegister(); }; }
+  // Pay form
+  const pf = document.getElementById('pay-form');
+  if(pf) { pf.onsubmit = e => { e.preventDefault(); handleCheckout(); }; }
+  // Cart qty/remove
+  document.querySelectorAll('[data-qty]').forEach(b => {
+    b.onclick = () => { const id=+b.dataset.qty,d=+b.dataset.d,item=S.cart.find(i=>i.id==id); if(item) updateQty(id,item.qty+d); };
+  });
+  document.querySelectorAll('[data-rm]').forEach(b => { b.onclick = () => removeFromCart(+b.dataset.rm); });
+  // Mark paid
+  document.querySelectorAll('[data-paid]').forEach(b => { b.onclick = () => markPaid(b.dataset.paid); });
+  // Add to cart
+  document.querySelectorAll('[data-ac]').forEach(b => { b.onclick = () => addToCart(+b.dataset.ac); });
+  // View product
+  document.querySelectorAll('[data-vp]').forEach(b => { b.onclick = () => { S.selProd = S.products.find(p=>p.id==b.dataset.vp); nav('product'); }; });
+  // Wishlist
+  document.querySelectorAll('[data-wl]').forEach(b => { b.onclick = e => { e.stopPropagation(); toggleWish(+b.dataset.wl); }; });
+  // Expand order rows
+  document.querySelectorAll('[data-exp]').forEach(b => {
+    b.onclick = () => { const el = document.getElementById('ob-'+b.dataset.exp); if(el) el.style.display = el.style.display==='none'?'block':'none'; };
+  });
+  // Filter tabs
+  document.querySelectorAll('.tab[data-f]').forEach(b => {
+    b.onclick = () => {
+      document.querySelectorAll('.tab[data-f]').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      const f = b.dataset.f;
+      document.querySelectorAll('.pcard[data-cat]').forEach(c => { c.style.display = (f==='all'||c.dataset.cat===f)?'':'none'; });
+    };
+  });
+  // Search
+  const si = document.getElementById('si');
+  if(si) si.oninput = () => {
+    const q = si.value.toLowerCase();
+    document.querySelectorAll('.pcard[data-name]').forEach(c => { c.style.display = c.dataset.name.toLowerCase().includes(q)?'':'none'; });
+  };
+  // Country/platform filters
+  const cf = document.getElementById('cf'); if(cf) cf.onchange = applyFilters;
+  const pf2 = document.getElementById('pf'); if(pf2) pf2.onchange = applyFilters;
+  // Track order
+  const tb = document.getElementById('track-btn');
+  if(tb) tb.onclick = trackOrder;
+  // Profile save
+  const psave = document.getElementById('profile-save');
+  if(psave) psave.onclick = saveProfile;
+  // Referral apply
+  const rapply = document.getElementById('ref-apply-btn');
+  if(rapply) rapply.onclick = applyReferral;
+  // Appeal submit
+  const appeal = document.getElementById('appeal-btn');
+  if(appeal) appeal.onclick = submitAppeal;
+}
+
+function applyFilters() {
+  const c=(document.getElementById('cf')||{}).value||'All';
+  const p=(document.getElementById('pf')||{}).value||'All';
+  document.querySelectorAll('.pcard').forEach(card=>{
+    card.style.display=((c==='All'||card.dataset.country===c)&&(p==='All'||card.dataset.platform===p))?'':'none';
+  });
+}
+
+// ══════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════
+async function handleLogin() {
+  const email = (document.getElementById('l-em')||{}).value||'';
+  const pw = (document.getElementById('l-pw')||{}).value||'';
+  const btn = document.getElementById('l-btn');
+  const err = document.getElementById('l-err');
+  if(!email||!pw){ if(err){err.textContent='Please fill all fields.';err.style.display='block';} return; }
+  if(btn){btn.textContent='Signing in…';btn.disabled=true;}
+  if(err) err.style.display='none';
+  try {
+    const d = await dbGet('users','email=ilike.'+encodeURIComponent(email.trim().toLowerCase())+'&select=*');
+    if(!d.length){ showErr(err,'No account with this email.'); }
+    else if(d[0].password!==pw.trim()){ showErr(err,'Wrong password.'); }
+    else {
+      const u = d[0];
+      if(u.banned){ showErr(err,'Account banned. Contact support.'); }
+      else if(u.suspended_until && new Date(u.suspended_until)>new Date()){
+        showErr(err,'Account suspended until '+new Date(u.suspended_until).toLocaleDateString()+'. Contact support.');
+      } else {
+        S.user = u; saveUser();
+        toast('Welcome back, '+u.name.split(' ')[0]+'!');
+        nav('dashboard');
+        loadOrders();
+        return;
+      }
+    }
+  } catch(e){ showErr(err,'Connection error. Try again.'); }
+  if(btn){btn.textContent='Sign In';btn.disabled=false;}
+}
+
+async function handleRegister() {
+  const name = (document.getElementById('r-nm')||{}).value||'';
+  const email = (document.getElementById('r-em')||{}).value||'';
+  const pw = (document.getElementById('r-pw')||{}).value||'';
+  const pw2 = (document.getElementById('r-pw2')||{}).value||'';
+  const phone = (document.getElementById('r-ph')||{}).value||'';
+  const btn = document.getElementById('r-btn');
+  const err = document.getElementById('r-err');
+  if(err) err.style.display='none';
+  if(!name||!email||!pw){ showErr(err,'Please fill all required fields.'); return; }
+  if(pw!==pw2){ showErr(err,'Passwords do not match.'); return; }
+  if(pw.length<6){ showErr(err,'Password must be at least 6 characters.'); return; }
+  if(btn){btn.textContent='Creating…';btn.disabled=true;}
+  try {
+    const clean = email.trim().toLowerCase();
+    const ex = await dbGet('users','email=ilike.'+encodeURIComponent(clean)+'&select=id');
+    if(ex.length){ showErr(err,'Email already registered. Please login.'); }
+    else {
+      const d = await dbPost('users',{name:name.trim(),email:clean,password:pw.trim(),phone:phone||'',role:'user',verified:false,banned:false,wallet_balance:0,referral_count:0});
+      S.user = d[0]; saveUser();
+      toast('Account created! Welcome to GlobalDigits.');
+      nav('dashboard');
+      return;
+    }
+  } catch(e){ showErr(err,'Error: '+e.message); }
+  if(btn){btn.textContent='Create Account';btn.disabled=false;}
+}
+
+function showErr(el, msg) { if(el){el.textContent=msg;el.style.display='block';} }
+
+function doLogout() { S.user=null; S.orders=[]; saveUser(); nav('home'); toast('Logged out','w'); }
+
+// ══════════════════════════════════════════
+// CART
+// ══════════════════════════════════════════
+function addToCart(id) {
+  const p = S.products.find(x=>x.id==id);
+  if(!p||p.status==='out-of-stock'||p.stock<1){ toast('Product out of stock','e'); return; }
+  const ex = S.cart.find(i=>i.id==id);
+  if(ex) ex.qty++; else S.cart.push({id:p.id,name:p.name,image:p.image,price:p.price,qty:1});
+  saveCart(); syncCartBadge(); toast(p.name+' added to cart');
+}
+function removeFromCart(id){ S.cart=S.cart.filter(i=>i.id!=id); saveCart(); syncCartBadge(); renderPage(); }
+function updateQty(id,qty){ if(qty<1){removeFromCart(id);return;} const i=S.cart.find(x=>x.id==id); if(i)i.qty=qty; saveCart(); syncCartBadge(); renderPage(); }
+function clearCart(){ S.cart=[]; saveCart(); syncCartBadge(); }
+
+// ══════════════════════════════════════════
+// WISHLIST
+// ══════════════════════════════════════════
+function toggleWish(id) {
+  const i = S.wishlist.indexOf(id);
+  if(i>=0){ S.wishlist.splice(i,1); toast('Removed from wishlist','w'); }
+  else { S.wishlist.push(id); toast('Added to wishlist'); }
+  saveWish(); renderPage();
+}
+const isWished = id => S.wishlist.includes(id);
+
+// ══════════════════════════════════════════
+// ORDERS
+// ══════════════════════════════════════════
+async function handleCheckout() {
+  if(!S.user){ nav('login'); return; }
+  const note = (document.getElementById('pay-note')||{}).value||'';
+  const btn = document.getElementById('pay-btn');
+  if(btn){btn.textContent='Submitting…';btn.disabled=true;}
+  const id = genId();
+  try {
+    await dbPost('orders',{id,user_id:S.user.id,user_name:S.user.name,user_email:S.user.email,items:S.cart,total:cartTotal(),status:'pending-payment',payment_note:note});
+    clearCart();
+    await loadOrders();
+    toast('Order placed! Transfer payment to complete.');
+    document.getElementById('main-content').innerHTML = `
+      <div style="min-height:60vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:40px 16px">
+        <div>
+          <div style="display:flex;justify-content:center;margin-bottom:16px">
+            <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+          </div>
+          <h2 style="color:var(--text);font-size:22px;font-weight:800;margin-bottom:8px">Order Placed!</h2>
+          <div style="color:var(--blue);font-weight:700;margin-bottom:12px;font-family:monospace">${id}</div>
+          <div class="alert alert-y" style="max-width:380px;margin:0 auto 20px;text-align:left">Transfer the exact amount to our bank account and wait for admin approval.</div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-primary btn-lg" onclick="nav('dashboard')">View Dashboard</button>
+            <button class="btn btn-ghost btn-lg" onclick="nav('shop')">Shop More</button>
+          </div>
+        </div>
+      </div>`;
+  } catch(e){ toast('Order failed: '+e.message,'e'); if(btn){btn.textContent='I Have Paid';btn.disabled=false;} }
+}
+
+async function markPaid(oid) {
+  try {
+    await dbPatch('orders','id=eq.'+oid,{status:'payment-pending-approval'});
+    await loadOrders();
+    toast('Payment submitted. Awaiting admin verification.');
+  } catch(e){ toast('Error: '+e.message,'e'); }
+}
+
+async function trackOrder() {
+  const id = (document.getElementById('track-id')||{}).value||'';
+  if(!id.trim()){ toast('Enter an order ID','w'); return; }
+  const res = document.getElementById('track-res');
+  if(res) res.innerHTML = '<div style="color:var(--muted);font-size:13px">Searching…</div>';
+  try {
+    const d = await dbGet('orders','id=eq.'+id.trim().toUpperCase()+'&select=id,status,created_at,total,user_name');
+    if(!d.length){ if(res) res.innerHTML='<div class="alert alert-r">Order not found.</div>'; return; }
+    const o = d[0];
+    if(res) res.innerHTML = `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px"><div><div style="font-family:monospace;font-weight:700;color:var(--text)">${o.id}</div><div style="color:var(--muted);font-size:12px">${esc(o.user_name)} · ${new Date(o.created_at).toLocaleDateString()}</div></div><div style="text-align:right">${sBadge(o.status)}<div style="color:var(--blue);font-weight:700;margin-top:4px">${fmt(o.total)}</div></div></div></div>`;
+  } catch(e){ toast('Error: '+e.message,'e'); }
+}
+
+async function saveProfile() {
+  if(!S.user) return;
+  const name = (document.getElementById('prof-name')||{}).value||'';
+  const phone = (document.getElementById('prof-phone')||{}).value||'';
+  if(!name.trim()){ toast('Name cannot be empty','w'); return; }
+  const btn = document.getElementById('profile-save');
+  if(btn){btn.textContent='Saving…';btn.disabled=true;}
+  try {
+    await dbPatch('users','id=eq.'+S.user.id,{name:name.trim(),phone:phone.trim()});
+    S.user.name=name.trim(); S.user.phone=phone.trim(); saveUser();
+    toast('Profile saved!');
+  } catch(e){ toast('Error: '+e.message,'e'); }
+  if(btn){btn.textContent='Save Changes';btn.disabled=false;}
+}
+
+async function applyReferral() {
+  const code = ((document.getElementById('ref-inp')||{}).value||'').trim().toUpperCase();
+  const res = document.getElementById('ref-res');
+  const btn = document.getElementById('ref-apply-btn');
+  if(!code){ showErr(res,'Enter a referral code.'); return; }
+  if(btn){btn.textContent='Checking…';btn.disabled=true;}
+  try {
+    const all = await dbGet('users','select=id,name,wallet_balance,referral_count&limit=1000');
+    const referrer = all.find(u => ('GD-'+u.id.toString().substr(0,8).toUpperCase())===code);
+    if(!referrer){ showErr(res,'Code not found. Check and try again.'); }
+    else if(referrer.id===S.user.id){ showErr(res,'Cannot use your own code.'); }
+    else {
+      await dbPatch('users','id=eq.'+S.user.id,{referred_by:code});
+      const wb = referrer.wallet_balance||0, rc = referrer.referral_count||0;
+      try { await dbPatch('users','id=eq.'+referrer.id,{wallet_balance:wb+500,referral_count:rc+1}); } catch(e){}
+      S.user.referred_by = code; saveUser();
+      toast(referrer.name+' credited ₦500! Code applied.');
+      renderPage(); return;
+    }
+  } catch(e){ showErr(res,'Error: '+e.message); }
+  if(btn){btn.textContent='Apply Code';btn.disabled=false;}
+}
+
+async function submitAppeal() {
+  if(!S.user) return;
+  const text = (document.getElementById('appeal-text')||{}).value||'';
+  if(!text.trim()){ toast('Write your appeal message first','w'); return; }
+  const btn = document.getElementById('appeal-btn');
+  if(btn){btn.textContent='Submitting…';btn.disabled=true;}
+  try {
+    const rec = {user_id:S.user.id,user_name:S.user.name,user_email:S.user.email,message:text.trim(),submitted_at:new Date().toISOString(),status:'pending'};
+    try { await dbPost('appeals',rec); } catch(e) {
+      const ex = await dbGet('settings','key=eq.appeals');
+      const list = ex[0]?(ex[0].value||[]):[];
+      list.unshift(rec);
+      if(ex[0]) await dbPatch('settings','key=eq.appeals',{value:list.slice(0,50)});
+      else await dbPost('settings',{key:'appeals',value:list.slice(0,50)});
+    }
+    toast('Appeal submitted! Admin will review within 24 hours.');
+    if(document.getElementById('appeal-text')) document.getElementById('appeal-text').value='';
+    if(btn){btn.textContent='Submitted';}
+  } catch(e){ toast('Error: '+e.message,'e'); if(btn){btn.textContent='Submit Appeal';btn.disabled=false;} }
+}
+
+// ══════════════════════════════════════════
+// PAGES
+// ══════════════════════════════════════════
+function pcard(p) {
+  const w = isWished(p.id);
+  return `<div class="pcard" data-name="${esc(p.name)}" data-cat="${p.category}" data-country="${p.country||''}" data-platform="${p.platform||''}">
+    <div class="pcard-img">${p.image}
+      <button class="wheart" data-wl="${p.id}">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="${w?'#ef4444':'none'}" stroke="${w?'#ef4444':'rgba(255,255,255,.7)'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+    </div>
+    <div class="pcard-body">
+      <div class="ptags"><span class="tag ${p.status==='out-of-stock'?'tag-r':'tag-g'}">${p.status==='out-of-stock'?'Out of Stock':'In Stock'}</span>${p.country?`<span class="tag tag-p">${p.country}</span>`:''}${p.platform?`<span class="tag tag-b">${p.platform}</span>`:''}</div>
+      <div class="pname">${esc(p.name)}</div>
+      <div class="pdesc">${esc(p.description)}</div>
+      <div class="pfooter"><span class="pprice">${fmt(p.price)}</span>
+        <div style="display:flex;gap:5px">
+          <button class="btn btn-ghost btn-sm" data-vp="${p.id}">View</button>
+          <button class="btn btn-primary btn-sm" data-ac="${p.id}" ${p.status==='out-of-stock'?'disabled':''}>Add</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function pgHome() {
+  const fp = S.products.filter(p=>p.status==='available').slice(0,4);
+  return `
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-badge">🌍 DIGITAL MARKETPLACE</div>
+      <h1 class="hero-title">Your Gateway to<br><span class="hero-grad">Global Digital</span> Access</h1>
+      <p class="hero-sub">Foreign phone numbers, social media accounts, and boosting services. Fast delivery, secure payment.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary btn-lg" onclick="nav('shop')">Browse Products</button>
+        <button class="btn btn-outline btn-lg" onclick="nav('support')">Contact Support</button>
+      </div>
+    </div>
+  </div>
+  <div class="page">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:40px">
+      ${[['500+','Customers'],['12+','Products'],['24h','Delivery'],['100%','Secure']].map(([v,l])=>`
+        <div style="text-align:center;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 10px">
+          <div style="color:var(--blue);font-size:22px;font-weight:900;margin-bottom:3px">${v}</div>
+          <div style="color:var(--muted);font-size:11px">${l}</div>
+        </div>`).join('')}
+    </div>
+    <div class="g2" style="margin-bottom:40px">
+      ${[['<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>','Foreign Numbers','UK, US, Canada, Germany, AU & more.'],['<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--purple)" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>','Social Accounts','Aged Instagram, TikTok, Facebook accounts.'],['<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="1.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>','Boosting Services','Real followers, views and engagement.'],['<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>','Secure Payment','Admin-verified delivery to your dashboard.']].map(([icon,t,d])=>`
+        <div class="card" style="display:flex;gap:12px;align-items:flex-start">
+          <div style="flex-shrink:0">${icon}</div>
+          <div><div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:3px">${t}</div><div style="color:var(--muted);font-size:12px;line-height:1.5">${d}</div></div>
+        </div>`).join('')}
+    </div>
+    ${fp.length?`
+    <div class="sechead"><div><div class="sectitle">Featured Products</div><div class="secsub">Popular this week</div></div><button class="btn btn-ghost btn-sm" onclick="nav('shop')">View All</button></div>
+    <div class="g3" style="margin-bottom:40px">${fp.map(p=>pcard(p)).join('')}</div>`:''}
+    <div class="card" style="margin-bottom:40px">
+      <h3 style="color:var(--text);font-weight:700;margin-bottom:4px;font-size:15px">Track Your Order</h3>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:14px">Enter your order ID to check status</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="track-id" placeholder="e.g. GD-ABC123" style="flex:1;min-width:180px"/>
+        <button id="track-btn" class="btn btn-primary" style="flex-shrink:0">Track</button>
+      </div>
+      <div id="track-res" style="margin-top:12px"></div>
+    </div>
+    <div class="g2">
+      ${[['Emeka O.','Lagos','Got my UK number in 2 hours. Perfect!'],['Adaeze N.','Abuja','Instagram account came with full details.'],['Tunde A.','Port Harcourt','3 months using GlobalDigits. Always reliable.'],['Blessing O.','Lagos','TikTok views arrived fast. Ordering again!']].map(([n,c,r])=>`
+        <div class="card"><div style="display:flex;gap:10px;margin-bottom:8px"><div style="width:34px;height:34px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0">${n[0]}</div><div><div style="color:var(--text);font-weight:700;font-size:13px">${n}</div><div style="color:var(--muted);font-size:11px">${c}</div></div><div style="margin-left:auto;color:var(--yellow);font-size:12px">★★★★★</div></div><p style="color:var(--muted2);font-size:12px;line-height:1.6;margin:0">"${r}"</p></div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function pgShop() {
+  const cats=['all','foreign-numbers','social-accounts','boosting'];
+  const cl={all:'All','foreign-numbers':'Numbers','social-accounts':'Accounts',boosting:'Boosting'};
+  return `<div class="page">
+    <div class="sechead"><div><div class="sectitle">Marketplace</div><div class="secsub">${S.products.length} products</div></div></div>
+    <input id="si" placeholder="Search products…" style="margin-bottom:12px"/>
+    <div class="tabs" style="margin-bottom:12px">${cats.map((c,i)=>`<button class="tab${i===0?' active':''}" data-f="${c}">${cl[c]}</button>`).join('')}</div>
+    <div style="display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap">
+      <select id="cf" style="width:auto;padding:7px 10px;font-size:12px">${['All','UK','USA','Canada','Germany','Australia','France','Netherlands'].map(c=>`<option value="${c}">${c==='All'?'All Countries':c}</option>`).join('')}</select>
+      <select id="pf" style="width:auto;padding:7px 10px;font-size:12px">${['All','Instagram','TikTok','Facebook','Twitter','YouTube'].map(p=>`<option value="${p}">${p==='All'?'All Platforms':p}</option>`).join('')}</select>
+    </div>
+    ${S.products.length?`<div class="g3">${S.products.map(p=>pcard(p)).join('')}</div>`:'<div style="text-align:center;color:var(--muted);padding:50px">No products yet.</div>'}
+  </div>`;
+}
+
+function pgProduct() {
+  const p = S.selProd; if(!p) return pgShop();
+  const w = isWished(p.id);
+  return `<div class="page page-md">
+    <button class="btn btn-ghost btn-sm" style="margin-bottom:16px" onclick="nav('shop')">← Back</button>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div class="pcard-img" style="font-size:70px;padding:50px 20px;position:relative">${p.image}
+        <button class="wheart" data-wl="${p.id}" style="width:36px;height:36px;font-size:20px">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="${w?'#ef4444':'none'}" stroke="${w?'#ef4444':'rgba(255,255,255,.7)'}" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+      <div style="padding:22px">
+        <div class="ptags" style="margin-bottom:12px"><span class="tag ${p.status==='out-of-stock'?'tag-r':'tag-g'}">${p.status==='out-of-stock'?'Out of Stock':'In Stock'}</span>${p.country?`<span class="tag tag-p">${p.country}</span>`:''}${p.platform?`<span class="tag tag-b">${p.platform}</span>`:''}<span class="tag" style="background:var(--bg3);color:var(--muted)">Stock: ${p.stock}</span></div>
+        <h1 style="color:var(--text);font-size:clamp(18px,4vw,26px);font-weight:800;margin-bottom:8px">${esc(p.name)}</h1>
+        <p style="color:var(--muted2);font-size:14px;line-height:1.7;margin-bottom:20px">${esc(p.description)}</p>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+          <span style="color:var(--blue);font-weight:900;font-size:clamp(24px,5vw,32px)">${fmt(p.price)}</span>
+          <button class="btn btn-primary btn-lg" data-ac="${p.id}" ${p.status==='out-of-stock'?'disabled':''}>Add to Cart</button>
+        </div>
+        <div class="alert alert-b" style="margin-top:16px">After payment is approved, your product details appear in your dashboard automatically.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function pgCart() {
+  if(!S.cart.length) return `<div class="page page-md" style="text-align:center;padding-top:80px">
+    <div style="display:flex;justify-content:center;margin-bottom:14px"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg></div>
+    <h2 style="color:var(--text);font-size:20px;font-weight:800;margin-bottom:8px">Cart is empty</h2>
+    <p style="color:var(--muted);margin-bottom:20px">Add some products to get started</p>
+    <button class="btn btn-primary btn-lg" onclick="nav('shop')">Browse Products</button>
+  </div>`;
+  return `<div class="page page-md">
+    <div class="sectitle" style="margin-bottom:20px">Shopping Cart</div>
+    ${S.cart.map(item=>`
+      <div class="cart-row">
+        <div style="font-size:30px;flex-shrink:0">${item.image}</div>
+        <div style="flex:1;min-width:100px"><div style="color:var(--text);font-weight:700;font-size:13px">${esc(item.name)}</div><div style="color:var(--blue);font-weight:700;font-size:12px">${fmt(item.price)}</div></div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="btn btn-ghost btn-sm" style="padding:5px 9px" data-qty="${item.id}" data-d="-1">−</button>
+          <span style="color:var(--text);font-weight:700;min-width:20px;text-align:center">${item.qty}</span>
+          <button class="btn btn-ghost btn-sm" style="padding:5px 9px" data-qty="${item.id}" data-d="1">+</button>
+        </div>
+        <div style="color:var(--text);font-weight:800;min-width:60px;text-align:right">${fmt(item.price*item.qty)}</div>
+        <button class="btn btn-red btn-sm" data-rm="${item.id}">✕</button>
+      </div>`).join('')}
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:6px">
+      <div><div style="color:var(--muted);font-size:11px;margin-bottom:2px">Total (${S.cart.length} item${S.cart.length>1?'s':''})</div><div style="color:var(--text);font-weight:900;font-size:clamp(20px,4vw,26px)">${fmt(cartTotal())}</div></div>
+      <button class="btn btn-primary btn-lg" onclick="nav(${S.user?`'checkout'`:`'login'`})">${S.user?'Checkout':'Login to Checkout'}</button>
+    </div>
+  </div>`;
+}
+
+function pgCheckout() {
+  if(!S.user){nav('login');return'';}
+  if(!S.cart.length){nav('cart');return'';}
+  const pay = S.pay;
+  return `<div class="page page-md">
+    <div class="sectitle" style="margin-bottom:20px">Checkout</div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:14px;margin-bottom:12px">Order Summary</div>
+      ${S.cart.map(i=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted2);font-size:13px">${esc(i.name)} ×${i.qty}</span><span style="color:var(--text);font-weight:600;font-size:13px">${fmt(i.price*i.qty)}</span></div>`).join('')}
+      <div style="display:flex;justify-content:space-between;padding-top:12px"><span style="color:var(--text);font-weight:800">Total</span><span style="color:var(--blue);font-weight:900;font-size:18px">${fmt(cartTotal())}</span></div>
+    </div>
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:14px;margin-bottom:12px">Bank Transfer Details</div>
+      <div class="pay-box">
+        ${[['Bank',pay.bank],['Account Number',pay.accountNumber],['Account Name',pay.accountName],['Amount',fmt(cartTotal())]].map(([k,v])=>`<div class="pay-row"><span style="color:var(--muted);font-size:13px">${k}</span><span style="color:var(--text);font-weight:700;font-size:13px">${esc(v)}</span></div>`).join('')}
+      </div>
+      <div class="alert alert-b" style="margin-top:12px">Transfer the exact amount then click "I Have Paid" below.</div>
+    </div>
+    <form id="pay-form" class="card">
+      <div style="color:var(--text);font-weight:700;font-size:14px;margin-bottom:12px">Confirm Payment</div>
+      <div class="fg"><label class="fl">Payment Reference (optional)</label><textarea id="pay-note" rows="2" placeholder="Add any reference note for the admin..." style="resize:none"></textarea></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button type="button" class="btn btn-ghost btn-lg" onclick="nav('cart')">← Back</button>
+        <button type="submit" id="pay-btn" class="btn btn-green btn-lg" style="flex:1;justify-content:center">I Have Paid</button>
+      </div>
+    </form>
+  </div>`;
+}
+
+function pgLogin() {
+  return `<div class="auth-page"><div class="auth-box">
+    <div class="auth-logo">G</div>
+    <div class="auth-title">Welcome Back</div>
+    <div class="auth-sub">Sign in to your GlobalDigits account</div>
+    <div class="auth-err" id="l-err"></div>
+    <form id="login-form">
+      <div class="fg"><label class="fl">Email</label><input id="l-em" type="email" placeholder="you@example.com" autocomplete="email" required/></div>
+      <div class="fg"><label class="fl">Password</label><input id="l-pw" type="password" placeholder="Your password" autocomplete="current-password" required/></div>
+      <button type="submit" id="l-btn" class="btn btn-primary btn-full btn-lg" style="margin-top:6px">Sign In</button>
+    </form>
+    <div class="auth-sw">No account? <button onclick="nav('register')">Create one here</button></div>
+  </div></div>`;
+}
+
+function pgRegister() {
+  return `<div class="auth-page"><div class="auth-box">
+    <div class="auth-logo">G</div>
+    <div class="auth-title">Create Account</div>
+    <div class="auth-sub">Join thousands of GlobalDigits customers</div>
+    <div class="auth-err" id="r-err"></div>
+    <form id="reg-form">
+      <div class="fg"><label class="fl">Full Name *</label><input id="r-nm" type="text" placeholder="John Doe" autocomplete="name" required/></div>
+      <div class="fg"><label class="fl">Phone Number</label><input id="r-ph" type="tel" placeholder="+234..." autocomplete="tel"/></div>
+      <div class="fg"><label class="fl">Email Address *</label><input id="r-em" type="email" placeholder="you@example.com" autocomplete="email" required/></div>
+      <div class="fg"><label class="fl">Password *</label><input id="r-pw" type="password" placeholder="Min 6 characters" autocomplete="new-password" required/></div>
+      <div class="fg"><label class="fl">Confirm Password *</label><input id="r-pw2" type="password" placeholder="Repeat password" autocomplete="new-password" required/></div>
+      <button type="submit" id="r-btn" class="btn btn-primary btn-full btn-lg" style="margin-top:6px">Create Account</button>
+    </form>
+    <div class="auth-sw">Have an account? <button onclick="nav('login')">Sign in here</button></div>
+  </div></div>`;
+}
+
+function pgDashboard() {
+  if(!S.user){nav('login');return'';}
+  const u=S.user, o=S.orders, del=o.filter(x=>x.status==='delivered'), pend=o.filter(x=>x.status&&x.status.includes('pending'));
+  return `<div class="page">
+    <div class="sechead"><div><div class="sectitle">Dashboard</div><div class="secsub">Welcome back, ${esc(u.name.split(' ')[0])}</div></div><button class="btn btn-primary btn-sm" onclick="nav('shop')">Shop Now</button></div>
+    <div class="gstats" style="margin-bottom:22px">
+      ${[['Orders',o.length,'var(--blue)'],['Delivered',del.length,'var(--green)'],['Pending',pend.length,'var(--yellow)'],['Spent',fmt(del.reduce((s,x)=>s+x.total,0)),'var(--purple)']].map(([l,v,c])=>`
+        <div class="stcard"><div class="stlabel">${l}</div><div class="stval" style="color:${c}">${v}</div></div>`).join('')}
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+      <button class="btn btn-primary btn-sm" onclick="nav('shop')">Browse Products</button>
+      <button class="btn btn-ghost btn-sm" onclick="nav('orders')">All Orders</button>
+      <button class="btn btn-ghost btn-sm" onclick="nav('wishlist')">Wishlist</button>
+      <button class="btn btn-ghost btn-sm" onclick="nav('referral')">Refer & Earn</button>
+    </div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px"><div style="color:var(--text);font-weight:700;font-size:14px">Recent Orders</div><button class="btn btn-ghost btn-sm" onclick="nav('orders')">View All</button></div>
+      ${o.length?o.slice(0,5).map(x=>orderRow(x)).join(''):
+      `<div style="text-align:center;color:var(--muted);padding:24px 0;font-size:13px">No orders yet. <button class="btn btn-ghost btn-sm" onclick="nav('shop')">Start shopping</button></div>`}
+    </div>
+    ${del.filter(x=>x.delivery_details).length?`
+    <div class="card" style="margin-top:12px">
+      <div style="color:var(--text);font-weight:700;font-size:14px;margin-bottom:12px">Delivered Products</div>
+      ${del.filter(x=>x.delivery_details).map(x=>`<div class="delivery-box" style="margin-bottom:8px"><div style="color:var(--purple);font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase">Order ${x.id}</div><pre style="color:var(--text);font-size:12px;white-space:pre-wrap;font-family:monospace;margin:0">${esc(x.delivery_details)}</pre></div>`).join('')}
+    </div>`:''}
+  </div>`;
+}
+
+function orderRow(o) {
+  const items = o.items||[];
+  return `<div class="ord-row">
+    <div class="ord-head" data-exp="${o.id}">
+      <div><div class="ord-id">${o.id}</div><div style="color:var(--muted);font-size:11px">${new Date(o.created_at).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})}</div></div>
+      <div style="display:flex;align-items:center;gap:8px">${sBadge(o.status)}<span style="color:var(--blue);font-weight:700;font-size:13px">${fmt(o.total)}</span><span style="color:var(--muted);font-size:11px">▾</span></div>
+    </div>
+    <div id="ob-${o.id}" style="display:none">
+      <div class="ord-body">
+        ${items.map(i=>`<div style="display:flex;justify-content:space-between;color:var(--muted2);font-size:12px;padding:3px 0"><span>${esc(i.name)} ×${i.qty}</span><span>${fmt(i.price*i.qty)}</span></div>`).join('')}
+        ${o.status==='pending-payment'?`
+        <div class="pay-box" style="margin-top:10px">
+          ${[['Bank',S.pay.bank],['Account',S.pay.accountNumber],['Name',S.pay.accountName]].map(([k,v])=>`<div class="pay-row"><span style="color:var(--muted);font-size:12px">${k}</span><span style="color:var(--text);font-weight:700;font-size:12px">${esc(v)}</span></div>`).join('')}
+        </div>
+        <button class="btn btn-green btn-sm" data-paid="${o.id}" style="margin-top:10px">I Have Paid</button>`:''}
+        ${o.delivery_details?`<div class="delivery-box"><div style="color:var(--purple);font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase">Product Details</div><pre style="color:var(--text);font-size:12px;white-space:pre-wrap;font-family:monospace;margin:0">${esc(o.delivery_details)}</pre></div>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function pgOrders() {
+  if(!S.user){nav('login');return'';}
+  return `<div class="page page-md">
+    <button class="btn btn-ghost btn-sm" style="margin-bottom:14px" onclick="nav('dashboard')">← Dashboard</button>
+    <div class="sectitle" style="margin-bottom:18px">Order History</div>
+    ${S.orders.length?`<div class="card">${S.orders.map(o=>orderRow(o)).join('')}</div>`:
+    `<div style="text-align:center;color:var(--muted);padding:50px 0">No orders yet.</div>`}
+  </div>`;
+}
+
+function pgProfile() {
+  if(!S.user){nav('login');return'';}
+  const u=S.user;
+  const susp = u.suspended_until && new Date(u.suspended_until)>new Date();
+  const suspDate = susp ? new Date(u.suspended_until).toLocaleDateString('en-NG',{day:'numeric',month:'long',year:'numeric'}) : '';
+  const daysLeft = susp ? Math.max(1,Math.ceil((new Date(u.suspended_until)-Date.now())/86400000)) : 0;
+  return `<div class="page page-sm">
+    <div class="sectitle" style="margin-bottom:18px">My Profile</div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:13px;margin-bottom:16px">
+        <div style="width:50px;height:50px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:19px;flex-shrink:0">${u.name.charAt(0).toUpperCase()}</div>
+        <div>
+          <div style="color:var(--text);font-weight:800;font-size:15px;margin-bottom:6px">${esc(u.name)}</div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+            ${u.verified
+              ? `<span class="verified-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg> Verified Member</span>`
+              : `<span class="unverified-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Unverified</span>`}
+            ${u.banned?`<span class="ban-badge">Banned</span>`:''}
+            ${susp?`<span class="susp-badge">Suspended</span>`:''}
+          </div>
+          <div style="color:var(--muted);font-size:11px;margin-top:5px">Member since ${new Date(u.created_at||Date.now()).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})}</div>
+        </div>
+      </div>
+      ${susp?`<div class="alert alert-y" style="margin-bottom:13px;font-size:12px"><strong>Account Suspended</strong> — until ${suspDate} (${daysLeft} day${daysLeft>1?'s':''} left).${u.suspension_reason?' Reason: '+esc(u.suspension_reason):''}</div>`:''}
+      ${u.banned?`<div class="alert alert-r" style="margin-bottom:13px;font-size:12px"><strong>Account Banned.</strong> Contact support to appeal.</div>`:''}
+      <div class="fg"><label class="fl">Full Name</label><input id="prof-name" value="${esc(u.name)}" autocomplete="name"/></div>
+      <div class="fg"><label class="fl">Email</label><input value="${esc(u.email)}" readonly style="opacity:.6;cursor:not-allowed"/></div>
+      <div class="fg"><label class="fl">Phone</label><input id="prof-phone" value="${esc(u.phone||'')}" type="tel" autocomplete="tel"/></div>
+      <button id="profile-save" class="btn btn-primary">Save Changes</button>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">Account Stats</div>
+      <div class="g4">
+        ${[['Orders',S.orders.length,'var(--blue)'],['Delivered',S.orders.filter(o=>o.status==='delivered').length,'var(--green)'],['Wishlist',S.wishlist.length,'var(--red)'],['Wallet',fmt(u.wallet_balance||0),'var(--yellow)']].map(([l,v,c])=>`
+          <div style="text-align:center;background:var(--bg3);border-radius:9px;padding:12px 6px"><div style="color:${c};font-weight:800;font-size:17px">${v}</div><div style="color:var(--muted);font-size:11px;margin-top:2px">${l}</div></div>`).join('')}
+      </div>
+    </div>
+    ${(u.banned||susp)?`
+    <div class="card" style="border-color:rgba(239,68,68,.3)">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:6px">Submit an Appeal</div>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:12px">Explain why your restriction should be lifted. Admin will review and respond.</p>
+      <div class="fg"><label class="fl">Your Message</label><textarea id="appeal-text" rows="4" placeholder="Explain your situation clearly..." style="resize:none"></textarea></div>
+      <button id="appeal-btn" class="btn btn-primary">Submit Appeal</button>
+    </div>`:''}
+  </div>`;
+}
+
+function pgWishlist() {
+  const wp = S.products.filter(p=>S.wishlist.includes(p.id));
+  return `<div class="page">
+    <div class="sechead"><div><div class="sectitle">My Wishlist</div><div class="secsub">${wp.length} saved</div></div></div>
+    ${wp.length?`<div class="g3">${wp.map(p=>pcard(p)).join('')}</div>`:
+    `<div style="text-align:center;padding:60px 20px"><div style="display:flex;justify-content:center;margin-bottom:12px"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div><div style="color:var(--muted);margin-bottom:18px">Wishlist is empty</div><button class="btn btn-primary btn-lg" onclick="nav('shop')">Browse Products</button></div>`}
+  </div>`;
+}
+
+function pgReferral() {
+  if(!S.user){nav('login');return'';}
+  const u=S.user, code='GD-'+u.id.toString().substr(0,8).toUpperCase(), refBy=u.referred_by||null, wallet=u.wallet_balance||0;
+  return `<div class="page page-md">
+    <div class="sectitle" style="margin-bottom:4px">Refer & Earn</div>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:20px">Invite friends, earn ₦500 per successful referral</p>
+    <div class="g2" style="margin-bottom:16px">
+      <div class="card" style="background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(6,182,212,.08));border-color:rgba(59,130,246,.25)">
+        <div style="color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:3px">Wallet Balance</div>
+        <div style="color:var(--blue);font-size:24px;font-weight:900">${fmt(wallet)}</div>
+        <div style="color:var(--muted);font-size:11px">Apply at checkout</div>
+      </div>
+      <div class="card" style="background:linear-gradient(135deg,rgba(16,185,129,.1),transparent);border-color:rgba(16,185,129,.2)">
+        <div style="color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:3px">People Referred</div>
+        <div style="color:var(--green);font-size:24px;font-weight:900">${u.referral_count||0}</div>
+        <div style="color:var(--muted);font-size:11px">${(u.referral_count||0)*500?fmt((u.referral_count||0)*500)+' earned':'-'}</div>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;margin-bottom:16px">
+      <div style="display:flex;justify-content:center;margin-bottom:10px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg></div>
+      <div style="color:var(--text);font-weight:800;font-size:15px;margin-bottom:4px">Your Referral Code</div>
+      <div class="ref-code">${code}</div>
+      <button class="btn btn-primary btn-sm" onclick="if(navigator.clipboard)navigator.clipboard.writeText('${code}').then(()=>toast('Code copied!'))">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy Code
+      </button>
+    </div>
+    ${!refBy?`
+    <div class="card" style="margin-bottom:16px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:4px">Add Referral Code</div>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:12px">Were you referred by someone? Enter their code.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="ref-inp" placeholder="e.g. GD-ABCDEF12" style="flex:1;min-width:150px"/>
+        <button id="ref-apply-btn" class="btn btn-primary" style="flex-shrink:0">Apply</button>
+      </div>
+      <div id="ref-res" style="margin-top:8px;font-size:12px"></div>
+    </div>`:
+    `<div class="card" style="margin-bottom:16px">
+      <div style="display:flex;align-items:center;gap:10px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>
+        <div><div style="color:var(--text);font-weight:600;font-size:13px">Referred by: <span style="color:var(--blue);font-family:monospace">${esc(refBy)}</span></div><div style="color:var(--muted);font-size:11px">Your referrer earns ₦500 when you order</div></div>
+      </div>
+    </div>`}
+    <div class="g2">
+      <div class="card"><div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">How It Works</div>${[['1','Share your code'],['2','Friend registers'],['3','Friend orders'],['4','You earn ₦500']].map(([n,t])=>`<div style="display:flex;gap:10px;align-items:center;margin-bottom:10px"><div style="width:24px;height:24px;background:rgba(59,130,246,.12);color:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0">${n}</div><div style="color:var(--text);font-size:12px">${t}</div></div>`).join('')}</div>
+      <div class="card"><div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">Reward</div><div style="text-align:center;padding:10px 0"><div style="color:var(--blue);font-size:28px;font-weight:900">₦500</div><div style="color:var(--muted);font-size:12px;margin-top:4px">Per referral</div></div><div class="alert alert-b" style="margin-top:12px;font-size:12px">Credited within 24h after friend's first order.</div></div>
+    </div>
+  </div>`;
+}
+
+function pgSupport() {
+  const c = S.contact;
+  return `<div class="page">
+    <div class="sectitle" style="margin-bottom:6px">Customer Support</div>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:24px">We're here 7 days a week</p>
+    <div class="g4" style="margin-bottom:32px">
+      ${[[`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z'/></svg>`,'WhatsApp',c.wa1,'https://wa.me/'+(c.wa1||'').replace(/\D/g,''),'#25d366'],
+        [`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#25d366" stroke-width="1.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z'/></svg>`,"WhatsApp Int'l",c.wa2,'https://wa.me/'+(c.wa2||'').replace(/\D/g,''),'#25d366'],
+        [`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="1.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.99 13 19.79 19.79 0 0 1 1.93 4.4 2 2 0 0 1 3.91 2.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z'/></svg>`,'Phone',c.phone,'tel:'+c.phone,'var(--blue)'],
+        [`<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,'Hours',c.hours||'8AM–5PM',null,'var(--yellow)']
+      ].map(([icon,label,detail,href,color])=>`
+        <div class="card card-sm"><div style="margin-bottom:7px">${icon}</div><div style="color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:3px">${label}</div>${href?`<a href="${href}" style="color:${color};font-weight:700;font-size:12px">${esc(detail)}</a>`:`<div style="color:${color};font-weight:700;font-size:12px">${esc(detail)}</div>`}</div>`).join('')}
+    </div>
+    <div class="g2">
+      <div><div style="color:var(--text);font-weight:700;font-size:14px;margin-bottom:12px">Send a Message</div>
+        <div class="card"><div class="fg"><label class="fl">Name</label><input placeholder="John Doe"/></div><div class="fg"><label class="fl">Email</label><input type="email" placeholder="you@example.com"/></div><div class="fg"><label class="fl">Order ID</label><input placeholder="GD-..."/></div><div class="fg"><label class="fl">Message</label><textarea rows="4" placeholder="Describe your issue..."></textarea></div><button class="btn btn-primary btn-full" style="justify-content:center" onclick="toast('Message received! We\'ll respond within 2 hours.')">Send Message</button></div>
+      </div>
+      <div><div style="color:var(--text);font-weight:700;font-size:14px;margin-bottom:12px">FAQ</div>
+        ${[['How do I place an order?','Browse → Add to cart → Checkout → Bank transfer → Click "I Have Paid".'],['How long is delivery?','2–4 hours after payment verification. Details appear in your dashboard.'],['What payment do you accept?','Bank transfer to our KUDA account. Details shown at checkout.'],['Can I get a refund?','Handled case-by-case. Contact support within 24 hours with evidence.'],['How do I track orders?','Dashboard → click any order to expand, or use Track Order on the home page.']].map(([q,a])=>`
+          <div class="card card-sm" style="margin-bottom:7px;padding:0;overflow:hidden">
+            <button style="width:100%;text-align:left;background:none;padding:12px 14px;color:var(--text);font-weight:600;font-size:13px;display:flex;justify-content:space-between;align-items:center" onclick="const n=this.nextElementSibling;n.style.display=n.style.display==='none'?'block':'none'"><span style="flex:1;padding-right:10px">${q}</span><span style="color:var(--muted)">▾</span></button>
+            <div style="display:none;padding:0 14px 12px;color:var(--muted2);font-size:12px;line-height:1.6">${a}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+function pgNews() {
+  const cm={info:{bg:'rgba(59,130,246,.08)',bd:'rgba(59,130,246,.2)'},promo:{bg:'rgba(245,158,11,.08)',bd:'rgba(245,158,11,.2)'},urgent:{bg:'rgba(239,68,68,.08)',bd:'rgba(239,68,68,.2)'}};
+  return `<div class="page page-md">
+    <div class="sectitle" style="margin-bottom:6px">Announcements</div>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:20px">Latest news from GlobalDigits</p>
+    ${S.anns.length?S.anns.map(a=>{const m=cm[a.color]||cm.info;return`<div style="background:${m.bg};border:1px solid ${m.bd};border-radius:12px;padding:18px;margin-bottom:12px"><div style="color:var(--text);font-weight:700;font-size:14px;margin-bottom:5px">${esc(a.title)}</div><p style="color:var(--muted2);font-size:13px;line-height:1.6;margin:0 0 7px">${esc(a.message)}</p><div style="color:var(--muted);font-size:11px">${new Date(a.created_at).toLocaleDateString('en-NG',{year:'numeric',month:'long',day:'numeric'})}</div></div>`;}).join(''):
+    `<div style="text-align:center;padding:50px 20px;color:var(--muted)">No announcements yet.</div>`}
+  </div>`;
+}
+
+function pgTerms() {
+  return `<div class="page page-md">
+    <div class="sectitle" style="margin-bottom:6px">Terms & Privacy</div>
+    <p style="color:var(--muted);font-size:12px;margin-bottom:20px">Last updated: January 2025</p>
+    ${[['Terms of Service','By using GlobalDigits you agree to our terms. Products are digital, delivered after payment verification. You must not use our services for illegal purposes.'],['Payment Policy','All payments via bank transfer. Transfer the exact amount shown at checkout, then click "I Have Paid". Typically verified within 2–4 business hours.'],['Refund Policy','Due to the digital nature of our products, refunds are case-by-case. Contact support within 24 hours of purchase with evidence of any issue.'],['Privacy Policy','We collect minimal personal data to operate. We do not sell your data to third parties. Your account and order history are kept secure and private.'],['Delivery Policy','Digital products are delivered to your dashboard after payment verification. Typical delivery is 2–4 hours. For urgent orders contact support on WhatsApp.']].map(([t,c])=>`<div class="card" style="margin-bottom:10px"><div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:6px">${t}</div><p style="color:var(--muted2);font-size:12px;line-height:1.7;margin:0">${c}</p></div>`).join('')}
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+loadData();
+setInterval(()=>{
+  if(S.page==='login'||S.page==='register') return;
+  loadData();
+  if(S.user) loadOrders();
+}, 20000);
+</script>
+</body>
+</html>
