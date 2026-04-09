@@ -1,0 +1,2053 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GlobalDigits Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Syne:wght@700;800;900&family=DM+Mono:wght@500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060b18;--bg2:#0c1424;--bg3:#111827;--bg4:#0a1120;
+  --border:#131f35;--border2:#1e2d4a;
+  --text:#e2e8f0;--muted:#64748b;--muted2:#94a3b8;
+  --blue:#2563eb;--green:#10b981;--red:#ef4444;--yellow:#f59e0b;--purple:#8b5cf6;
+  --grad:linear-gradient(135deg,#2563eb,#0891b2);
+  --shadow:0 2px 14px rgba(0,0,0,.4);--radius:11px;
+}
+[data-theme="light"]{
+  --bg:#f1f5f9;--bg2:#ffffff;--bg3:#f8fafc;--bg4:#f1f5f9;
+  --border:#e2e8f0;--border2:#cbd5e1;
+  --text:#0f172a;--muted:#64748b;--muted2:#475569;--shadow:0 2px 10px rgba(0,0,0,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;font-size:13px;transition:background .2s,color .2s}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+input,textarea,select{font-family:inherit;background:var(--bg4);border:1px solid var(--border2);color:var(--text);border-radius:8px;padding:9px 12px;font-size:13px;width:100%;box-sizing:border-box;outline:none;-webkit-appearance:none}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+select option{background:var(--bg2)}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ── Shell ── */
+#shell{display:flex;height:100vh;overflow:hidden}
+#sidebar{width:216px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;transition:width .2s}
+#sidebar.slim{width:58px}
+#main-area{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+#topbar{height:54px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;flex-shrink:0;gap:10px}
+#page-area{flex:1;overflow-y:auto;padding:clamp(14px,3vw,26px)}
+
+/* ── Sidebar ── */
+.sb-head{padding:16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+#sidebar.slim .sb-head{justify-content:center;padding:16px 0}
+.sb-logo{width:30px;height:30px;background:var(--grad);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;flex-shrink:0}
+.sb-text{overflow:hidden;transition:opacity .2s}
+#sidebar.slim .sb-text{display:none}
+.sb-brand{color:var(--text);font-weight:800;font-size:13px}
+.sb-tag{color:var(--blue);font-size:9px;font-weight:700;letter-spacing:1px}
+.sb-nav{flex:1;padding:8px 0;overflow-y:auto}
+.nv{width:100%;display:flex;align-items:center;gap:10px;padding:10px 14px;border-left:3px solid transparent;color:var(--muted);font-size:12px;font-weight:600;transition:.15s;position:relative}
+#sidebar.slim .nv{justify-content:center;padding:10px 0}
+.nv:hover{color:var(--text);background:rgba(255,255,255,.03)}
+.nv.active{color:#fff;background:rgba(37,99,235,.15);border-left-color:var(--blue)}
+.nv-icon{flex-shrink:0;display:flex;align-items:center}
+.nv-badge{background:var(--red);color:#fff;border-radius:9px;font-size:9px;font-weight:800;padding:1px 5px;margin-left:auto}
+#sidebar.slim .nv-badge{position:absolute;top:6px;right:6px;margin-left:0}
+.sb-foot{padding:12px;border-top:1px solid var(--border)}
+.collapse-btn{color:var(--muted);font-size:12px;width:100%;display:flex;align-items:center;gap:6px;justify-content:center}
+
+/* ── Topbar ── */
+.tb-l{display:flex;align-items:center;gap:10px}
+.tb-section{color:var(--text);font-weight:700;font-size:14px;text-transform:capitalize}
+.tb-r{display:flex;align-items:center;gap:8px}
+.tb-clock{color:var(--muted);font-size:11px;font-family:monospace}
+.tb-avatar{width:26px;height:26px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px;flex-shrink:0}
+.btn-logout{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:var(--red);padding:5px 10px;border-radius:7px;font-size:11px;font-weight:700}
+.mob-toggle{display:none;flex-direction:column;gap:4px;padding:4px;align-items:center;justify-content:center}
+.mob-toggle span{display:block;width:17px;height:2px;background:var(--muted);border-radius:2px}
+.icon-btn{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--muted2);border:1px solid var(--border2);background:none;flex-shrink:0;transition:.15s}
+.icon-btn:hover{color:var(--text);border-color:var(--blue)}
+
+/* ── Loading bar ── */
+#lbar{height:2px;background:var(--grad);display:none;flex-shrink:0}
+
+/* ── Toast ── */
+#toaster{position:fixed;bottom:14px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none;width:min(360px,calc(100vw - 24px))}
+.tst{padding:10px 16px;border-radius:10px;font-size:13px;font-weight:600;text-align:center;color:#fff;animation:tup .25s ease}
+.tst-s{background:#10b981}.tst-e{background:#ef4444}.tst-w{background:#f59e0b}
+@keyframes tup{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Modal ── */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:1000;display:flex;align-items:center;justify-content:center;padding:14px}
+.mbox{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:540px;max-height:90vh;overflow-y:auto;animation:tup .2s ease}
+.mbox-lg{max-width:680px}
+.mhead{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--border)}
+.mhead h3{color:var(--text);font-weight:800;margin:0;font-size:14px}
+.mclose{color:var(--muted);font-size:20px;line-height:1;padding:0 4px}
+.mbody{padding:17px}
+
+/* ── Cards ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;box-shadow:var(--shadow)}
+
+/* ── Auth ── */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:var(--bg)}
+.auth-box{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:clamp(20px,4vw,30px);width:100%;max-width:400px;box-shadow:var(--shadow)}
+.auth-logo{width:44px;height:44px;background:var(--grad);border-radius:11px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:19px;margin:0 auto 12px}
+.auth-title{font-family:'Syne',sans-serif;color:var(--text);font-weight:800;font-size:18px;text-align:center;margin-bottom:4px}
+.auth-sub{color:var(--muted);font-size:12px;text-align:center;margin-bottom:20px}
+.auth-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--red);padding:9px 12px;border-radius:8px;margin-bottom:12px;font-size:12px;display:none}
+.auth-sw{text-align:center;color:var(--muted);font-size:12px;margin-top:12px}
+.auth-sw button{color:#60a5fa;font-weight:600;font-size:12px}
+
+/* ── Forms ── */
+.fg{margin-bottom:12px}
+.fl{color:var(--muted);font-size:10px;font-weight:700;display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ── Btns ── */
+.btn{border-radius:7px;font-weight:700;font-size:12px;padding:6px 12px;transition:.15s;display:inline-flex;align-items:center;gap:5px}
+.btn:hover{opacity:.82}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-primary{background:var(--grad);color:#fff}
+.btn-full{width:100%;justify-content:center;margin-top:7px;padding:11px}
+.btn-green{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);color:#10b981}
+.btn-red{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:var(--red)}
+.btn-yellow{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.3);color:var(--yellow)}
+.btn-ghost{background:rgba(255,255,255,.04);border:1px solid var(--border2);color:var(--muted2)}
+.btn-purple{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);color:#a78bfa}
+.btn-sm{padding:4px 9px;font-size:11px}
+
+/* ── Badges ── */
+.bdg{font-size:9px;font-weight:700;padding:2px 7px;border-radius:20px;text-transform:uppercase;white-space:nowrap;display:inline-block}
+.bdg-y{background:rgba(245,158,11,.12);color:#f59e0b}
+.bdg-b{background:rgba(59,130,246,.12);color:#3b82f6}
+.bdg-g{background:rgba(16,185,129,.12);color:#10b981}
+.bdg-p{background:rgba(139,92,246,.12);color:#8b5cf6}
+.bdg-r{background:rgba(239,68,68,.12);color:#ef4444}
+
+/* ── Alert ── */
+.alert{padding:10px 13px;border-radius:8px;font-size:12px;line-height:1.5;margin-bottom:12px}
+.alert-b{background:rgba(37,99,235,.08);border:1px solid rgba(37,99,235,.2);color:#93c5fd}
+.alert-y{background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2);color:#fbbf24}
+.alert-r{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.2);color:#fca5a5}
+.alert-g{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2);color:#6ee7b7}
+
+/* ── Stats ── */
+.stcard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:14px}
+.stlabel{color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.stval{font-family:'Syne',sans-serif;font-weight:900;font-size:19px}
+
+/* ── Data rows ── */
+.drow{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;margin-bottom:8px;box-shadow:var(--shadow);transition:border-color .15s}
+.drow:hover{border-color:var(--blue)}
+
+/* ── Filter bar ── */
+.fbar{display:flex;gap:5px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;-ms-overflow-style:none;scrollbar-width:none}
+.fbar::-webkit-scrollbar{display:none}
+.fbtn{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap;flex-shrink:0;border:1px solid var(--border2);color:var(--muted);background:none}
+.fbtn.active{background:rgba(37,99,235,.2);border-color:var(--blue);color:#60a5fa}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  #sidebar{display:none}
+  #sidebar.mob-open{display:flex;position:fixed;inset:0;z-index:300;width:100%!important}
+  .mob-toggle{display:flex!important}
+  .tb-clock,.tb-uname{display:none}
+  .form-row{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  #page-area{padding:12px 10px}
+  .stcard{padding:12px 10px}
+}
+
+/* ═══ ADMIN OVERVIEW v2 ═══ */
+.adm-ov{}
+.adm-ov-title{margin-bottom:16px}
+.adm-kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:16px}
+.adm-kpi{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px;transition:border-color .15s}
+.adm-kpi:hover{border-color:rgba(59,130,246,.3)}
+.adm-kpi-icon{margin-bottom:8px;opacity:.8}
+.adm-kpi-val{font-family:'Syne',sans-serif;font-weight:900;font-size:20px;margin-bottom:2px}
+.adm-kpi-label{color:var(--text);font-size:12px;font-weight:700;margin-bottom:2px}
+.adm-kpi-sub{color:var(--muted);font-size:11px}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="toaster"></div>
+</div>
+
+<script>
+// ══════════════════════════════════════════
+// SUPABASE
+// ══════════════════════════════════════════
+const SB = 'https://ujpfrenwvawvqveejxuc.supabase.co';
+const SK = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVqcGZyZW53dmF3dnF2ZWVqeHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM0NDE5MTUsImV4cCI6MjA4OTAxNzkxNX0.uUI9WE6VOpBels2tVTRvKIYM5mhcl7vYyJqI5VBi3Us';
+const ADMIN_KEY = 'GD-ADMIN-2025';
+const OWNER_KEY = 'GD-OWNER-2025'; // Secret key only the owner knows
+const isOwner = () => A.admin && (A.admin.role === 'owner' || !A.admin.role || A.admin.role === null || A.admin.role === undefined);
+const isSupport = () => A.admin && A.admin.role === 'support';
+const getRoleBadge = () => isOwner() ? '<span class="bdg bdg-p" style="font-size:9px">OWNER</span>' : '<span class="bdg bdg-b" style="font-size:9px">SUPPORT</span>';
+const H = () => ({'Content-Type':'application/json','apikey':SK,'Authorization':'Bearer '+SK,'Prefer':'return=representation'});
+
+// Push Notifications — built-in via Announcements
+
+// 5SIM API
+const FIVESIM_KEY = 'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE4MDU3MjEwODUsImlhdCI6MTc3NDE4NTA4NSwicmF5IjoiNDk4YmJjM2FjYTc1YWY5ZjU3ZDc1ZjNhZmI4NzRlYTUiLCJzdWIiOjM4OTczMzZ9.zIuiNZ9G_NY_AYzKQTe6k41rmmOI1N9QqYSBkEy4X7sbEtxxPRoMiujs2O3Q0iIq0Vmr4dmoqgApbEVEnzWq2muvg0sUrllivWG1_LQaQMkBJPLqffVeWy3p09gjv_odAWhhGIU3k3RSHiUy8cGTMgRcufMBLoU8_Vsp0CPNh92w9WqQZ6sMpPH9mxfOObs1XlxKFe_M1oY6nvgvotPsEWCmaU0cwRhSc5UJmWKqYyawPFcS_a6pxlSH4WSP-fJyIp0IBTf_zi4b5uXAiuVLl7TAiwupfAsOjHqVIPCWuChLQOzbkJD0PzlZDGLXrchoIFWkWr4PxZii4Rvk0CT-Ew';
+async function dbGet(t,q=''){const r=await fetch(SB+'/rest/v1/'+t+'?'+q,{headers:H()});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function dbPost(t,b){const r=await fetch(SB+'/rest/v1/'+t,{method:'POST',headers:H(),body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function dbPatch(t,q,b){const r=await fetch(SB+'/rest/v1/'+t+'?'+q,{method:'PATCH',headers:H(),body:JSON.stringify(b)});if(!r.ok)throw new Error(await r.text());return r.json();}
+async function dbDel(t,q){const r=await fetch(SB+'/rest/v1/'+t+'?'+q,{method:'DELETE',headers:H()});if(!r.ok)throw new Error(await r.text());}
+
+// ══════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════
+const A = {
+  screen:'login', admin:null, section:'overview',
+  orders:[], users:[], products:[], anns:[], appeals:[], messages:[], activeNumbers:[],
+  slim:false, syncing:false,
+  search:{orders:'',users:'',products:''},
+  filter:{orders:'all',products:'all'}
+};
+try{const s=localStorage.getItem('gd_admin');if(s){A.admin=JSON.parse(s);A.screen='app';}}catch(e){}
+
+const fmt = n => '₦'+Number(n).toLocaleString('en-NG');
+const esc = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const ago = d => {if(!d)return'';const s=(Date.now()-new Date(d))/1000;if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';};
+const SLABELS={'pending-payment':'Pending Payment','payment-pending-approval':'Pending Approval','payment-approved':'Approved','delivered':'Delivered','cancelled':'Cancelled'};
+const SBADGE_C={'pending-payment':'bdg-y','payment-pending-approval':'bdg-b','payment-approved':'bdg-g','delivered':'bdg-p','cancelled':'bdg-r'};
+const sBadge = s => `<span class="bdg ${SBADGE_C[s]||'bdg-y'}">${SLABELS[s]||s}</span>`;
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function toast(msg, type='s'){
+  const d=document.createElement('div');
+  d.className='tst tst-'+type; d.textContent=msg;
+  document.getElementById('toaster').appendChild(d);
+  setTimeout(()=>d.remove(),3400);
+}
+
+// ══════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════
+function toggleTheme(){
+  const light=document.documentElement.getAttribute('data-theme')==='light';
+  document.documentElement.setAttribute('data-theme',light?'dark':'light');
+  localStorage.setItem('gd_admin_theme',light?'dark':'light');
+  const s=document.getElementById('at-sun'),m=document.getElementById('at-moon');
+  if(s)s.style.display=light?'block':'none';
+  if(m)m.style.display=light?'none':'block';
+}
+(function(){
+  const t=localStorage.getItem('gd_admin_theme')||'dark';
+  document.documentElement.setAttribute('data-theme',t);
+})();
+
+// ══════════════════════════════════════════
+// LOADING BAR
+// ══════════════════════════════════════════
+const showLoad=()=>{const b=document.getElementById('lbar');if(b)b.style.display='block';};
+const hideLoad=()=>{const b=document.getElementById('lbar');if(b)b.style.display='none';};
+
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+async function reload(){
+  if(!A.admin) return;
+  // Don't reload if on numbers tab — it wipes balance and search results
+  if(A.section==='numbers'||A.section==='notify') return;
+  showLoad(); A.syncing=true;
+  try {
+    const [o,u,p,an,msgs] = await Promise.all([
+      dbGet('orders','order=created_at.desc'),
+      dbGet('users','order=created_at.desc'),
+      dbGet('products','order=id.asc'),
+      dbGet('announcements','order=created_at.desc'),
+      dbGet('messages','order=created_at.desc&limit=200')
+    ]);
+    A.orders=o; A.users=u; A.products=p; A.anns=an; A.messages=msgs||[];
+    try { A.appeals = await dbGet('appeals','order=submitted_at.desc&limit=100'); } catch(e) {
+      try { const s=await dbGet('settings','key=eq.appeals'); A.appeals=s[0]?(s[0].value||[]):[]; } catch(e2){ A.appeals=[]; }
+    }
+  } catch(e){ toast('Sync error: '+e.message,'e'); }
+  A.syncing=false; hideLoad(); renderSection();
+}
+
+// ══════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════
+function render(){
+  const shell=document.getElementById('shell');
+  if(A.screen==='login'||A.screen==='register'){
+    shell.innerHTML=(A.screen==='login'?authLogin():authRegister())+'<div id="toaster"></div>';
+    bindAuth(); return;
+  }
+  shell.innerHTML=appShell()+'<div id="toaster"></div>';
+  bindShell();
+  renderSection();
+  startClock();
+  reload();
+  setInterval(reload,9000);
+}
+
+
+function renderSection(){
+  const el=document.getElementById('page-area');
+  if(!el) return;
+  const fns={overview:secOverview,orders:secOrders,products:secProducts,users:secUsers,announcements:secAnns,settings:secSettings,activity:secActivity,appeals:secAppeals,messages:secMessages,numbers:secNumbers,notify:secNotify,analytics:secAnalytics};
+  el.innerHTML=(fns[A.section]||secOverview)();
+  bindSection();
+  syncNav();
+}
+
+function syncNav(){
+  document.querySelectorAll('[data-sec]').forEach(b=>b.classList.toggle('active',b.dataset.sec===A.section));
+  const pending=A.orders.filter(o=>o.status==='payment-pending-approval').length;
+  document.querySelectorAll('.ord-pending').forEach(b=>{b.textContent=pending;b.style.display=pending?'inline':'none';});
+  const appPending=(A.appeals||[]).filter(x=>x.status==='pending').length;
+  document.querySelectorAll('.app-pending').forEach(b=>{b.textContent=appPending;b.style.display=appPending?'inline':'none';});
+  const msgPending=(A.messages||[]).filter(x=>x.status==='open'&&!x.admin_reply).length;
+  document.querySelectorAll('.msg-pending').forEach(b=>{b.textContent=msgPending;b.style.display=msgPending?'inline':'none';});
+  const tb=document.getElementById('tb-section-name');
+  if(tb) tb.textContent=A.section;
+  const av=document.getElementById('tb-avatar');
+  if(av&&A.admin) av.textContent=A.admin.name.charAt(0).toUpperCase();
+  const un=document.getElementById('tb-uname');
+  if(un&&A.admin) un.textContent=A.admin.name;
+}
+
+function setSection(s){
+  A.section=s;
+  closeMob();
+  renderSection();
+  window.scrollTo(0,0);
+  // Auto-load 5SIM balance when entering numbers tab
+  if(s==='numbers' && isOwner()){
+    setTimeout(load5SimBalance, 300);
+  }
+}
+
+// ══════════════════════════════════════════
+// SHELL HTML
+// ══════════════════════════════════════════
+const NAV_ITEMS=[
+  {id:'overview',label:'Overview',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>'},
+  {id:'orders',label:'Orders',badge:'ord',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>'},
+  {id:'products',label:'Products',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>'},
+  {id:'users',label:'Users',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
+  {id:'announcements',label:'Announcements',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>'},
+  {id:'appeals',label:'Appeals',badge:'app',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'},
+  {id:'settings',label:'Settings',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>'},
+  {id:'activity',label:'Activity Log',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+  {id:'messages',label:'Messages',badge:'msg',icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>'},
+  {id:'numbers',label:'Buy Numbers',owner:true,icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>'},
+  {id:'analytics',label:'Analytics',owner:true,icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>'},
+  {id:'notify',label:'Notifications',owner:true,icon:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>'},
+];
+
+function appShell(){
+  return `<div id="shell" style="display:flex;height:100vh;overflow:hidden">
+  <div id="sidebar">
+    <div class="sb-head">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="sb-logo"><svg viewBox="0 0 80 80" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M40 4C20 4 4 19 4 40C4 52 9 62 18 69L40 78L62 69C71 62 76 52 76 40C76 19 60 4 40 4Z" fill="rgba(255,255,255,.3)"/><path d="M55 25L55 20L30 20Q18 20 18 32Q18 44 30 44L44 44L44 36L32 36L32 30L50 30L50 44Q50 52 44 52L30 52Q14 52 14 36L14 30Q14 14 30 14L62 14L62 25Z" fill="white"/></svg></div>
+        <div class="sb-text"><div class="sb-brand">GlobalDigits</div><div class="sb-tag">ADMIN</div></div>
+      </div>
+      <button class="sb-text" id="mob-close-btn" onclick="closeMob()" style="color:var(--muted);font-size:18px;display:none">×</button>
+    </div>
+    <div class="sb-nav">
+      ${NAV_ITEMS.filter(n=>!n.owner||isOwner()).map(n=>`<button class="nv${A.section===n.id?' active':''}" data-sec="${n.id}" onclick="setSection('${n.id}')">
+        <span class="nv-icon">${n.icon}</span>
+        <span class="sb-text">${n.label}</span>
+        ${n.badge==='ord'?`<span class="nv-badge ord-pending" style="display:none">0</span>`:n.badge==='app'?`<span class="nv-badge app-pending" style="display:none">0</span>`:n.badge==='msg'?`<span class="nv-badge msg-pending" style="display:none">0</span>`:''}
+      </button>`).join('')}
+    </div>
+    <div class="sb-foot">
+      <button class="collapse-btn sb-text" onclick="toggleSlim()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg> Collapse
+      </button>
+      <button class="collapse-btn" id="expand-btn" style="display:none" onclick="toggleSlim()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="main-area">
+    <div id="topbar">
+      <div class="tb-l">
+        <button class="mob-toggle" id="mob-toggle-btn" onclick="toggleMob()" style="display:none;flex-direction:column;gap:4px;padding:4px">
+          <span></span><span></span><span></span>
+        </button>
+        <span class="tb-section" id="tb-section-name">${A.section}</span>
+        <span class="bdg bdg-r ord-pending" style="display:none">0</span>
+      </div>
+      <div class="tb-r">
+        <span class="tb-clock" id="tb-clock"></span>
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
+          <svg id="at-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg id="at-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <div class="tb-avatar" id="tb-avatar">${A.admin?A.admin.name.charAt(0).toUpperCase():'A'}</div>
+        <span class="tb-uname" id="tb-uname" style="color:var(--text);font-size:12px;font-weight:600">${A.admin?A.admin.name:''}</span>
+        ${getRoleBadge()}
+        <button class="btn-logout" onclick="doLogout()">Logout</button>
+      </div>
+    </div>
+    <div id="lbar"></div>
+    <div id="page-area"></div>
+  </div>
+</div>`;
+}
+
+function startClock(){
+  const tick=()=>{const e=document.getElementById('tb-clock');if(e)e.textContent=new Date().toLocaleTimeString();};
+  tick(); setInterval(tick,1000);
+}
+function toggleSlim(){
+  A.slim=!A.slim;
+  const sb=document.getElementById('sidebar');
+  if(sb)sb.classList.toggle('slim',A.slim);
+  const eb=document.getElementById('expand-btn');
+  if(eb)eb.style.display=A.slim?'flex':'none';
+  document.querySelectorAll('.sb-text').forEach(e=>e.style.display=A.slim?'none':'');
+}
+function toggleMob(){const sb=document.getElementById('sidebar');if(sb){sb.classList.toggle('mob-open');const mc=document.getElementById('mob-close-btn');if(mc)mc.style.display=sb.classList.contains('mob-open')?'block':'none';}}
+function closeMob(){const sb=document.getElementById('sidebar');if(sb){sb.classList.remove('mob-open');const mc=document.getElementById('mob-close-btn');if(mc)mc.style.display='none';}}
+
+function bindShell(){
+  const mt=document.getElementById('mob-toggle-btn');
+  if(mt){mt.style.display='';} // CSS handles show/hide
+  // Apply saved theme to icons
+  const t=localStorage.getItem('gd_admin_theme')||'dark';
+  const s=document.getElementById('at-sun'),m=document.getElementById('at-moon');
+  if(t==='light'){if(s)s.style.display='none';if(m)m.style.display='block';}
+}
+
+function doLogout(){A.admin=null;localStorage.removeItem('gd_admin');A.screen='login';render();}
+
+// ══════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════
+function authLogin(){
+  return `<div class="auth-wrap"><div class="auth-box">
+    <div class="auth-logo">G</div>
+    <div class="auth-title">Admin Login</div>
+    <div class="auth-sub">Sign in to GlobalDigits Admin</div>
+    <div class="auth-err" id="auth-err"></div>
+    <form id="auth-form" onsubmit="return false">
+      <div class="fg"><label class="fl">Email</label><input id="a-em" type="email" placeholder="admin@example.com" autocomplete="email" required/></div>
+      <div class="fg"><label class="fl">Password</label><input id="a-pw" type="password" placeholder="Your password" autocomplete="current-password" required/></div>
+      <button type="button" id="auth-btn" class="btn btn-primary btn-full" onclick="handleAuth()">Sign In</button>
+    </form>
+    <div class="auth-sw">No account? <button onclick="A.screen='register';render()">Register here</button></div>
+  </div></div>`;
+}
+
+function authRegister(){
+  return `<div class="auth-wrap"><div class="auth-box" style="max-width:440px">
+    <div class="auth-logo">G</div>
+    <div class="auth-title">Admin Registration</div>
+    <div class="auth-sub">Create admin account</div>
+    <div class="auth-err" id="auth-err"></div>
+    <form id="auth-form" onsubmit="return false">
+      <div class="fg"><label class="fl">Full Name *</label><input id="a-nm" type="text" placeholder="Your Name" autocomplete="name" required/></div>
+      <div class="fg"><label class="fl">Phone</label><input id="a-ph" type="tel" placeholder="+234..." autocomplete="tel"/></div>
+      <div class="fg"><label class="fl">Email *</label><input id="a-em" type="email" placeholder="admin@example.com" autocomplete="email" required/></div>
+      <div class="fg"><label class="fl">Password *</label><input id="a-pw" type="password" placeholder="Min 6 characters" autocomplete="new-password" required/></div>
+      <div class="fg"><label class="fl">Confirm Password *</label><input id="a-pw2" type="password" placeholder="Repeat password" autocomplete="new-password" required/></div>
+      <div class="fg"><label class="fl">Role *</label>
+        <select id="a-role">
+          <option value="support">Support Admin</option>
+          <option value="owner">Owner (Full Access)</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Secret Key *</label><input id="a-key" type="password" placeholder="Secret key for your chosen role"/></div>
+      <div class="alert alert-b">Support key: <strong>GD-ADMIN-2025</strong> &nbsp;|&nbsp; Owner key: <strong>GD-OWNER-2025</strong></div>
+      <button type="button" id="auth-btn" class="btn btn-primary btn-full" onclick="handleAuth()">Create Admin Account</button>
+    </form>
+    <div class="auth-sw">Have account? <button onclick="A.screen='login';render()">Sign in here</button></div>
+  </div></div>`;
+}
+
+function bindAuth(){
+  // Buttons already have onclick="handleAuth()" — nothing else to bind
+}
+
+async function handleAuth(){
+  const err=document.getElementById('auth-err');
+  const btn=document.getElementById('auth-btn');
+  if(err)err.style.display='none';
+  if(btn){btn.disabled=true;}
+
+  if(A.screen==='login'){
+    const email=(document.getElementById('a-em')||{}).value||'';
+    const pw=(document.getElementById('a-pw')||{}).value||'';
+    if(!email||!pw){showErr(err,'Please fill all fields.');if(btn)btn.disabled=false;return;}
+    if(btn)btn.textContent='Signing in…';
+    try{
+      const d=await dbGet('admin_accounts','email=ilike.'+encodeURIComponent(email.trim().toLowerCase())+'&select=*');
+      if(!d.length){showErr(err,'No admin account with this email.');}
+      else if(d[0].password!==pw.trim()){showErr(err,'Wrong password.');}
+      else{A.admin=d[0];localStorage.setItem('gd_admin',JSON.stringify(d[0]));A.screen='app';render();toast('Welcome back, '+d[0].name+(isOwner()?' (Owner)':' (Support)')+'!');return;}
+    }catch(e){showErr(err,'Connection error: '+e.message);}
+    if(btn){btn.textContent='Sign In';btn.disabled=false;}
+
+  }else{
+    const name=(document.getElementById('a-nm')||{}).value||'';
+    const email=(document.getElementById('a-em')||{}).value||'';
+    const phone=(document.getElementById('a-ph')||{}).value||'';
+    const pw=(document.getElementById('a-pw')||{}).value||'';
+    const pw2=(document.getElementById('a-pw2')||{}).value||'';
+    const key=(document.getElementById('a-key')||{}).value||'';
+    const role=(document.getElementById('a-role')||{}).value||'support';
+    if(!name||!email||!pw){showErr(err,'Fill all required fields.');if(btn)btn.disabled=false;return;}
+    if(pw!==pw2){showErr(err,'Passwords do not match.');if(btn)btn.disabled=false;return;}
+    if(pw.length<6){showErr(err,'Password too short.');if(btn)btn.disabled=false;return;}
+    const validKey = role==='owner' ? key===OWNER_KEY : key===ADMIN_KEY;
+    if(!validKey){showErr(err,role==='owner'?'Wrong owner key.':'Wrong support key. It is: GD-ADMIN-2025');if(btn)btn.disabled=false;return;}
+    if(btn)btn.textContent='Creating…';
+    try{
+      const clean=email.trim().toLowerCase();
+      const ex=await dbGet('admin_accounts','email=ilike.'+encodeURIComponent(clean)+'&select=id');
+      if(ex.length){showErr(err,'Email already registered.');}
+      else{
+        const d=await dbPost('admin_accounts',{name:name.trim(),email:clean,phone:phone.trim(),password:pw.trim(),role:role});
+        A.admin=d[0];localStorage.setItem('gd_admin',JSON.stringify(d[0]));A.screen='app';render();toast('Welcome, '+d[0].name+(isOwner()?' (Owner)':' (Support)')+'!');return;
+      }
+    }catch(e){showErr(err,'Error: '+e.message);}
+    if(btn){btn.textContent='Create Admin Account';btn.disabled=false;}
+  }
+}
+
+function showErr(el,msg){if(el){el.textContent=msg;el.style.display='block';}}
+
+// ══════════════════════════════════════════
+// SECTIONS
+// ══════════════════════════════════════════
+function secOverview(){
+  const o=A.orders, u=A.users, p=A.products;
+  const now = new Date();
+  const today = d => new Date(d).toDateString()===now.toDateString();
+  const thisWeek = d => (now-new Date(d)) < 7*86400000;
+  const thisMonth = d => new Date(d).getMonth()===now.getMonth() && new Date(d).getFullYear()===now.getFullYear();
+
+  const rev = o.filter(x=>x.status==='delivered').reduce((s,x)=>s+x.total,0);
+  const revToday = o.filter(x=>x.status==='delivered'&&today(x.created_at)).reduce((s,x)=>s+x.total,0);
+  const revWeek = o.filter(x=>x.status==='delivered'&&thisWeek(x.created_at)).reduce((s,x)=>s+x.total,0);
+  const pend = o.filter(x=>x.status==='payment-pending-approval').length;
+  const unreadMsgs = (A.messages||[]).filter(x=>!x.admin_reply).length;
+  const newUsersToday = u.filter(x=>today(x.created_at)).length;
+  const newUsersWeek = u.filter(x=>thisWeek(x.created_at)).length;
+  const ordToday = o.filter(x=>today(x.created_at)).length;
+  const ordWeek = o.filter(x=>thisWeek(x.created_at)).length;
+  const delivered = o.filter(x=>x.status==='delivered').length;
+  const conversion = u.length ? ((new Set(o.map(x=>x.user_email)).size/u.length)*100).toFixed(1) : 0;
+  const avgOrder = o.length ? Math.round(o.reduce((s,x)=>s+x.total,0)/o.length) : 0;
+
+  // Top products
+  const prodCount={};
+  o.forEach(or=>(or.items||[]).forEach(i=>{prodCount[i.name]=(prodCount[i.name]||0)+i.qty;}));
+  const topProds = Object.entries(prodCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // Last 7 days orders chart
+  const days7=[];
+  for(let i=6;i>=0;i--){
+    const d=new Date(now-i*86400000);
+    days7.push({
+      label:d.toLocaleDateString('en',{weekday:'short'}),
+      orders:o.filter(x=>new Date(x.created_at).toDateString()===d.toDateString()).length,
+      rev:o.filter(x=>x.status==='delivered'&&new Date(x.created_at).toDateString()===d.toDateString()).reduce((s,x)=>s+x.total,0)
+    });
+  }
+  const maxOrd=Math.max(...days7.map(d=>d.orders),1);
+
+  let h='<div class="adm-ov">';
+
+  // Title
+  h+='<div class="adm-ov-title"><div style="font-family:\'Syne\',sans-serif;color:var(--text);font-size:20px;font-weight:900">Dashboard Overview</div><div style="color:var(--muted);font-size:12px;margin-top:2px">Live data — refreshes every 9 seconds</div></div>';
+
+  // Alert banners
+  if(pend>0) h+=`<div class="alert alert-y" style="margin-bottom:14px"><strong>${pend} order${pend>1?'s':''}</strong> awaiting payment verification. <button class="btn btn-yellow btn-sm" onclick="setSection('orders')" style="margin-left:8px">Review</button></div>`;
+  if(unreadMsgs>0) h+=`<div class="alert alert-b" style="margin-bottom:14px"><strong>${unreadMsgs} message${unreadMsgs>1?'s':''}</strong> waiting for reply. <button class="btn btn-outline btn-sm" onclick="setSection('messages')" style="margin-left:8px">Reply</button></div>`;
+  const needDelivery=o.filter(x=>x.status==='payment-approved'&&!x.delivery_details).length;
+  if(needDelivery>0) h+=`<div class="alert alert-g" style="margin-bottom:14px"><strong>${needDelivery} Paystack order${needDelivery>1?'s':''}</strong> confirmed and awaiting delivery. <button class="btn btn-green btn-sm" onclick="setSection('orders')" style="margin-left:8px">Deliver</button></div>`;
+
+  // KPI grid
+  h+='<div class="adm-kpi-grid">';
+  const kpis=[
+    {label:'Total Revenue',   value:fmt(rev),      sub:'All time',          color:'var(--green)',  icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'},
+    {label:'Revenue Today',   value:fmt(revToday), sub:'This day',           color:'var(--cyan,#06b6d4)', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>'},
+    {label:'Revenue (Week)',  value:fmt(revWeek),  sub:'Last 7 days',        color:'var(--blue)',   icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>'},
+    {label:'Total Orders',    value:o.length,      sub:ordToday+' today · '+ordWeek+' this week', color:'var(--purple)', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>'},
+    {label:'Delivered',       value:delivered,     sub:((o.length?delivered/o.length*100:0).toFixed(0))+'% fulfillment', color:'var(--green)', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'},
+    {label:'Avg Order Value', value:fmt(avgOrder), sub:'Per order',          color:'var(--yellow)', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>'},
+    {label:'Total Users',     value:u.length,      sub:newUsersToday+' today · '+newUsersWeek+' this week', color:'var(--blue)', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>'},
+    {label:'Conversion Rate', value:conversion+'%',sub:'Users who ordered', color:'var(--purple)', icon:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>'},
+  ];
+  kpis.forEach(k=>{
+    h+=`<div class="adm-kpi"><div class="adm-kpi-icon" style="color:${k.color}">${k.icon}</div><div class="adm-kpi-val" style="color:${k.color}">${k.value}</div><div class="adm-kpi-label">${k.label}</div><div class="adm-kpi-sub">${k.sub}</div></div>`;
+  });
+  h+='</div>';
+
+  // Orders chart
+  h+='<div class="card" style="margin-bottom:16px"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><div style="color:var(--text);font-weight:700;font-size:13px">Orders — Last 7 Days</div><div style="color:var(--muted);font-size:12px">'+ordWeek+' total this week</div></div>';
+  h+='<div style="display:flex;align-items:flex-end;gap:6px;height:80px">';
+  days7.forEach(d=>{
+    const h2=Math.max(4,Math.round(d.orders/maxOrd*68));
+    h+=`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px"><div style="font-size:9px;color:var(--muted);min-height:13px">${d.orders||''}</div><div style="width:100%;background:var(--blue);border-radius:4px 4px 0 0;height:${h2}px;transition:.3s;opacity:.85"></div><div style="font-size:9px;color:var(--muted)">${d.label}</div></div>`;
+  });
+  h+='</div></div>';
+
+  // Two columns: recent orders + top products
+  h+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px">';
+
+  // Recent orders
+  h+='<div class="card" style="overflow-x:auto"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="color:var(--text);font-weight:700;font-size:13px">Recent Orders</div><button class="btn btn-ghost btn-sm" onclick="setSection(\'orders\')">View All</button></div>';
+  h+='<table style="width:100%;border-collapse:collapse;font-size:11px;min-width:300px"><thead><tr>';
+  ['Order','Customer','Amount','Status'].forEach(th=>{ h+=`<th style="color:var(--muted);text-align:left;padding:5px 8px;border-bottom:1px solid var(--border);font-size:10px;font-weight:700;text-transform:uppercase">${th}</th>`; });
+  h+='</tr></thead><tbody>';
+  [...o].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,6).forEach(ord=>{
+    h+=`<tr style="border-bottom:1px solid var(--bg3)"><td style="padding:7px 8px;color:#60a5fa;font-family:monospace;font-size:10px">${ord.id.slice(-6)}</td><td style="padding:7px 8px;color:var(--text);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(ord.user_name)}</td><td style="padding:7px 8px;color:var(--green);font-weight:700">${fmt(ord.total)}</td><td style="padding:7px 8px">${sBadge(ord.status)}</td></tr>`;
+  });
+  h+='</tbody></table></div>';
+
+  // Top products
+  h+='<div class="card"><div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">Best Selling Products</div>';
+  if(topProds.length){
+    topProds.forEach(([name,qty],i)=>{
+      const pct=Math.round(qty/Math.max(...topProds.map(x=>x[1]))*100);
+      h+=`<div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:4px"><span style="color:var(--text);font-size:12px;font-weight:600">${esc(name.slice(0,24))}${name.length>24?'…':''}</span><span style="color:var(--muted);font-size:11px">${qty} sold</span></div><div style="height:5px;background:var(--bg3);border-radius:3px"><div style="height:100%;width:${pct}%;background:var(--blue);border-radius:3px;transition:.5s"></div></div></div>`;
+    });
+  } else {
+    h+='<div style="color:var(--muted);font-size:12px">No order data yet.</div>';
+  }
+  h+='</div>';
+  h+='</div>';
+
+  // Recent signups
+  h+='<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="color:var(--text);font-weight:700;font-size:13px">Recent Signups</div><button class="btn btn-ghost btn-sm" onclick="setSection(\'users\')">View All</button></div>';
+  h+='<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px">';
+  [...u].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,8).forEach(usr=>{
+    const usrOrds=o.filter(x=>x.user_email===usr.email).length;
+    h+=`<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--bg3);border-radius:8px"><div style="width:28px;height:28px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:11px;flex-shrink:0">${(usr.name||'?').charAt(0).toUpperCase()}</div><div style="flex:1;min-width:0"><div style="color:var(--text);font-size:11px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(usr.name)}</div><div style="color:var(--muted);font-size:10px">${usrOrds} orders · ${ago(usr.created_at)}</div></div></div>`;
+  });
+  h+='</div></div>';
+
+  h+='</div>';
+  return h;
+}
+
+function secOrders(){
+  const f=A.filter.orders, q=(A.search.orders||'').toLowerCase();
+  const filtered=A.orders.filter(o=>(f==='all'||o.status===f)&&(!q||o.id.toLowerCase().includes(q)||(o.user_name||'').toLowerCase().includes(q)||(o.user_email||'').toLowerCase().includes(q)));
+  const counts={};Object.keys(SLABELS).forEach(k=>counts[k]=A.orders.filter(o=>o.status===k).length);
+  return `<div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div><div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800">Orders</div><div style="color:var(--muted);font-size:12px">${A.orders.length} total</div></div>
+      <input id="ord-search" placeholder="Search ID, name, email…" value="${esc(A.search.orders)}" style="width:240px;max-width:100%"/>
+    </div>
+    <div class="fbar">
+      <button class="fbtn${f==='all'?' active':''}" onclick="setFilter('orders','all')">All (${A.orders.length})</button>
+      ${Object.entries(SLABELS).map(([k,l])=>`<button class="fbtn${f===k?' active':''}" onclick="setFilter('orders','${k}')">${l} (${counts[k]||0})</button>`).join('')}
+    </div>
+    ${filtered.length===0?`<div class="card" style="text-align:center;color:var(--muted);padding:40px">No orders found.</div>`:
+    filtered.map(o=>`
+      <div class="drow">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+          <div style="flex:1;min-width:140px">
+            <div style="color:#60a5fa;font-family:monospace;font-size:11px;font-weight:700">${o.id}</div>
+            <div style="color:var(--text);font-weight:600;font-size:13px;margin-top:2px">${esc(o.user_name)}</div>
+            <div style="color:var(--muted);font-size:11px">${esc(o.user_email)}</div>
+            <div style="margin-top:5px;display:flex;gap:4px;flex-wrap:wrap">
+              ${(o.items||[]).map(i=>`<span style="background:var(--bg3);color:var(--muted);font-size:11px;padding:2px 6px;border-radius:5px">${esc(i.name)} ×${i.qty}</span>`).join('')}
+            </div>
+            ${o.payment_note?`<div style="color:var(--muted);font-size:11px;margin-top:4px">Note: ${esc(o.payment_note)}</div>`:''}
+          </div>
+          <div style="text-align:right;flex-shrink:0">
+            <div style="color:var(--green);font-weight:800;font-size:15px">${fmt(o.total)}</div>
+            <div style="margin-top:3px">${sBadge(o.status)}</div>
+            <div style="color:var(--muted);font-size:10px;margin-top:3px">${ago(o.created_at)}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">
+          <button class="btn btn-ghost btn-sm" onclick="viewOrder('${o.id}')">View</button>
+          ${o.status==='payment-pending-approval'?`<button class="btn btn-green btn-sm" onclick="approveOrder('${o.id}')">Approve</button><button class="btn btn-red btn-sm" onclick="rejectOrder('${o.id}')">Reject</button>`:''}
+          ${o.status==='payment-approved'?`<button class="btn btn-purple btn-sm" onclick="openDeliverModal('${o.id}')">Deliver</button>`:''}
+          ${o.status==='delivered'?`
+            <span style="color:var(--green);font-size:12px;font-weight:600">Delivered</span>
+            <button class="btn btn-purple btn-sm" onclick="openExtraMsg('${o.id}')">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Send Extra Message
+            </button>`:''}
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+
+function secProducts(){
+  const f=A.filter.products, q=(A.search.products||'').toLowerCase();
+  const filt=A.products.filter(p=>(f==='all'||p.category===f)&&(!q||p.name.toLowerCase().includes(q)));
+  return `<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div><div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800">Products</div><div style="color:var(--muted);font-size:12px">${A.products.length} total</div></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <input id="prod-search" placeholder="Search…" value="${esc(A.search.products)}" style="width:160px"/>
+        <button class="btn btn-primary btn-sm" onclick="openProdModal(null)">+ Add Product</button>
+      </div>
+    </div>
+    <div class="fbar">${[['all','All'],['foreign-numbers','Numbers'],['social-accounts','Accounts'],['boosting','Boosting']].map(([k,l])=>`<button class="fbtn${f===k?' active':''}" onclick="setFilter('products','${k}')">${l}</button>`).join('')}</div>
+    ${filt.map(p=>`
+      <div class="drow">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span style="font-size:26px;flex-shrink:0">${p.image}</span>
+          <div style="flex:1;min-width:120px">
+            <div style="color:var(--text);font-weight:700;font-size:13px">${esc(p.name)}</div>
+            <div style="color:var(--muted);font-size:11px">${p.category}${p.country?' · '+p.country:''}${p.platform?' · '+p.platform:''}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+            <span style="color:var(--green);font-weight:700;font-size:13px">${fmt(p.price)}</span>
+            <span style="font-size:11px;font-weight:600;color:${p.stock===0?'var(--red)':p.stock<5?'var(--yellow)':'var(--green)'}">Stock: ${p.stock}</span>
+            <button onclick="toggleProd(${p.id})" style="background:${p.status==='available'?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)'};border:1px solid ${p.status==='available'?'rgba(16,185,129,.3)':'rgba(239,68,68,.3)'};color:${p.status==='available'?'var(--green)':'var(--red)'};padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;font-family:inherit">${p.status==='available'?'Available':'Out of Stock'}</button>
+            <button class="btn btn-ghost btn-sm" onclick="openProdModal(${p.id})">Edit</button>
+            <button class="btn btn-red btn-sm" onclick="deleteProd(${p.id})">Delete</button>
+          </div>
+        </div>
+      </div>`).join('')||`<div class="card" style="text-align:center;color:var(--muted);padding:40px">No products found.</div>`}
+  </div>`;
+}
+
+function secUsers(){
+  const q=(A.search.users||'').toLowerCase();
+  const filt=A.users.filter(u=>!q||u.name.toLowerCase().includes(q)||u.email.toLowerCase().includes(q));
+  const verified=A.users.filter(u=>u.verified).length;
+  const banned=A.users.filter(u=>u.banned).length;
+  const withOrders=new Set(A.orders.map(o=>o.user_email)).size;
+
+  let h='<div>';
+  h+=`<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+    <div>
+      <div style="font-family:'Syne',sans-serif;color:var(--text);font-size:20px;font-weight:900">User Management</div>
+      <div style="color:var(--muted);font-size:12px;margin-top:2px">${A.users.length} registered · ${verified} verified · ${withOrders} ordered · ${banned} banned</div>
+    </div>
+    <input id="usr-search" placeholder="Search by name or email…" value="${esc(A.search.users)}" style="width:240px;max-width:100%"/>
+  </div>`;
+
+  // Quick stats
+  h+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px">
+    ${[
+      ['Total Users',  A.users.length,  'var(--blue)'],
+      ['Verified',     verified,         'var(--green)'],
+      ['Ordered',      withOrders,       'var(--purple)'],
+      ['Banned',       banned,           'var(--red)']
+    ].map(([l,v,c])=>`<div class="stcard"><div class="stlabel">${l}</div><div class="stval" style="color:${c}">${v}</div></div>`).join('')}
+  </div>`;
+
+  if(!filt.length){
+    h+='<div class="card" style="text-align:center;color:var(--muted);padding:40px">No users found.</div>';
+  } else {
+    filt.forEach(u=>{
+      const uo=A.orders.filter(o=>o.user_email===u.email);
+      const spent=uo.filter(o=>o.status==='delivered').reduce((s,o)=>s+o.total,0);
+      const susp=u.suspended_until&&new Date(u.suspended_until)>new Date();
+      const isBanned=!!u.banned;
+      h+=`<div class="drow" style="margin-bottom:8px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <div style="width:38px;height:38px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;flex-shrink:0;opacity:${isBanned?'.4':'1'}">${u.name.charAt(0).toUpperCase()}</div>
+          <div style="flex:1;min-width:130px">
+            <div style="color:var(--text);font-weight:700;font-size:13px">${esc(u.name)}</div>
+            <div style="color:var(--muted);font-size:11px">${esc(u.email)}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="color:var(--muted);font-size:11px">${uo.length} orders</span>
+            <span style="color:var(--green);font-size:11px;font-weight:700">${fmt(spent)}</span>
+            ${u.verified?'<span class="bdg bdg-g">Verified</span>':'<span class="bdg bdg-y">Unverified</span>'}
+            ${isBanned?'<span class="bdg bdg-r">Banned</span>':''}
+            ${susp?'<span class="bdg bdg-y">Suspended</span>':''}
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="viewUser('${u.id}')">View</button>
+            <button class="btn btn-red btn-sm" onclick="doDeleteUser('${u.id}')">Delete</button>
+          </div>
+        </div>
+      </div>`;
+    });
+  }
+  h+='</div>';
+  return h;
+}
+
+function secAnns(){
+  return `<div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div><div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800">Announcements</div><div style="color:var(--muted);font-size:12px">Push banners to the main app</div></div>
+      <button class="btn btn-primary btn-sm" onclick="openAnnModal()">+ New Announcement</button>
+    </div>
+    <div class="alert alert-b" style="margin-bottom:16px">Active announcements show as a banner in the main app instantly.</div>
+    ${A.anns.map(a=>`
+      <div class="drow" style="opacity:${a.active?1:.6}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+          <div style="flex:1;min-width:180px">
+            <div style="display:flex;gap:6px;align-items:center;margin-bottom:5px;flex-wrap:wrap">
+              <span style="color:var(--text);font-weight:700;font-size:13px">${esc(a.title)}</span>
+              <span class="bdg ${a.active?'bdg-g':'bdg-r'}">${a.active?'Active':'Inactive'}</span>
+              <span class="bdg bdg-b">${a.color}</span>
+            </div>
+            <p style="color:var(--muted2);font-size:12px;line-height:1.5;margin:0 0 6px">${esc(a.message)}</p>
+            <div style="color:var(--muted);font-size:10px">${new Date(a.created_at).toLocaleString()}</div>
+          </div>
+          <div style="display:flex;gap:7px;flex-shrink:0">
+            <button class="btn ${a.active?'btn-yellow':'btn-green'} btn-sm" onclick="toggleAnn('${a.id}',${a.active})">${a.active?'Deactivate':'Activate'}</button>
+            <button class="btn btn-red btn-sm" onclick="deleteAnn('${a.id}')">Delete</button>
+          </div>
+        </div>
+      </div>`).join('')||`<div class="card" style="text-align:center;color:var(--muted);padding:50px">No announcements yet.</div>`}
+  </div>`;
+}
+
+function secAppeals(){
+  const appeals=A.appeals||[], pending=appeals.filter(x=>x.status==='pending'), done=appeals.filter(x=>x.status!=='pending');
+  return `<div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:8px">
+      <div><div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800">User Appeals</div><div style="color:var(--muted);font-size:12px">${appeals.length} total · ${pending.length} pending</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="reload()">Refresh</button>
+    </div>
+    ${appeals.length===0?`<div class="card" style="text-align:center;padding:50px 20px"><div style="display:flex;justify-content:center;margin-bottom:12px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div style="color:var(--muted)">No appeals yet.</div></div>`:''}
+    ${pending.length?`<div style="color:var(--text);font-weight:700;font-size:12px;margin-bottom:10px">Pending Review (${pending.length})</div>${pending.map(ap=>appealRow(ap)).join('')}`:''}
+    ${done.length?`<div style="color:var(--muted);font-weight:700;font-size:11px;margin:18px 0 10px;text-transform:uppercase;letter-spacing:.5px">Resolved (${done.length})</div>${done.slice(0,10).map(ap=>appealRow(ap)).join('')}`:''}
+  </div>`;
+}
+
+function appealRow(ap){
+  const u=A.users.find(x=>x.id===ap.user_id);
+  const isBanned=u&&u.banned, isSusp=u&&u.suspended_until&&new Date(u.suspended_until)>new Date();
+  const isPend=ap.status==='pending';
+  const date=ap.submitted_at?new Date(ap.submitted_at).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}):'';
+  return `<div class="drow" style="${isPend?'border-color:rgba(245,158,11,.35)':''}">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:8px">
+      <div><div style="color:var(--text);font-weight:700;font-size:13px">${esc(ap.user_name||'Unknown')}</div><div style="color:var(--muted);font-size:11px">${esc(ap.user_email||'')} · ${date}</div>
+        <div style="display:flex;gap:4px;margin-top:5px;flex-wrap:wrap">${isPend?'<span class="bdg bdg-y">Pending</span>':'<span class="bdg bdg-g">Resolved</span>'}${isBanned?'<span class="bdg bdg-r">User Banned</span>':''}${isSusp?'<span class="bdg bdg-y">User Suspended</span>':''}</div>
+      </div>
+    </div>
+    <div style="background:var(--bg3);border-radius:8px;padding:10px;margin-bottom:10px"><div style="color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:5px">Message</div><div style="color:var(--text);font-size:12px;line-height:1.6">${esc(ap.message||'')}</div></div>
+    ${isPend?`<div style="display:flex;gap:7px;flex-wrap:wrap">
+      ${ap.user_id?`<button class="btn btn-ghost btn-sm" onclick="viewUser('${ap.user_id}')">View User</button>`:''}
+      ${isBanned&&ap.user_id?`<button class="btn btn-green btn-sm" onclick="unbanViaAppeal('${ap.user_id}','${ap.id||ap.submitted_at}')">Unban User</button>`:''}
+      ${isSusp&&ap.user_id?`<button class="btn btn-green btn-sm" onclick="unsuspendViaAppeal('${ap.user_id}','${ap.id||ap.submitted_at}')">Lift Suspension</button>`:''}
+      <button class="btn btn-ghost btn-sm" onclick="resolveAppeal('${ap.id||ap.submitted_at}')">Mark Resolved</button>
+    </div>`:''}
+  </div>`;
+}
+
+function secSettings(){
+  if(!isOwner()){
+    return `<div>
+      <div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800;margin-bottom:4px">Settings</div>
+      <div style="color:var(--muted);font-size:12px;margin-bottom:22px">Support Admin Access</div>
+      <div class="card" style="margin-bottom:14px">
+        <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:14px">Change Your Password</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+          <div class="fg"><label class="fl">Current Password</label><input id="s-cpw" type="password"/></div>
+          <div class="fg"><label class="fl">New Password</label><input id="s-npw" type="password"/></div>
+          <div class="fg"><label class="fl">Confirm New</label><input id="s-cpw2" type="password"/></div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="changePassword()">Update Password</button>
+      </div>
+      <div class="alert alert-y">
+        <strong>Restricted:</strong> Site control, payment configuration, and system settings are only accessible by the Owner account. Contact the Owner if changes are needed.
+      </div>
+    </div>`;
+  }
+
+  return `<div>
+    <div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(15px,3vw,19px);font-weight:800;margin-bottom:4px">Settings</div>
+    <div style="color:var(--muted);font-size:12px;margin-bottom:22px">Owner — Full Access</div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:6px">Site Control</div>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:14px">Shutdown the main site for all non-logged-in visitors.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <button class="btn btn-green btn-sm" onclick="setSiteStatus(true)">Set ONLINE</button>
+        <button class="btn btn-red btn-sm" onclick="setSiteStatus(false)">Set OFFLINE</button>
+      </div>
+      <div class="fg"><label class="fl">Offline Message</label><input id="s-offmsg" placeholder="e.g. Under maintenance. Back in 2 hours."/></div>
+      <div id="site-status-el" style="font-size:12px;color:var(--muted)">Loading…</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:6px">Payment Configuration</div>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:14px">Primary bank shown at checkout. You accept KUDA, OPay and Paystack.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+        <div class="fg"><label class="fl">Bank Name</label><input id="s-bank" placeholder="KUDA"/></div>
+        <div class="fg"><label class="fl">Account Number</label><input id="s-acct" placeholder="2054598735"/></div>
+        <div class="fg"><label class="fl">Account Name</label><input id="s-aname" placeholder="CHIKEZIE CHISOM KINGSLEY"/></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="savePayment()">Save Payment Details</button>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:6px">OPay Account Details</div>
+      <p style="color:var(--muted);font-size:12px;margin-bottom:14px">Customers who want to pay via OPay will contact support. Keep these details handy to share with them.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+        <div class="fg"><label class="fl">OPay Account Number</label><input id="s-opay-acct" placeholder="e.g. 8081756825"/></div>
+        <div class="fg"><label class="fl">OPay Account Name</label><input id="s-opay-name" placeholder="Your name on OPay"/></div>
+      </div>
+      <div class="alert alert-b" style="margin-top:4px">OPay details are shared with customers via support chat when they request it.</div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:14px">Contact Information</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+        <div class="fg"><label class="fl">WhatsApp 1</label><input id="s-wa1"/></div>
+        <div class="fg"><label class="fl">WhatsApp 2</label><input id="s-wa2"/></div>
+        <div class="fg"><label class="fl">Phone</label><input id="s-phone"/></div>
+        <div class="fg"><label class="fl">Support Hours</label><input id="s-hours"/></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="saveContact()">Save Contact Info</button>
+    </div>
+
+    <div class="card">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:14px">Change Admin Password</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px">
+        <div class="fg"><label class="fl">Current Password</label><input id="s-cpw" type="password"/></div>
+        <div class="fg"><label class="fl">New Password</label><input id="s-npw" type="password"/></div>
+        <div class="fg"><label class="fl">Confirm New</label><input id="s-cpw2" type="password"/></div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="changePassword()">Update Password</button>
+    </div>
+  </div>`;
+}
+
+
+// ══════════════════════════════════════════
+// 5SIM — NUMBER PURCHASING
+// ══════════════════════════════════════════
+const FSIM_BASE = 'https://5sim.net/v1';
+
+async function fsimFetch(url, method='GET'){
+  const headers = {
+    'Authorization': 'Bearer '+FIVESIM_KEY,
+    'Accept': 'application/json'
+  };
+
+  // Strategy 1: Direct request
+  try {
+    const r = await fetch(url, {method, headers, mode:'cors'});
+    if(r.ok) return await r.json();
+  } catch(e){}
+
+  // Strategy 2: corsproxy.io
+  try {
+    const proxy = 'https://corsproxy.io/?'+encodeURIComponent(url);
+    const r = await fetch(proxy, {method, headers});
+    if(r.ok){
+      const txt = await r.text();
+      if(txt && (txt.trim()[0]==='{' || txt.trim()[0]==='[')) return JSON.parse(txt);
+    }
+  } catch(e){}
+
+  // Strategy 3: allorigins raw (GET only)
+  if(method==='GET'){
+    try {
+      const proxy = 'https://api.allorigins.win/raw?url='+encodeURIComponent(url);
+      const r = await fetch(proxy);
+      if(r.ok){
+        const txt = await r.text();
+        if(txt && (txt.trim()[0]==='{' || txt.trim()[0]==='[')) return JSON.parse(txt);
+      }
+    } catch(e){}
+  }
+
+  // Strategy 4: thingproxy
+  try {
+    const proxy = 'https://thingproxy.freeboard.io/fetch/'+url;
+    const r = await fetch(proxy, {method, headers});
+    if(r.ok) return await r.json();
+  } catch(e){}
+
+  throw new Error('Cannot reach 5SIM API. This is a browser security (CORS) restriction. Please open your admin panel directly from globaldigits.shop — not from a local file. If already on the live site, try refreshing.');
+}
+
+async function fsimGet(path){ return fsimFetch(FSIM_BASE+path, 'GET'); }
+async function fsimPost(path){ return fsimFetch(FSIM_BASE+path, 'POST'); }
+
+// Store 5SIM results in memory so page refresh doesn't wipe them
+const FSIM_CACHE = {balance: null, lastChecked: null};
+
+function secNumbers(){
+  if(!isOwner()){
+    return `<div class="card" style="text-align:center;padding:50px 20px">
+      <div style="display:flex;justify-content:center;margin-bottom:12px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <div style="color:var(--text);font-weight:700;font-size:14px;margin-bottom:6px">Owner Access Only</div>
+      <div style="color:var(--muted);font-size:12px">The Buy Numbers section is restricted to the Owner account only.</div>
+    </div>`;
+  }
+
+  const balanceHTML = FSIM_CACHE.balance
+    ? '<strong style="color:var(--green)">5SIM Balance: $'+FSIM_CACHE.balance+'</strong>'+(FSIM_CACHE.lastChecked?' · Checked '+ago(FSIM_CACHE.lastChecked):'')
+    : 'Click "Check Balance" to see your 5SIM account balance';
+
+  return `<div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div>
+        <div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800">Buy Numbers</div>
+        <div style="color:var(--muted);font-size:12px;margin-top:2px">Purchase virtual numbers via 5SIM · Deliver instantly to customers</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" onclick="load5SimBalance()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-5.65"/></svg>
+        Refresh Balance
+      </button>
+    </div>
+
+    <div id="fsim-balance" class="alert alert-b" style="margin-bottom:18px">${balanceHTML}</div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:14px">Search Available Numbers</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:14px">
+        <div class="fg" style="margin:0">
+          <label class="fl">Country</label>
+          <select id="fsim-country">
+            <option value="england">UK / England</option>
+            <option value="usa">USA</option>
+            <option value="canada">Canada</option>
+            <option value="germany">Germany</option>
+            <option value="france">France</option>
+            <option value="netherlands">Netherlands</option>
+            <option value="australia">Australia</option>
+            <option value="india">India</option>
+            <option value="ukraine">Ukraine</option>
+            <option value="russia">Russia</option>
+            <option value="kazakhstan">Kazakhstan</option>
+          </select>
+        </div>
+        <div class="fg" style="margin:0">
+          <label class="fl">Platform / Service</label>
+          <select id="fsim-product">
+            <option value="whatsapp">WhatsApp</option>
+            <option value="telegram">Telegram</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="twitter">Twitter / X</option>
+            <option value="tiktok">TikTok</option>
+            <option value="google">Google</option>
+            <option value="microsoft">Microsoft</option>
+            <option value="any">Any (Cheapest)</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="checkNumbers()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Check Availability & Price
+      </button>
+      <div id="fsim-check-result" style="margin-top:14px"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">Active Numbers (Waiting for SMS)</div>
+      <div id="fsim-active-list">
+        <div style="color:var(--muted);font-size:12px;text-align:center;padding:20px">No active numbers. Buy one above to get started.</div>
+      </div>
+      <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="loadActiveNumbers()">Refresh SMS</button>
+    </div>
+
+    <div class="card">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:10px">How to Use</div>
+      ${[
+        ['1','Customer orders a number and pays'],
+        ['2','Select country and platform above, check availability'],
+        ['3','Click Buy — number appears in Active Numbers'],
+        ['4','Copy number → go to Orders → Deliver → paste number'],
+        ['5','Customer gets number in their dashboard'],
+        ['6','Wait for SMS code to appear in Active Numbers'],
+        ['7','Click Send Extra Message on order → send code to customer'],
+      ].map(([n,t])=>`
+        <div style="display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid var(--border)">
+          <div style="width:22px;height:22px;background:rgba(37,99,235,.15);color:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:11px;flex-shrink:0">${n}</div>
+          <div style="color:var(--muted2);font-size:12px;line-height:1.5">${t}</div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+async function load5SimBalance(){
+  const el = document.getElementById('fsim-balance');
+  if(el) el.innerHTML = '<span style="color:var(--muted)">Checking balance...</span>';
+  try {
+    const d = await fsimGet('/user/profile');
+    const bal = parseFloat(d.balance||0).toFixed(2);
+    FSIM_CACHE.balance = bal;
+    FSIM_CACHE.lastChecked = new Date().toISOString();
+    if(el) el.innerHTML =
+      '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">' +
+        '<div><div style="color:var(--green);font-size:18px;font-weight:900;font-family:monospace">$'+bal+'</div><div style="color:var(--muted);font-size:11px">5SIM Balance</div></div>' +
+        '<div><div style="color:var(--text);font-weight:700">'+(d.email||'')+'</div><div style="color:var(--muted);font-size:11px">Account: '+(d.id||'')+'</div></div>' +
+        '<div style="margin-left:auto"><span class="bdg bdg-g">Connected</span></div>' +
+      '</div>';
+  } catch(e) {
+    if(el) el.innerHTML =
+      '<div style="color:var(--red);font-weight:600;margin-bottom:8px">Cannot connect to 5SIM: '+e.message+'</div>' +
+      '<div style="color:var(--muted);font-size:12px;line-height:1.7">This is likely a browser CORS security restriction. Options:<br>' +
+      '1. Make sure you are using the site on <strong style="color:var(--text)">https://globaldigits.shop</strong> (not a local file)<br>' +
+      '2. Try a different browser (Chrome works best)<br>' +
+      '3. Check your 5SIM balance directly at <a href="https://5sim.net" target="_blank" style="color:var(--blue)">5sim.net</a></div>';
+  }
+}
+
+async function checkNumbers(){
+  const countryEl = document.getElementById('fsim-country');
+  const productEl = document.getElementById('fsim-product');
+  if(!countryEl||!productEl) return;
+  const country = countryEl.value;
+  const product = productEl.value;
+  const res = document.getElementById('fsim-check-result');
+  if(res) res.innerHTML = '<div style="color:var(--muted);font-size:12px">Checking availability...</div>';
+  try {
+    // Use guest endpoint (no auth needed for prices)
+    const d = await fsimGet('/guest/products/'+country+'/any');
+    if(!d || typeof d !== 'object'){
+      if(res) res.innerHTML = '<div class="alert alert-y">No data returned. Try a different country.</div>';
+      return;
+    }
+    // Find the product — try exact match then partial match
+    let prod = d[product];
+    if(!prod){
+      // Try to find a matching key
+      const key = Object.keys(d).find(k=>k.toLowerCase().includes(product.toLowerCase()));
+      if(key) prod = d[key];
+    }
+    if(!prod){
+      if(res) res.innerHTML =
+        '<div class="alert alert-y">'+product+' not available in '+country+'.<br>' +
+        '<div style="margin-top:8px;font-size:11px">Available services: '+Object.keys(d).slice(0,10).join(', ')+'</div></div>';
+      return;
+    }
+    const qty = prod.Qty || prod.qty || 0;
+    const price = parseFloat(prod.Price || prod.price || 0).toFixed(2);
+    if(qty === 0){
+      if(res) res.innerHTML = '<div class="alert alert-y">Out of stock for '+product+' in '+country+'. Try another country or platform.</div>';
+      return;
+    }
+    if(res) res.innerHTML =
+      '<div class="alert alert-g" style="margin-bottom:12px">' +
+        '<div style="font-size:15px;font-weight:800;margin-bottom:4px">✓ '+qty+' numbers available</div>' +
+        '<div>Price: <strong>$'+price+'</strong> per number</div>' +
+        '<div style="font-size:11px;margin-top:3px;opacity:.8">Country: '+country+' · Platform: '+product+'</div>' +
+      '</div>' +
+      '<button class="btn btn-primary" onclick="buyNumber(\''+country+'\',\''+product+'\')">' +
+        '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>' +
+        ' Buy Number Now ($'+price+')' +
+      '</button>';
+  } catch(e) {
+    if(res) res.innerHTML =
+      '<div class="alert alert-r">'+e.message+'</div>' +
+      '<div style="margin-top:8px"><a href="https://5sim.net/v1/guest/products/'+country+'/any" target="_blank" class="btn btn-ghost btn-sm">View Raw API Data</a></div>';
+  }
+}
+
+async function buyNumber(country, product){
+  const res = document.getElementById('fsim-check-result');
+  if(res) res.innerHTML = '<div style="color:var(--muted);font-size:12px">Purchasing number...</div>';
+  try {
+    const d = await fsimPost('/user/buy/activation/'+country+'/any/'+product);
+    if(!d.phone) throw new Error('No phone returned: '+JSON.stringify(d));
+    toast('Number purchased: '+d.phone);
+    // Store active number in memory
+    if(!A.activeNumbers) A.activeNumbers = [];
+    A.activeNumbers.unshift({id:d.id, phone:d.phone, product:product, country:country, status:d.status, sms:[], bought:new Date().toISOString()});
+    if(res) res.innerHTML = `
+      <div class="alert alert-g">
+        <strong>Number purchased!</strong><br>
+        Phone: <span style="font-family:monospace;font-size:14px;font-weight:800">${d.phone}</span><br>
+        ID: ${d.id} · Status: ${d.status}
+      </div>`;
+    loadActiveNumbers();
+  } catch(e) {
+    if(res) res.innerHTML = '<div class="alert alert-r">Purchase failed: '+e.message+'</div>';
+  }
+}
+
+async function loadActiveNumbers(){
+  const el = document.getElementById('fsim-active-list');
+  if(!el) return;
+  if(!A.activeNumbers||!A.activeNumbers.length){
+    el.innerHTML = '<div style="color:var(--muted);font-size:12px;text-align:center;padding:20px">No active numbers.</div>';
+    return;
+  }
+  let html = '';
+  for(const n of A.activeNumbers){
+    // Try to fetch latest SMS
+    try {
+      const d = await fsimGet('/user/check/'+n.id);
+      n.status = d.status;
+      n.sms = d.sms||[];
+    } catch(e){}
+    const latestSMS = n.sms&&n.sms.length ? n.sms[n.sms.length-1] : null;
+    html += `<div class="drow">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
+        <div>
+          <div style="font-family:monospace;font-weight:800;font-size:15px;color:var(--text)">${n.phone}</div>
+          <div style="color:var(--muted);font-size:11px">${n.product} · ${n.country} · ID: ${n.id}</div>
+          <div style="margin-top:4px"><span class="bdg ${n.status==='RECEIVED'?'bdg-g':n.status==='TIMEOUT'||n.status==='CANCELED'?'bdg-r':'bdg-y'}">${n.status||'PENDING'}</span></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="refreshNumber('${n.id}')">Refresh SMS</button>
+          <button class="btn btn-green btn-sm" onclick="if(navigator.clipboard)navigator.clipboard.writeText('${n.phone}').then(()=>toast('Number copied!'))">Copy Number</button>
+          <button class="btn btn-red btn-sm" onclick="cancelNumber('${n.id}')">Cancel</button>
+        </div>
+      </div>
+      ${latestSMS?`
+      <div style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:8px;padding:10px;margin-top:10px">
+        <div style="color:var(--green);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:4px">SMS Received</div>
+        <div style="color:var(--text);font-size:13px;font-weight:600">${latestSMS.text||''}</div>
+        <div style="color:var(--green);font-size:16px;font-weight:900;font-family:monospace;margin-top:4px">${latestSMS.code||''}</div>
+        <button class="btn btn-green btn-sm" style="margin-top:8px" onclick="if(navigator.clipboard)navigator.clipboard.writeText('${latestSMS.code||latestSMS.text||''}').then(()=>toast('Code copied!'))">Copy Code</button>
+      </div>`:'<div style="color:var(--muted);font-size:12px;margin-top:8px">Waiting for SMS...</div>'}
+    </div>`;
+  }
+  el.innerHTML = html;
+}
+
+async function refreshNumber(id){
+  toast('Refreshing...','i');
+  await loadActiveNumbers();
+}
+
+async function cancelNumber(id){
+  try {
+    await fsimGet('/user/cancel/'+id);
+    A.activeNumbers = (A.activeNumbers||[]).filter(n=>n.id!==id);
+    loadActiveNumbers();
+    toast('Number cancelled','w');
+  } catch(e){ toast('Error: '+e.message,'e'); }
+}
+
+// Auto-refresh active numbers every 15 seconds if on numbers tab
+setInterval(()=>{
+  if(A.section==='numbers'&&A.activeNumbers&&A.activeNumbers.length) loadActiveNumbers();
+}, 15000);
+
+// ══════════════════════════════════════════
+// ══════════════════════════════════════════
+// ANALYTICS
+// ══════════════════════════════════════════
+function secAnalytics(){
+  if(!isOwner()){
+    return '<div class="card" style="text-align:center;padding:50px"><div style="color:var(--text);font-weight:700;margin-bottom:6px">Owner Access Only</div></div>';
+  }
+
+  // Build analytics from user data and orders
+  const now = new Date();
+  const last7 = new Date(now - 7*86400000);
+  const last30 = new Date(now - 30*86400000);
+
+  // Users registered over time
+  const newToday = A.users.filter(u=>new Date(u.created_at).toDateString()===now.toDateString()).length;
+  const newWeek = A.users.filter(u=>new Date(u.created_at)>=last7).length;
+  const newMonth = A.users.filter(u=>new Date(u.created_at)>=last30).length;
+
+  // Orders over time
+  const ordToday = A.orders.filter(o=>new Date(o.created_at).toDateString()===now.toDateString()).length;
+  const ordWeek = A.orders.filter(o=>new Date(o.created_at)>=last7).length;
+  const ordMonth = A.orders.filter(o=>new Date(o.created_at)>=last30).length;
+
+  // Revenue
+  const revToday = A.orders.filter(o=>o.status==='delivered'&&new Date(o.created_at).toDateString()===now.toDateString()).reduce((s,o)=>s+o.total,0);
+  const revWeek = A.orders.filter(o=>o.status==='delivered'&&new Date(o.created_at)>=last7).reduce((s,o)=>s+o.total,0);
+  const revMonth = A.orders.filter(o=>o.status==='delivered'&&new Date(o.created_at)>=last30).reduce((s,o)=>s+o.total,0);
+
+  // Top products
+  const prodCount = {};
+  A.orders.forEach(o=>(o.items||[]).forEach(i=>{prodCount[i.name]=(prodCount[i.name]||0)+i.qty;}));
+  const topProds = Object.entries(prodCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // User activity - what pages/actions users do (from order data)
+  const statusBreakdown = {};
+  A.orders.forEach(o=>{statusBreakdown[o.status]=(statusBreakdown[o.status]||0)+1;});
+
+  // Recent registrations
+  const recentUsers = [...A.users].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,10);
+
+  // Devices/countries from user agents (not available server-side, show order patterns instead)
+  // Day-by-day orders last 7 days
+  const days7 = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(now - i*86400000);
+    const dstr = d.toLocaleDateString('en-NG',{weekday:'short',day:'numeric',month:'short'});
+    const cnt = A.orders.filter(o=>new Date(o.created_at).toDateString()===d.toDateString()).length;
+    const rev = A.orders.filter(o=>o.status==='delivered'&&new Date(o.created_at).toDateString()===d.toDateString()).reduce((s,o)=>s+o.total,0);
+    days7.push({label:dstr,orders:cnt,rev});
+  }
+  const maxOrds = Math.max(...days7.map(d=>d.orders),1);
+
+  return `<div>
+    <div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800;margin-bottom:4px">Analytics</div>
+    <div style="color:var(--muted);font-size:12px;margin-bottom:20px">Site activity, user behaviour and performance metrics</div>
+
+    <!-- Key metrics -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px">
+      ${[['Today','Users: '+newToday,'Orders: '+ordToday,'Revenue: '+fmt(revToday)],['This Week','Users: '+newWeek,'Orders: '+ordWeek,'Revenue: '+fmt(revWeek)],['This Month','Users: '+newMonth,'Orders: '+ordMonth,'Revenue: '+fmt(revMonth)]].map(([period,u,o,r])=>`
+        <div class="card" style="text-align:center">
+          <div style="color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">${period}</div>
+          <div style="color:var(--blue);font-size:12px;font-weight:700;margin-bottom:2px">${u}</div>
+          <div style="color:var(--purple);font-size:12px;font-weight:700;margin-bottom:2px">${o}</div>
+          <div style="color:var(--green);font-size:12px;font-weight:700">${r}</div>
+        </div>`).join('')}
+    </div>
+
+    <!-- Orders chart last 7 days -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:16px">Orders — Last 7 Days</div>
+      <div style="display:flex;align-items:flex-end;gap:6px;height:80px">
+        ${days7.map(d=>`
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+            <div style="font-size:9px;color:var(--muted)">${d.orders||''}</div>
+            <div style="width:100%;background:var(--blue);border-radius:4px 4px 0 0;min-height:4px;height:${Math.max(4,Math.round(d.orders/maxOrds*60))}px;transition:.3s"></div>
+            <div style="font-size:9px;color:var(--muted);white-space:nowrap">${d.label.split(' ')[0]}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Order status breakdown -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:14px">Order Status Breakdown</div>
+      ${Object.entries(statusBreakdown).map(([status,count])=>{
+        const pct = A.orders.length ? Math.round(count/A.orders.length*100) : 0;
+        const colors={'pending-payment':'var(--yellow)','payment-pending-approval':'var(--blue)','payment-approved':'var(--cyan,#06b6d4)','delivered':'var(--green)','cancelled':'var(--red)'};
+        const labels={'pending-payment':'Pending Payment','payment-pending-approval':'Awaiting Approval','payment-approved':'Payment Approved','delivered':'Delivered','cancelled':'Cancelled'};
+        return `<div style="margin-bottom:10px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;font-size:12px">
+            <span style="color:var(--text);font-weight:600">${labels[status]||status}</span>
+            <span style="color:var(--muted)">${count} (${pct}%)</span>
+          </div>
+          <div style="height:6px;background:var(--bg3);border-radius:3px;overflow:hidden">
+            <div style="height:100%;width:${pct}%;background:${colors[status]||'var(--blue)'};border-radius:3px;transition:.5s"></div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <!-- Top products -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">Top Products by Orders</div>
+      ${topProds.length?topProds.map(([name,qty],i)=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+          <div style="width:22px;height:22px;background:var(--grad);border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800;flex-shrink:0">${i+1}</div>
+          <div style="flex:1;color:var(--text);font-size:12px;font-weight:600">${esc(name)}</div>
+          <div style="color:var(--blue);font-weight:700;font-size:12px">${qty} sold</div>
+        </div>`).join(''):'<p style="color:var(--muted);font-size:12px">No order data yet.</p>'}
+    </div>
+
+    <!-- Recent signups -->
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">Recent Signups (Last 10)</div>
+      ${recentUsers.map(u=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);flex-wrap:wrap">
+          <div style="width:30px;height:30px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:12px;flex-shrink:0">${(u.name||'?').charAt(0).toUpperCase()}</div>
+          <div style="flex:1;min-width:120px">
+            <div style="color:var(--text);font-size:12px;font-weight:700">${esc(u.name)}</div>
+            <div style="color:var(--muted);font-size:11px">${esc(u.email)}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="color:var(--muted);font-size:11px">${ago(u.created_at)}</div>
+            <div style="margin-top:2px">${u.verified?'<span class="bdg bdg-g">Verified</span>':'<span class="bdg bdg-y">Unverified</span>'}</div>
+          </div>
+        </div>`).join('')}
+    </div>
+
+    <!-- User behaviour summary -->
+    <div class="card">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:14px">User Behaviour Summary</div>
+      ${[
+        ['Total Registered Users', A.users.length, 'var(--blue)'],
+        ['Verified Users', A.users.filter(u=>u.verified).length, 'var(--green)'],
+        ['Users Who Ordered', new Set(A.orders.map(o=>o.user_email)).size, 'var(--purple)'],
+        ['Repeat Customers', (() => { const ec={}; A.orders.forEach(o=>{ec[o.user_email]=(ec[o.user_email]||0)+1;}); return Object.values(ec).filter(c=>c>1).length; })(), 'var(--yellow)'],
+        ['Banned Users', A.users.filter(u=>u.banned).length, 'var(--red)'],
+        ['Total Messages Sent', A.messages.length, 'var(--cyan,#06b6d4)'],
+        ['Avg Order Value', A.orders.length ? fmt(Math.round(A.orders.reduce((s,o)=>s+o.total,0)/A.orders.length)) : '₦0', 'var(--green)'],
+        ['Conversion Rate', A.users.length ? (new Set(A.orders.map(o=>o.user_email)).size/A.users.length*100).toFixed(1)+'%' : '0%', 'var(--blue)'],
+      ].map(([label,val,color])=>`
+        <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--muted);font-size:12px">${label}</span>
+          <span style="color:${color};font-weight:700;font-size:13px">${val}</span>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// PUSH NOTIFICATIONS (Browser-native)
+// ══════════════════════════════════════════
+function secNotify(){
+  if(!isOwner()){
+    return `<div class="card" style="text-align:center;padding:50px 20px">
+      <div style="color:var(--text);font-weight:700;margin-bottom:6px">Owner Access Only</div>
+      <div style="color:var(--muted);font-size:12px">Only the owner can send notifications.</div>
+    </div>`;
+  }
+  return `<div>
+    <div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800;margin-bottom:4px">Push Notifications</div>
+    <div style="color:var(--muted);font-size:12px;margin-bottom:20px">Send a notification to all users. This creates an announcement they see on the main site and posts a log entry.</div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:14px">Compose Notification</div>
+      <div class="fg"><label class="fl">Title *</label><input id="notif-title" placeholder="e.g. New Products Available!" maxlength="64"/></div>
+      <div class="fg"><label class="fl">Message *</label><textarea id="notif-msg" rows="3" placeholder="e.g. UK and US WhatsApp numbers are back in stock. Order now!" maxlength="200" style="resize:none"></textarea></div>
+      <div class="fg"><label class="fl">Colour</label>
+        <select id="notif-color">
+          <option value="info">Blue (Info)</option>
+          <option value="promo">Yellow (Promo)</option>
+          <option value="urgent">Red (Urgent)</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn btn-primary" onclick="sendNotification()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          Publish Announcement
+        </button>
+      </div>
+      <div id="notif-result" style="margin-top:12px"></div>
+    </div>
+
+    <div class="card" style="margin-bottom:14px">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">Quick Templates</div>
+      ${[
+        ['New Stock','New Products Available!','Fresh UK, US and Canada numbers are now in stock. Order before they run out!','info'],
+        ['Reminder','Complete Your Order','You have items in your cart. Complete your order today!','info'],
+        ['Promo','Special Offer Today','Get your foreign number today at the best price. Limited stock available!','promo'],
+        ['Maintenance','Scheduled Maintenance','GlobalDigits will be briefly offline for maintenance. We will be back shortly.','urgent'],
+        ['Update','Update from GlobalDigits','We have added new products and features. Check them out now!','info'],
+      ].map(([label,title,msg,color])=>`
+        <button class="btn btn-ghost btn-sm" style="margin:3px" onclick="
+          document.getElementById('notif-title').value=${JSON.stringify(title)};
+          document.getElementById('notif-msg').value=${JSON.stringify(msg)};
+          document.getElementById('notif-color').value='${color}';
+        ">${label}</button>`).join('')}
+    </div>
+
+    <div class="card" style="margin-bottom:14px;border-color:rgba(59,130,246,.2)">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="color:var(--text);font-weight:700;font-size:13px">Delivery Method</div>
+      </div>
+      <div class="alert alert-b" style="font-size:12px;margin-bottom:0">
+        Announcements are delivered as in-app banners visible to all visitors on the main site. They appear immediately after publishing in a coloured banner at the top of the page. For device notifications, users must click <strong>Enable Notifications</strong> on their dashboard.
+      </div>
+    </div>
+    <div class="card">
+      <div style="color:var(--text);font-weight:700;font-size:13px;margin-bottom:12px">How It Works</div>
+      ${[
+        ['Publish Announcement','The notification becomes an announcement banner on the main site that every visitor sees instantly.'],
+        ['Auto-activated','The announcement is set to active automatically so users see it right away when they visit.'],
+        ['Manage announcements','Go to the Announcements section to deactivate, edit or delete any notification you have sent.'],
+        ['No app required','This works without any external service — completely built-in.'],
+      ].map(([t,d])=>`
+        <div style="display:flex;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
+          <div style="width:7px;height:7px;border-radius:50%;background:var(--blue);margin-top:4px;flex-shrink:0"></div>
+          <div><div style="color:var(--text);font-size:12px;font-weight:600">${t}</div><div style="color:var(--muted);font-size:11px">${d}</div></div>
+        </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+async function sendNotification(){
+  const title=(document.getElementById('notif-title')||{}).value||'';
+  const msg=(document.getElementById('notif-msg')||{}).value||'';
+  const color=(document.getElementById('notif-color')||{}).value||'info';
+  const link=(document.getElementById('notif-link')||{}).value||'';
+  const res=document.getElementById('notif-result');
+  if(!title.trim()||!msg.trim()){toast('Enter title and message','w');return;}
+  const btn=document.querySelector('[onclick="sendNotification()"]');
+  if(btn){btn.textContent='Sending...';btn.disabled=true;}
+  if(res)res.innerHTML='<div style="color:var(--muted);font-size:12px">Publishing...</div>';
+  var errors=[], pushCount=0;
+
+  // Step 1: Create in-app announcement banner
+  try{
+    await dbPost('announcements',{title:title.trim(),message:msg.trim(),color:color,active:true,created_at:new Date().toISOString()});
+  }catch(e){errors.push('Announcement: '+e.message);}
+
+  // Step 2: Fetch push subscriptions and queue push
+  try{
+    var subs=await dbGet('push_subscriptions','select=user_id,user_email&limit=2000');
+    if(subs.length){
+      pushCount=subs.length;
+      var qr={title:title.trim(),message:msg.trim(),link:link.trim()||null,color:color,
+              subscriber_count:subs.length,status:'pending',
+              created_at:new Date().toISOString()};
+      try{await dbPost('push_queue',qr);}catch(e){console.warn('push_queue:',e.message);}
+    }
+  }catch(e){errors.push('Push: '+e.message);}
+
+  await reload();
+  var ok='Announcement published!';
+  if(pushCount>0)ok+=' Push queued for '+pushCount+' device'+(pushCount>1?'s':'')+'.';
+  if(errors.length){
+    if(res)res.innerHTML='<div class="alert alert-y">Done with warnings: '+errors.join(', ')+'</div>';
+  } else {
+    if(res)res.innerHTML='<div class="alert alert-g">'+ok+'</div>';
+  }
+  toast(ok);
+  if(document.getElementById('notif-title'))document.getElementById('notif-title').value='';
+  if(document.getElementById('notif-msg'))document.getElementById('notif-msg').value='';
+  if(btn){btn.textContent='Publish Announcement';btn.disabled=false;}
+}
+
+// ══════════════════════════════════════════
+// MODAL
+// ══════════════════════════════════════════
+function showModal(html, large){
+  const ex=document.getElementById('modal-overlay'); if(ex) ex.remove();
+  const ov=document.createElement('div');
+  ov.className='moverlay'; ov.id='modal-overlay';
+  ov.innerHTML=`<div class="mbox${large?' mbox-lg':''}">${html}</div>`;
+  ov.onclick=e=>{if(e.target===ov)closeModal();};
+  document.body.appendChild(ov);
+}
+function closeModal(){const e=document.getElementById('modal-overlay');if(e)e.remove();}
+
+// ══════════════════════════════════════════
+// ORDER ACTIONS
+// ══════════════════════════════════════════
+async function approveOrder(id){
+  showLoad();
+  try{await dbPatch('orders','id=eq.'+id,{status:'payment-approved'});await reload();toast('Payment approved for '+id);}
+  catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+async function rejectOrder(id){
+  if(!confirm('Reject this order? The customer will be notified.')) return;
+  showLoad();
+  try{await dbPatch('orders','id=eq.'+id,{status:'cancelled'});await reload();toast('Order rejected','w');}
+  catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+function viewOrder(id){
+  const o=A.orders.find(x=>x.id===id); if(!o) return;
+  showModal(`<div class="mhead"><h3>Order ${o.id}</h3><button class="mclose" onclick="closeModal()">×</button></div>
+  <div class="mbody">
+    ${[['Customer',esc(o.user_name)],['Email',esc(o.user_email)],['Total',fmt(o.total)],['Status',sBadge(o.status)],['Placed',new Date(o.created_at).toLocaleString()]].map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-size:12px">${k}</span><span style="color:var(--text);font-weight:600;font-size:12px">${v}</span></div>`).join('')}
+    <div style="margin-top:12px;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:7px">Items</div>
+    ${(o.items||[]).map(i=>`<div style="display:flex;justify-content:space-between;color:var(--muted2);font-size:12px;padding:3px 0"><span>${esc(i.name)} ×${i.qty}</span><span>${fmt(i.price*i.qty)}</span></div>`).join('')}
+    ${o.payment_note?`<div style="margin-top:10px;color:var(--muted);font-size:11px">Note: ${esc(o.payment_note)}</div>`:''}
+    ${o.delivery_details?`<div style="margin-top:12px;background:var(--bg3);border-radius:8px;padding:11px"><div style="color:var(--purple);font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase">Delivery Details</div><pre style="color:var(--text);font-size:12px;white-space:pre-wrap;font-family:monospace;margin:0">${esc(o.delivery_details)}</pre></div>`:''}
+  </div>`);
+}
+function openDeliverModal(id){
+  const o=A.orders.find(x=>x.id===id); if(!o) return;
+  showModal(`<div class="mhead"><h3>Deliver Order ${id}</h3><button class="mclose" onclick="closeModal()">×</button></div>
+  <div class="mbody">
+    <p style="color:var(--muted);font-size:12px;margin-bottom:14px">Enter the product credentials for <strong style="color:var(--text)">${esc(o.user_name)}</strong>. They will see this in their dashboard.</p>
+    <div class="fg"><label class="fl">Product Credentials / Delivery Details</label><textarea id="deliver-txt" rows="7" placeholder="e.g.&#10;Number: +44 7700 900000&#10;Password: Abc#2025">${esc(o.delivery_details||'')}</textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="doDeliver('${id}')">Mark Delivered</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>`, true);
+}
+async function doDeliver(id){
+  const txt=(document.getElementById('deliver-txt')||{}).value||'';
+  if(!txt.trim()){toast('Enter delivery details','w');return;}
+  showLoad(); closeModal();
+  try{await dbPatch('orders','id=eq.'+id,{status:'delivered',delivery_details:txt.trim()});await reload();toast('Order delivered!');}
+  catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+
+// ══════════════════════════════════════════
+// PRODUCT ACTIONS
+// ══════════════════════════════════════════
+function openProdModal(id){
+  const p=id?A.products.find(x=>x.id===id):null;
+  showModal(`<div class="mhead"><h3>${p?'Edit: '+esc(p.name):'Add New Product'}</h3><button class="mclose" onclick="closeModal()">×</button></div>
+  <div class="mbody">
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0 12px">
+      <div class="fg"><label class="fl">Name *</label><input id="pm-n" value="${esc(p?p.name:'')}"/></div>
+      <div class="fg"><label class="fl">Price (NGN) *</label><input id="pm-p" type="number" value="${p?p.price:''}"/></div>
+      <div class="fg"><label class="fl">Stock</label><input id="pm-s" type="number" value="${p?p.stock:'0'}"/></div>
+      <div class="fg"><label class="fl">Emoji Icon</label><input id="pm-i" value="${esc(p?p.image:'')}"/></div>
+      <div class="fg"><label class="fl">Country</label><input id="pm-c" value="${esc(p&&p.country?p.country:'')}"/></div>
+      <div class="fg"><label class="fl">Platform</label><input id="pm-pl" value="${esc(p&&p.platform?p.platform:'')}"/></div>
+      <div class="fg"><label class="fl">Category</label><select id="pm-cat">${[['foreign-numbers','Foreign Numbers'],['social-accounts','Social Accounts'],['boosting','Boosting']].map(([v,l])=>`<option value="${v}"${p&&p.category===v?' selected':''}>${l}</option>`).join('')}</select></div>
+      <div class="fg"><label class="fl">Status</label><select id="pm-st"><option value="available"${p&&p.status==='available'?' selected':''}>Available</option><option value="out-of-stock"${p&&p.status==='out-of-stock'?' selected':''}>Out of Stock</option></select></div>
+    </div>
+    <div class="fg"><label class="fl">Description</label><textarea id="pm-d" rows="3">${esc(p?p.description:'')}</textarea></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="saveProd(${id||'null'})">${p?'Save Changes':'Add Product'}</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>`, true);
+}
+async function saveProd(id){
+  const name=(document.getElementById('pm-n')||{}).value||'', price=(document.getElementById('pm-p')||{}).value||'';
+  if(!name||!price){toast('Name and price required','w');return;}
+  const body={name,category:document.getElementById('pm-cat').value,platform:document.getElementById('pm-pl').value||null,country:document.getElementById('pm-c').value||null,price:Number(price),stock:Number((document.getElementById('pm-s')||{}).value||0),status:document.getElementById('pm-st').value,image:(document.getElementById('pm-i')||{}).value||'',description:(document.getElementById('pm-d')||{}).value||''};
+  showLoad(); closeModal();
+  try{if(id){await dbPatch('products','id=eq.'+id,body);toast('Product updated');}else{await dbPost('products',body);toast('Product added');}await reload();}
+  catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+async function toggleProd(id){
+  const p=A.products.find(x=>x.id===id); if(!p) return;
+  try{await dbPatch('products','id=eq.'+id,{status:p.status==='available'?'out-of-stock':'available'});await reload();toast('Status updated');}
+  catch(e){toast('Error','e');}
+}
+async function deleteProd(id){
+  const p=A.products.find(x=>x.id===id);
+  if(!confirm('Delete "'+p.name+'"? This cannot be undone.')) return;
+  showLoad();
+  try{await dbDel('products','id=eq.'+id);await reload();toast('Product deleted','w');}
+  catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+
+// ══════════════════════════════════════════
+// USER ACTIONS
+// ══════════════════════════════════════════
+function viewUser(id){
+  const u=A.users.find(x=>String(x.id)===String(id)); if(!u) return;
+  const uo=A.orders.filter(o=>String(o.user_id)===String(id));
+  const spent=uo.filter(o=>o.status==='delivered').reduce((s,o)=>s+o.total,0);
+  const isBanned=!!u.banned, isSusp=u.suspended_until&&new Date(u.suspended_until)>new Date();
+  const dLeft=isSusp?Math.max(1,Math.ceil((new Date(u.suspended_until)-Date.now())/86400000)):0;
+  showModal(`<div class="mhead"><h3>${esc(u.name)}</h3><button class="mclose" onclick="closeModal()">×</button></div>
+  <div class="mbody">
+    <div style="display:flex;align-items:center;gap:11px;margin-bottom:14px">
+      <div style="width:44px;height:44px;background:var(--grad);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:17px;flex-shrink:0;opacity:${isBanned?'.4':'1'}">${u.name.charAt(0).toUpperCase()}</div>
+      <div>
+        <div style="color:var(--text);font-weight:800;font-size:14px;margin-bottom:5px">${esc(u.name)}</div>
+        <div style="display:flex;gap:5px;flex-wrap:wrap">
+          ${u.verified?'<span class="bdg bdg-g">Verified</span>':'<span class="bdg bdg-y">Unverified</span>'}
+          ${isBanned?'<span class="bdg bdg-r">Banned</span>':''}
+          ${isSusp?`<span class="bdg bdg-y">Suspended (${dLeft}d left)</span>`:''}
+        </div>
+      </div>
+    </div>
+    ${[['Email',esc(u.email)],['Phone',esc(u.phone||'N/A')],['Joined',new Date(u.created_at).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})],['Orders',uo.length+' total, '+uo.filter(o=>o.status==='delivered').length+' delivered'],['Total Spent',fmt(spent)],['Wallet',fmt(u.wallet_balance||0)],['Referrals Made',(u.referral_count||0)+' people']].map(([k,v])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-size:11px">${k}</span><span style="color:var(--text);font-weight:600;font-size:12px;max-width:200px;text-align:right;word-break:break-all">${v}</span></div>`).join('')}
+    ${u.suspension_reason?`<div style="padding:7px 0;border-bottom:1px solid var(--border)"><span style="color:var(--muted);font-size:11px">Suspension Reason</span><br><span style="color:var(--yellow);font-size:11px">${esc(u.suspension_reason)}</span></div>`:''}
+    <div style="margin-top:14px">
+      <div style="color:var(--muted);font-size:10px;font-weight:700;margin-bottom:9px;text-transform:uppercase;letter-spacing:.5px">Admin Actions</div>
+      <div style="display:flex;gap:7px;flex-wrap:wrap;margin-bottom:8px">
+        <button class="btn ${u.verified?'btn-yellow':'btn-green'} btn-sm" onclick="doVerify('${u.id}',${!!u.verified})">${u.verified?'Remove Verify':'Verify Member'}</button>
+        <button class="btn ${isBanned?'btn-green':'btn-red'} btn-sm" onclick="doBan('${u.id}',${isBanned})">${isBanned?'Unban User':'Ban User'}</button>
+        <button class="btn btn-yellow btn-sm" onclick="doResetUser('${u.id}')">Reset Account</button>
+            <button class="btn btn-red btn-sm" onclick="doDeleteUser('${u.id}')">Delete</button>
+        ${isSusp?`<button class="btn btn-green btn-sm" onclick="doUnsuspend('${u.id}')">Lift Suspension</button>`:`<button class="btn btn-yellow btn-sm" onclick="openSuspModal(${u.id})">Suspend User</button>`}
+        <button class="btn btn-purple btn-sm" onclick="openCreditModal('${u.id}')">Credit ₦500</button>
+      </div>
+    </div>
+    <div style="margin-top:10px">
+      <div style="color:var(--muted);font-size:10px;font-weight:700;margin-bottom:7px;text-transform:uppercase;letter-spacing:.5px">Order History</div>
+      ${uo.length===0?`<div style="color:var(--muted);font-size:12px;text-align:center;padding:10px">No orders.</div>`:uo.slice(0,8).map(o=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--bg3);gap:6px"><span style="color:#60a5fa;font-family:monospace;font-size:11px">${o.id}</span><span style="color:var(--green);font-weight:700;font-size:12px">${fmt(o.total)}</span>${sBadge(o.status)}</div>`).join('')}
+    </div>
+  </div>`, true);
+}
+async function doVerify(id, current){
+  try{
+    await dbPatch('users','id=eq.'+id,{verified:!current});
+    await reload();
+    toast(!current?'User verified successfully.':'Verification removed.');
+    closeModal();
+    setTimeout(function(){viewUser(String(id));},400);
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+async function doBan(id, current){
+  const u=A.users.find(function(x){return String(x.id)===String(id);});
+  if(!u) return;
+  if(!confirm(current?'Unban '+u.name+'?':'Ban '+u.name+'? They will not be able to log in.')) return;
+  try{
+    await dbPatch('users','id=eq.'+id,{banned:!current});
+    await reload();
+    toast(current?'User unbanned successfully.':'User banned successfully.','w');
+    closeModal();
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+function openSuspModal(id){
+  const u=A.users.find(x=>String(x.id)===String(id)); if(!u) return;
+  showModal(`<div class="mhead"><h3>Suspend ${esc(u.name)}</h3><button class="mclose" onclick="closeModal()">×</button></div>
+  <div class="mbody">
+    <p style="color:var(--muted);font-size:12px;margin-bottom:14px">User will be blocked from logging in for the chosen period.</p>
+    <div class="fg"><label class="fl">Duration</label>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+        ${[1,3,7,14,30].map(d=>`<button class="btn btn-ghost btn-sm" onclick="document.getElementById('sd').value='${d}';this.parentNode.querySelectorAll('.btn').forEach(b=>b.style.fontWeight='600');this.style.fontWeight='800'">${d}d</button>`).join('')}
+      </div>
+      <input id="sd" type="number" placeholder="Or enter custom days" min="1" max="365"/>
+    </div>
+    <div class="fg"><label class="fl">Reason (optional)</label><input id="sr" placeholder="e.g. Fraudulent payment claim"/></div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-yellow" onclick="doSuspend('${id}')">Suspend User</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>`);
+}
+async function doResetUser(id){
+  var _u2=A.users.find(function(x){return String(x.id)===String(id);});
+  var name=_u2?_u2.name:'this user';
+  if(!confirm('Reset account for '+name+'?\nThis clears wallet balance and referral count. Orders remain.')) return;
+  showLoad(); closeModal();
+  try{
+    await dbPatch('users','id=eq.'+id,{wallet_balance:0,referral_count:0,referred_by:null,verified:false,banned:false,suspended_until:null,suspension_reason:null});
+    await reload();
+    toast(name+' account reset to default.');
+  }catch(e){toast('Reset failed: '+e.message,'e');}
+}
+
+async function doDeleteUser(id){
+  var _u=A.users.find(function(x){return String(x.id)===String(id);});
+  var name=_u?_u.name:'this user';
+  if(!confirm('PERMANENTLY DELETE account for '+name+'? This will delete their account, all messages and appeals. Orders will remain for records. THIS CANNOT BE UNDONE.')) return;
+  const confirm2 = prompt('Type DELETE to confirm deletion of '+name+':');
+  if(confirm2 !== 'DELETE'){toast('Deletion cancelled.','w');return;}
+  closeModal();
+  showLoad();
+  try{
+    const userToDelete = A.users.find(function(u){return String(u.id)===String(id);});
+    const userEmail = userToDelete ? userToDelete.email : '';
+    if(userEmail){
+      await fetch(SB+'/rest/v1/messages?user_email=eq.'+encodeURIComponent(userEmail),{method:'DELETE',headers:H()});
+      await fetch(SB+'/rest/v1/appeals?user_email=eq.'+encodeURIComponent(userEmail),{method:'DELETE',headers:H()});
+    }
+    await fetch(SB+'/rest/v1/users?id=eq.'+id,{method:'DELETE',headers:H()});
+    await reload();
+    toast(name+' account deleted.','w');
+  }catch(e){
+    hideLoad();
+    toast('Delete failed: '+e.message,'e');
+  }
+}
+
+async function doSuspend(id){
+  const days=parseInt((document.getElementById('sd')||{}).value||'0');
+  if(!days||days<1){toast('Enter number of days (minimum 1)','w');return;}
+  const until=new Date(Date.now()+days*86400000).toISOString();
+  const reason=(document.getElementById('sr')||{}).value||'';
+  try{
+    await dbPatch('users','id=eq.'+id,{suspended_until:until,suspension_reason:reason||null});
+    await reload();
+    toast('User suspended for '+days+' day'+(days>1?'s':'')+'.','w');
+    closeModal();
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+async function doUnsuspend(id){
+  try{
+    await dbPatch('users','id=eq.'+id,{suspended_until:null,suspension_reason:null});
+    await reload();
+    toast('Suspension lifted successfully.');
+    closeModal();
+    setTimeout(function(){viewUser(String(id));},400);
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+function openCreditModal(id){
+  var u=A.users.find(function(x){return String(x.id)===String(id);});
+  if(!u) return;
+  var bal=fmt(u.wallet_balance||0);
+  var html='<div class="mhead"><h3>Credit Wallet</h3><button class="mclose" onclick="closeModal()">&times;</button></div>';
+  html+='<div class="mbody">';
+  html+='<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">';
+  html+='<div style="flex:1"><div style="color:var(--text);font-weight:700;font-size:14px">'+esc(u.name)+'</div>';
+  html+='<div style="color:var(--muted);font-size:12px">'+esc(u.email)+'</div></div>';
+  html+='<div style="text-align:right"><div style="color:var(--green);font-weight:900;font-size:18px">'+bal+'</div>';
+  html+='<div style="color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase">Current Balance</div></div></div>';
+  html+='<div class="fg"><label class="fl">Amount to Credit (NGN)</label>';
+  html+='<input id="credit-amt" type="number" min="100" step="100" placeholder="e.g. 500" style="margin-top:5px"/></div>';
+  html+='<div id="credit-res" style="margin-bottom:8px"></div>';
+  html+='<div style="display:flex;gap:8px;flex-wrap:wrap">';
+  html+='<button class="btn btn-green" id="do-credit-btn" data-uid="'+String(id)+'">Credit Wallet</button>';
+  html+='<button class="btn btn-ghost" onclick="closeModal()">Cancel</button>';
+  html+='</div></div>';
+  showModal(html);
+  // Wire the credit button after modal renders
+  setTimeout(function(){
+    var btn=document.getElementById('do-credit-btn');
+    if(btn) btn.onclick=function(){ doCreditWallet(String(id)); };
+  },50);
+}
+
+async function doCreditWallet(id){
+  const amtEl = document.getElementById('credit-amt');
+  const resEl = document.getElementById('credit-res');
+  const amt = parseInt((amtEl||{}).value||'0');
+  if(!amt||amt<1){if(resEl)resEl.innerHTML='<div class="alert alert-y" style="margin-bottom:8px">Enter a valid amount.</div>';return;}
+  const u=A.users.find(function(x){return String(x.id)===String(id);});
+  if(!u) return;
+  const newBal=(u.wallet_balance||0)+amt;
+  try{
+    await dbPatch('users','id=eq.'+id,{wallet_balance:newBal});
+    await reload();
+    toast('₦'+amt.toLocaleString()+' credited to '+u.name+' successfully!');
+    closeModal();
+  }catch(e){if(resEl)resEl.innerHTML='<div class="alert alert-r" style="margin-bottom:8px">Error: '+e.message+'</div>';}
+}
+
+async function creditWallet(id,amount){
+  const u=A.users.find(function(x){return String(x.id)===String(id);});
+  if(!u) return;
+  try{
+    await dbPatch('users','id=eq.'+id,{wallet_balance:(u.wallet_balance||0)+amount});
+    await reload();
+    toast('₦'+amount+' credited!');
+    closeModal();
+    setTimeout(function(){viewUser(String(id));},400);
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+
+// ══════════════════════════════════════════
+// APPEAL ACTIONS
+// ══════════════════════════════════════════
+async function unbanViaAppeal(userId,appealId){
+  try{await dbPatch('users','id=eq.'+userId,{banned:false});await resolveAppeal(appealId,true);toast('User unbanned via appeal.');await reload();}
+  catch(e){toast('Error: '+e.message,'e');}
+}
+async function unsuspendViaAppeal(userId,appealId){
+  try{await dbPatch('users','id=eq.'+userId,{suspended_until:null,suspension_reason:null});await resolveAppeal(appealId,true);toast('Suspension lifted via appeal.');await reload();}
+  catch(e){toast('Error: '+e.message,'e');}
+}
+async function resolveAppeal(appealId, silent){
+  try{
+    try{await dbPatch('appeals','id=eq.'+appealId,{status:'resolved'});}
+    catch(e){
+      const s=await dbGet('settings','key=eq.appeals');
+      if(s[0]){const list=(s[0].value||[]).map(a=>(a.id===appealId||a.submitted_at===appealId)?{...a,status:'resolved'}:a);await dbPatch('settings','key=eq.appeals',{value:list});}
+    }
+    if(!silent){toast('Appeal resolved.');await reload();}
+  }catch(e){if(!silent)toast('Error: '+e.message,'e');}
+}
+
+// ══════════════════════════════════════════
+// ANNOUNCEMENT ACTIONS
+// ══════════════════════════════════════════
+function openAnnModal(){
+  showModal(`<div class="mhead"><h3>New Announcement</h3><button class="mclose" onclick="closeModal()">×</button></div>
+  <div class="mbody">
+    <div class="fg"><label class="fl">Title *</label><input id="an-t" placeholder="e.g. New products available!"/></div>
+    <div class="fg"><label class="fl">Message *</label><textarea id="an-m" rows="4" placeholder="Message visible to all users…"></textarea></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="fg"><label class="fl">Type</label><select id="an-c"><option value="info">Info (Blue)</option><option value="promo">Promo (Yellow)</option><option value="urgent">Urgent (Red)</option></select></div>
+      <div class="fg"><label class="fl">Status</label><select id="an-s"><option value="true">Active now</option><option value="false">Save inactive</option></select></div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="saveAnn()">Publish</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>`);
+}
+async function saveAnn(){
+  const t=(document.getElementById('an-t')||{}).value||'', m=(document.getElementById('an-m')||{}).value||'';
+  if(!t||!m){toast('Fill title and message','w');return;}
+  const c=document.getElementById('an-c').value, active=document.getElementById('an-s').value==='true';
+  showLoad(); closeModal();
+  try{await dbPost('announcements',{title:t,message:m,color:c,active});await reload();toast('Announcement published!');}
+  catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+async function toggleAnn(id,current){
+  try{await dbPatch('announcements','id=eq.'+id,{active:!current});await reload();toast('Updated');}
+  catch(e){toast('Error','e');}
+}
+async function deleteAnn(id){
+  if(!confirm('Delete this announcement?')) return;
+  showLoad();
+  try{await dbDel('announcements','id=eq.'+id);await reload();toast('Deleted','w');}
+  catch(e){toast('Error','e');hideLoad();}
+}
+
+// ══════════════════════════════════════════
+// MESSAGING ACTIONS
+// ══════════════════════════════════════════
+function secMessages(){
+  const msgs=A.messages||[];
+  const open=msgs.filter(m=>m.status==='open'&&!m.admin_reply);
+  const replied=msgs.filter(m=>m.admin_reply);
+  const resolved=msgs.filter(m=>m.status==='resolved');
+  const subjects={order:'Order Issue',payment:'Payment Problem',delivery:'Delivery',account:'Account Help',refund:'Refund',other:'Other'};
+  return `<div>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div><div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(15px,3vw,19px);font-weight:800">User Messages</div><div style="color:var(--muted);font-size:12px;margin-top:2px">${msgs.length} total · ${open.length} awaiting reply</div></div>
+      <button class="btn btn-ghost btn-sm" onclick="reload()">Refresh</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:18px">
+      <div class="stcard"><div class="stlabel">Unread</div><div class="stval" style="color:var(--red)">${open.length}</div></div>
+      <div class="stcard"><div class="stlabel">Replied</div><div class="stval" style="color:var(--blue)">${replied.length}</div></div>
+      <div class="stcard"><div class="stlabel">Resolved</div><div class="stval" style="color:var(--green)">${resolved.length}</div></div>
+      <div class="stcard"><div class="stlabel">Total</div><div class="stval" style="color:var(--muted2)">${msgs.length}</div></div>
+    </div>
+    ${msgs.length===0?`<div class="drow" style="text-align:center;padding:50px;color:var(--muted)">No messages from users yet.</div>`:
+    msgs.map(m=>`
+      <div class="drow" style="${!m.admin_reply&&m.status==='open'?'border-color:rgba(239,68,68,.4);':''}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+          <div style="flex:1;min-width:140px">
+            <div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:4px">
+              <span style="color:var(--text);font-weight:700;font-size:13px">${esc(m.user_name)}</span>
+              <span class="bdg bdg-b">${subjects[m.subject]||m.subject}</span>
+              ${m.order_ref?`<span style="color:var(--blue);font-family:monospace;font-size:11px">${esc(m.order_ref)}</span>`:''}
+              <span class="bdg ${m.status==='resolved'?'bdg-g':m.admin_reply?'bdg-p':'bdg-r'}">${m.status==='resolved'?'Resolved':m.admin_reply?'Replied':'Needs Reply'}</span>
+            </div>
+            <div style="color:var(--muted);font-size:11px">${esc(m.user_email)} · ${ago(m.created_at)}</div>
+          </div>
+        </div>
+        <div style="background:var(--bg3);border-radius:8px;padding:10px;margin-bottom:10px">
+          <div style="color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:4px">User says</div>
+          <div style="color:var(--text);font-size:12px;line-height:1.6">${esc(m.message.substring(0,200))}${m.message.length>200?'…':''}</div>
+        </div>
+        ${m.admin_reply?`
+        <div style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:10px;margin-bottom:10px">
+          <div style="color:var(--blue);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:4px">Your Reply</div>
+          <div style="color:var(--text);font-size:12px;line-height:1.6;white-space:pre-wrap">${esc(m.admin_reply.substring(0,150))}${(m.admin_reply||'').length>150?'…':''}</div>
+        </div>`:''}
+        <div style="display:flex;gap:7px;flex-wrap:wrap">
+          <button class="btn btn-primary btn-sm" onclick="openReplyModal('${m.id}')">${m.admin_reply?'Edit Reply':'Reply Now'}</button>
+          ${m.status!=='resolved'?`<button class="btn btn-green btn-sm" onclick="resolveMsg('${m.id}')">Resolve</button>`:''}
+          ${m.user_id?`<button class="btn btn-ghost btn-sm" onclick="viewUser('${m.user_id}')">View User</button>`:''}
+        </div>
+      </div>`).join('')}
+  </div>`;
+}
+function openReplyModal(msgId){
+  const m=(A.messages||[]).find(x=>String(x.id)===String(msgId)); if(!m) return;
+  showModal(`<div class="mhead"><h3>Reply to ${esc(m.user_name)}</h3><button class="mclose" onclick="closeModal()">×</button></div>
+  <div class="mbody">
+    <div style="background:var(--bg3);border-radius:8px;padding:12px;margin-bottom:14px">
+      <div style="color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;margin-bottom:5px">User Message</div>
+      <div style="color:var(--muted);font-size:11px;margin-bottom:4px">${esc(m.user_email)} ${m.order_ref?'· Order: '+esc(m.order_ref):''}</div>
+      <div style="color:var(--text);font-size:13px;line-height:1.6">${esc(m.message)}</div>
+    </div>
+    ${m.admin_reply?`<div style="background:rgba(59,130,246,.08);border:1px solid rgba(59,130,246,.2);border-radius:8px;padding:11px;margin-bottom:14px"><div style="color:var(--blue);font-size:10px;font-weight:700;margin-bottom:5px;text-transform:uppercase">Previous Reply</div><div style="color:var(--text);font-size:12px;line-height:1.6;white-space:pre-wrap">${esc(m.admin_reply)}</div></div>`:''}
+    <div class="fg"><label class="fl">Your Reply</label>
+      <textarea id="reply-txt" rows="5" placeholder="Type your reply...">${m.admin_reply?esc(m.admin_reply):''}</textarea>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="sendReply('${msgId}')">Send Reply</button>
+      <button class="btn btn-green btn-sm" onclick="resolveMsg('${msgId}')">Mark Resolved</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>`, true);
+}
+async function sendReply(msgId){
+  const txt=(document.getElementById('reply-txt')||{}).value||'';
+  if(!txt.trim()){toast('Enter a reply','w');return;}
+  showLoad(); closeModal();
+  try{await dbPatch('messages','id=eq.'+String(msgId),{admin_reply:txt.trim(),status:'replied',read_by_user:false});await reload();toast('Reply sent!');}
+  catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+async function resolveMsg(msgId){
+  showLoad(); closeModal();
+  try{await dbPatch('messages','id=eq.'+String(msgId),{status:'resolved'});await reload();toast('Message resolved.');}
+  catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+function openExtraMsg(orderId){
+  const o=A.orders.find(x=>x.id===orderId); if(!o) return;
+  showModal(`<div class="mhead"><h3>Send Extra Message</h3><button class="mclose" onclick="closeModal()">×</button></div>
+  <div class="mbody">
+    <p style="color:var(--muted);font-size:12px;margin-bottom:14px">Send an additional message to <strong style="color:var(--text)">${esc(o.user_name)}</strong> for order <span style="color:var(--blue);font-family:monospace">${o.id}</span>. This will appear in their Messages tab.</p>
+    <div class="fg"><label class="fl">Message to User</label>
+      <textarea id="extra-msg-txt" rows="6" placeholder="e.g. Your WhatsApp verification code is: 123456&#10;&#10;Or: Here is your number: +44 7700 900001&#10;Password: Abc123XY"></textarea>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-primary" onclick="sendExtraMsg('${orderId}')">Send Message</button>
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+    </div>
+  </div>`);
+}
+async function sendExtraMsg(orderId){
+  const txt=(document.getElementById('extra-msg-txt')||{}).value||'';
+  if(!txt.trim()){toast('Enter a message','w');return;}
+  const o=A.orders.find(x=>x.id===orderId); if(!o) return;
+  showLoad(); closeModal();
+  try{
+    await dbPost('messages',{user_name:o.user_name,user_email:o.user_email,order_ref:orderId,subject:'order',message:'[Admin sent you an extra message for order '+orderId+']',status:'resolved',admin_reply:txt.trim(),created_at:new Date().toISOString()});
+    await reload();
+    toast('Extra message sent to '+o.user_name+'!');
+  }catch(e){toast('Error: '+e.message,'e');hideLoad();}
+}
+
+// ══════════════════════════════════════════
+// SETTINGS ACTIONS
+// ══════════════════════════════════════════
+async function loadSettingsForm(){
+  try{
+    const [pd,cd,sd]=await Promise.all([dbGet('settings','key=eq.payment_details'),dbGet('settings','key=eq.contact_info'),dbGet('settings','key=eq.site_settings')]);
+    if(pd[0]){const v=pd[0].value;sv('s-bank',v.bank);sv('s-acct',v.accountNumber);sv('s-aname',v.accountName);}
+    if(cd[0]){const v=cd[0].value;sv('s-wa1',v.whatsapp1);sv('s-wa2',v.whatsapp2);sv('s-phone',v.phone);sv('s-hours',v.hours);}
+    const el=document.getElementById('site-status-el');
+    if(sd[0]){const v=sd[0].value;sv('s-offmsg',v.offline_msg||'');if(el)el.innerHTML=`Site: <strong style="color:${v.online!==false?'var(--green)':'var(--red)'}">${v.online!==false?'ONLINE':'OFFLINE'}</strong>`;}
+    else{if(el)el.innerHTML=`Site: <strong style="color:var(--green)">ONLINE</strong>`;}
+  }catch(e){}
+}
+function sv(id,val){const e=document.getElementById(id);if(e)e.value=val||'';}
+async function savePayment(){
+  const v={bank:(document.getElementById('s-bank')||{}).value||'',accountNumber:(document.getElementById('s-acct')||{}).value||'',accountName:(document.getElementById('s-aname')||{}).value||''};
+  try{
+    const ex=await dbGet('settings','key=eq.payment_details');
+    if(ex.length) await dbPatch('settings','key=eq.payment_details',{value:v});
+    else await dbPost('settings',{key:'payment_details',value:v});
+    toast('Payment details saved!');
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+async function saveContact(){
+  const v={whatsapp1:(document.getElementById('s-wa1')||{}).value||'',whatsapp2:(document.getElementById('s-wa2')||{}).value||'',phone:(document.getElementById('s-phone')||{}).value||'',hours:(document.getElementById('s-hours')||{}).value||''};
+  try{
+    const ex=await dbGet('settings','key=eq.contact_info');
+    if(ex.length) await dbPatch('settings','key=eq.contact_info',{value:v});
+    else await dbPost('settings',{key:'contact_info',value:v});
+    toast('Contact info saved!');
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+async function setSiteStatus(online){
+  const msg=(document.getElementById('s-offmsg')||{}).value||'';
+  const v={online,offline_msg:msg};
+  try{
+    const ex=await dbGet('settings','key=eq.site_settings');
+    if(ex.length) await dbPatch('settings','key=eq.site_settings',{value:v});
+    else await dbPost('settings',{key:'site_settings',value:v});
+    toast('Site is now '+(online?'ONLINE':'OFFLINE'),(online?'s':'w'));
+    loadSettingsForm();
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+async function changePassword(){
+  const cur=(document.getElementById('s-cpw')||{}).value||'', nw=(document.getElementById('s-npw')||{}).value||'', cf=(document.getElementById('s-cpw2')||{}).value||'';
+  if(!cur||!nw){toast('Fill all password fields','w');return;}
+  if(nw!==cf){toast('Passwords do not match','e');return;}
+  if(nw.length<6){toast('Password too short','e');return;}
+  try{
+    const d=await dbGet('admin_accounts','id=eq.'+A.admin.id);
+    if(!d[0]||d[0].password!==cur){toast('Current password incorrect','e');return;}
+    await dbPatch('admin_accounts','id=eq.'+A.admin.id,{password:nw});
+    A.admin.password=nw; localStorage.setItem('gd_admin',JSON.stringify(A.admin));
+    toast('Password changed!');
+    document.getElementById('s-cpw').value=''; document.getElementById('s-npw').value=''; document.getElementById('s-cpw2').value='';
+  }catch(e){toast('Error: '+e.message,'e');}
+}
+
+// ══════════════════════════════════════════
+// ACTIVITY LOG
+// ══════════════════════════════════════════
+function secActivity(){
+  const recent=[...A.orders].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,25);
+  return `<div>
+    <div style="font-family:'Syne',sans-serif;color:var(--text);font-size:clamp(16px,3vw,20px);font-weight:800;margin-bottom:18px">Activity Log</div>
+    <div class="card">${recent.map(o=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="flex-shrink:0">
+          ${o.status==='delivered'
+            ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="9 12 11 14 15 10"/></svg>'
+            :o.status==='cancelled'
+            ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+            :'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'}
+        </div>
+        <div style="flex:1;min-width:0"><div style="color:var(--text);font-size:12px;font-weight:600">${esc(o.user_name)} placed order</div><div style="color:var(--muted);font-size:11px;font-family:monospace">${o.id} · ${fmt(o.total)}</div></div>
+        <div style="text-align:right;flex-shrink:0">${sBadge(o.status)}<div style="color:var(--muted);font-size:10px;margin-top:3px">${ago(o.created_at)}</div></div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════
+// BIND SECTION EVENTS
+// ══════════════════════════════════════════
+function bindSection(){
+  const os=document.getElementById('ord-search'); if(os) os.oninput=e=>{A.search.orders=e.target.value;renderSection();};
+  const ps=document.getElementById('prod-search'); if(ps) ps.oninput=e=>{A.search.products=e.target.value;renderSection();};
+  const us=document.getElementById('usr-search'); if(us) us.oninput=e=>{A.search.users=e.target.value;renderSection();};
+  if(A.section==='settings') loadSettingsForm();
+}
+function setFilter(type,val){A.filter[type]=val;renderSection();}
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+render();
+</script>
+
+<div id="admin-loader" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9999;align-items:center;justify-content:center"><div style="background:var(--bg2);padding:20px 32px;border-radius:12px;color:var(--text);font-weight:700;font-size:14px;display:flex;align-items:center;gap:10px"><div style="width:18px;height:18px;border:2.5px solid var(--blue);border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite"></div>Processing...</div></div>
+</body>
+</html>
