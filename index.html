@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+<title>Global Digits — Buy Foreign Numbers, SM Accounts &amp; Redeem Gift Cards in Nigeria</title>
+<meta name="description" content="Global Digits is Nigeria's #1 platform for buying foreign virtual numbers, social media accounts, boosting services and redeeming gift cards for Naira instantly."/>
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large"/>
+<meta name="author" content="Global Digits"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Global Digits"/>
+<meta property="og:title" content="Global Digits — Buy Foreign Numbers, SM Accounts &amp; Redeem Gift Cards"/>
+<meta property="og:description" content="Nigeria's #1 platform for foreign virtual numbers, social media accounts, boosting and gift card redemption."/>
+<meta property="og:url" content="https://globaldigits.shop/"/>
+<meta property="og:image" content="https://globaldigits.shop/icon-512.svg"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Global Digits — Foreign Numbers, SM Accounts &amp; Gift Cards Nigeria"/>
+<meta name="twitter:image" content="https://globaldigits.shop/icon-512.svg"/>
+<link rel="canonical" href="https://globaldigits.shop/"/>
+<meta name="theme-color" content="#1a56db"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Global Digits"/>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://globaldigits.shop/#organization","name":"Global Digits","url":"https://globaldigits.shop/","logo":{"@type":"ImageObject","url":"https://globaldigits.shop/icon-512.svg","width":512,"height":512},"contactPoint":{"@type":"ContactPoint","telephone":"+2348081756825","contactType":"customer support","email":"globaldigitssupportteam@gmail.com"}},{"@type":"WebSite","@id":"https://globaldigits.shop/#website","url":"https://globaldigits.shop/","name":"Global Digits","publisher":{"@id":"https://globaldigits.shop/#organization"}}]}</script>
+<script>
+/* Inline manifest */
+(function(){try{var m='{"name":"Global Digits","short_name":"GlobalDigits","display":"standalone","start_url":"./index.html","scope":"./","background_color":"#1a56db","theme_color":"#1a56db","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'192\' height=\'192\'%3E%3Crect width=\'192\' height=\'192\' rx=\'40\' fill=\'%231a56db\'/%3E%3Ctext x=\'96\' y=\'138\' font-family=\'Arial\' font-size=\'108\' font-weight=\'800\' text-anchor=\'middle\' fill=\'white\'%3EG%3C/text%3E%3C/svg%3E","sizes":"192x192","type":"image/svg+xml","purpose":"any maskable"}]}';var b=new Blob([m],{type:'application/json'});var u=URL.createObjectURL(b);var l=document.createElement('link');l.rel='manifest';l.href=u;document.head.appendChild(l);}catch(e){}}());
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;--danger:#ef4444;--warn:#f59e0b;--success:#10b981;--bg:#f4f6fb;--surface:#fff;--surface2:#eef1f8;--border:#e1e6f0;--text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;--sidebar-bg:#0d1321;--topbar-h:56px;--sidebar-w:240px;--bnav-h:60px;--r:12px;--r-sm:8px;--shadow:0 2px 12px rgba(15,25,50,.07);--shadow-md:0 6px 28px rgba(15,25,50,.12);--font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;--t:.18s ease}
+[data-theme="dark"]{--bg:#090d18;--surface:#111827;--surface2:#19223a;--border:#1e2a42;--text:#e8edf8;--text2:#7a87a2;--text3:#3d4d66;--brand-lt:#0f1e3d;--shadow:0 2px 16px rgba(0,0,0,.35);--shadow-md:0 6px 32px rgba(0,0,0,.45)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:hidden;max-width:100vw;scroll-behavior:auto}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}button{border:none;background:none;cursor:pointer;font-family:var(--font)}
+input,select,textarea{font-family:var(--font)}
+.hidden{display:none!important}
+/* LOADING */
+#loadingScreen{position:fixed;inset:0;background:var(--brand);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s ease}
+.loadLogo{font-family:var(--font-d);font-size:52px;font-weight:800;color:#fff;margin-bottom:6px}
+.loadSub{font-size:14px;color:rgba(255,255,255,.7);margin-bottom:28px}
+.loadSpinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+/* AUTH */
+#authScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);padding:16px}
+.authPage{display:none;flex-direction:column;align-items:center;width:100%;max-width:440px;animation:fadeUp .28s ease}
+.authPage.active{display:flex}
+.authLogo{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.authCard{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px 18px;width:100%;box-shadow:var(--shadow-md)}
+@media(min-width:480px){.authCard{padding:32px 28px}}
+.authCardHead{margin-bottom:18px}.authCardHead h1{font-family:var(--font-d);font-size:22px;font-weight:800;margin-bottom:4px}.authCardHead p{color:var(--text2);font-size:13.5px}
+.logoMark{width:34px;height:34px;background:var(--brand);border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:19px;font-weight:800;color:#fff;flex-shrink:0}
+.logoMark.sm{width:27px;height:27px;font-size:15px;border-radius:7px}
+.logoText{font-family:var(--font-d);font-size:18px;color:var(--text)}.logoText strong{color:var(--brand)}
+/* FORMS */
+.fG{margin-bottom:13px}.fG label{display:block;font-size:12px;font-weight:700;color:var(--text2);margin-bottom:5px;text-transform:uppercase;letter-spacing:.04em}
+.fI{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--bg);color:var(--text);font-size:14px;outline:none;transition:border-color var(--t),box-shadow var(--t)}
+.fI:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(26,86,219,.1)}.fI::placeholder{color:var(--text3)}
+select.fI{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239aa3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:36px}
+textarea.fI{resize:vertical;min-height:100px}
+.fR2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:380px){.fR2{grid-template-columns:1fr}}
+.iWrap{position:relative}.iWrap .fI{padding-right:44px}
+.eyeBtn{position:absolute;right:12px;top:50%;transform:translateY(-50%);color:var(--text3);display:flex;border:none;background:none;cursor:pointer}
+.chkLbl{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text2);cursor:pointer}.chkLbl input{accent-color:var(--brand)}
+.mbSm{margin-bottom:12px}.lnk{color:var(--brand);font-weight:600}.lnk.sm{font-size:12.5px}
+.authRow{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.authSwitch{text-align:center;font-size:13px;color:var(--text2);margin-top:4px}
+/* BUTTONS */
+.btnP{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;background:var(--brand);color:#fff;border-radius:var(--r-sm);font-size:14px;font-weight:700;transition:all var(--t);font-family:var(--font);border:none;cursor:pointer}
+.btnP:hover{background:var(--brand-dk);box-shadow:0 4px 16px rgba(26,86,219,.3)}.btnP:active{transform:scale(.98)}.btnP.full{width:100%;margin-bottom:14px}.btnP.sm{padding:8px 14px;font-size:13px}
+.btnOutline{display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border:1.5px solid var(--brand);color:var(--brand);border-radius:var(--r-sm);font-size:13px;font-weight:600;background:var(--brand-lt);transition:all var(--t);font-family:var(--font);cursor:pointer}
+.btnOutline:hover{background:var(--brand);color:#fff}
+/* SIDEBAR */
+#appShell{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--sidebar-bg);position:fixed;left:0;top:0;bottom:0;z-index:300;display:flex;flex-direction:column;transform:translateX(-100%);transition:transform .24s cubic-bezier(.4,0,.2,1);overflow-y:auto}
+.sidebar.open{transform:translateX(0)}
+@media(min-width:900px){.sidebar{transform:translateX(0)}.mainWrap{margin-left:var(--sidebar-w)}.sOv{display:none!important}.sCBtn{display:none!important}}
+.sOv{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:299}.sOv.show{display:block}
+.sHead{display:flex;align-items:center;justify-content:space-between;padding:18px 16px 14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sLogo{display:flex;align-items:center;gap:9px}.sLogo .logoText{font-size:16px;color:#e8edf8}.sLogo .logoText strong{color:#60a5fa}
+.sCBtn{color:#7a87a2;display:flex}
+.sUser{display:flex;align-items:center;gap:11px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
+.uAv{width:36px;height:36px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.uName{font-size:13.5px;font-weight:700;color:#e8edf8}.uEmail{font-size:11.5px;color:#5a6a88;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:158px}
+.sNav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px}
+.nI{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--r-sm);font-size:13.5px;font-weight:500;color:#9aa3b8;transition:all var(--t);cursor:pointer;width:100%;text-align:left}
+.nI svg{flex-shrink:0;opacity:.75}.nI:hover{background:rgba(255,255,255,.06);color:#e8edf8}.nI.active{background:rgba(26,86,219,.25);color:#60a5fa}
+.nI.logout{color:#f87171!important}.nI.logout:hover{background:rgba(239,68,68,.12)!important}
+.sFoot{padding:12px 10px 20px;border-top:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;gap:3px}
+.themeBtn{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:var(--r-sm);font-size:13.5px;font-weight:500;color:#9aa3b8;transition:all var(--t);width:100%;background:none;border:none;cursor:pointer;font-family:var(--font)}
+.themeBtn:hover{background:rgba(255,255,255,.06);color:#e8edf8}
+/* TOPBAR */
+.mainWrap{flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{position:sticky;top:0;z-index:200;height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:12px}
+.menuBtn{color:var(--text2);display:flex}@media(min-width:900px){.menuBtn{display:none}}
+.topbarTitle{font-family:var(--font-d);font-weight:800;font-size:16px;flex:1}
+.topbarRight{display:flex;align-items:center;gap:8px;position:relative}
+.notifBtn{position:relative;width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:all var(--t);background:none;border:none;cursor:pointer}
+.notifBtn:hover{background:var(--surface2);color:var(--brand)}
+.notifDot{position:absolute;top:5px;right:5px;min-width:17px;height:17px;border-radius:100px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid var(--surface);padding:0 3px}
+.topbarAv{width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;cursor:pointer}
+/* NOTIF PANEL */
+.notifPanel{position:absolute;top:calc(100% + 8px);right:0;width:min(330px,calc(100vw - 16px));background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow-md);z-index:400;overflow:hidden;animation:fadeUp .18s ease}
+.nPHead{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-bottom:1px solid var(--border)}
+.nPHead h4{font-family:var(--font-d);font-size:14px;font-weight:800}.nPClear{font-size:12.5px;color:var(--brand);font-weight:600;cursor:pointer}
+.nPList{max-height:340px;overflow-y:auto}
+.nPItem{display:flex;align-items:flex-start;gap:10px;padding:12px 15px;border-bottom:1px solid var(--border);cursor:pointer;transition:background var(--t)}
+.nPItem:last-child{border-bottom:none}.nPItem:hover{background:var(--surface2)}.nPItem.unread{background:var(--brand-lt)}
+[data-theme="dark"] .nPItem.unread{background:#0f1e3d}
+.nPDot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}.nPDot.new{background:var(--brand)}.nPDot.old{background:var(--text3)}
+.nPTxt{font-size:13px;color:var(--text2);line-height:1.5;flex:1}.nPTxt strong{color:var(--text)}
+.nPTime{font-size:11px;color:var(--text3);margin-top:3px}.nPEmpty{padding:28px;text-align:center;color:var(--text3);font-size:13px}
+/* PAGES */
+.pageArea{flex:1;padding:12px 11px;padding-bottom:calc(var(--bnav-h) + 12px);max-width:760px;width:100%;margin:0 auto;overflow-x:hidden}
+@media(min-width:900px){.pageArea{padding:20px 20px 32px}}
+.page{display:none;animation:fadeUp .22s ease}.page.active{display:block}
+.secHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.secHead h3{font-family:var(--font-d);font-size:15px;font-weight:700}
+.mt12{margin-top:12px}.mt16{margin-top:14px}.mt20{margin-top:16px}
+.pgHead{margin-bottom:16px}.pgHead h2{font-family:var(--font-d);font-size:22px;font-weight:800;margin-bottom:4px}.pgHead p{color:var(--text2);font-size:13.5px}
+/* DISCLAIMER */
+.discBar{display:flex;align-items:flex-start;gap:8px;background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r-sm);padding:9px 12px;font-size:11.5px;color:#92400e;line-height:1.5;margin-bottom:12px}
+[data-theme="dark"] .discBar{background:#2a1600;border-color:#7c3300;color:#fbbf24}
+/* WALLET */
+.walletCard{background:linear-gradient(135deg,#1a56db 0%,#0f34a0 100%);border-radius:14px;padding:16px;color:#fff;margin-bottom:14px;position:relative;overflow:hidden}
+.walletBg{position:absolute;right:-30px;top:-30px;width:120px;height:120px;background:rgba(255,255,255,.06);border-radius:50%;pointer-events:none}
+.walletIn{position:relative;z-index:1}
+.walletTop{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.walletLbl{font-size:10.5px;font-weight:600;opacity:.7;text-transform:uppercase;letter-spacing:.07em}
+.walletEye{color:rgba(255,255,255,.65);display:flex;transition:color var(--t);background:none;border:none;cursor:pointer}.walletEye:hover{color:#fff}
+.walletNGN{font-family:var(--font-d);font-size:24px;font-weight:800;letter-spacing:-.5px;margin-bottom:2px}
+.walletUSD{font-size:11px;opacity:.65;margin-bottom:10px}
+.walletBtns{display:flex;gap:8px;flex-wrap:wrap}
+.addFundsBtn,.withdrawBtn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;color:#fff;border-radius:var(--r-sm);font-size:12px;font-weight:700;backdrop-filter:blur(6px);transition:background var(--t);font-family:var(--font);border:none;cursor:pointer}
+.addFundsBtn{background:rgba(255,255,255,.15);border:1.5px solid rgba(255,255,255,.35)}.addFundsBtn:hover{background:rgba(255,255,255,.28)}
+.withdrawBtn{background:rgba(255,255,255,.08);border:1.5px solid rgba(255,255,255,.25)}.withdrawBtn:hover{background:rgba(255,255,255,.2)}
+/* QUICK ACTIONS */
+.qActions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.qaBtn{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 4px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);font-size:10px;font-weight:600;color:var(--text2);transition:all var(--t);cursor:pointer}
+.qaBtn svg{color:var(--brand)}.qaBtn:hover{border-color:var(--brand);background:var(--brand-lt);color:var(--brand);transform:translateY(-2px)}
+/* TRANSACTIONS */
+.txList{display:flex;flex-direction:column;gap:8px}
+.txItem{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;cursor:pointer;transition:all var(--t)}
+.txItem:hover{border-color:var(--brand);box-shadow:var(--shadow)}
+.txIco{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.txIco.cr{background:#dcfce7;color:#16a34a}.txIco.db{background:#fee2e2;color:#dc2626}.txIco.pending{background:#fef3c7;color:#92400e}
+[data-theme="dark"] .txIco.cr{background:#052e16;color:#4ade80}[data-theme="dark"] .txIco.db{background:#450a0a;color:#f87171}[data-theme="dark"] .txIco.pending{background:#451a03;color:#fbbf24}
+.txInfo{flex:1;min-width:0}.txTitle{font-size:13.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.txMeta{font-size:11.5px;color:var(--text3)}
+.txAmt{font-size:14px;font-weight:700;white-space:nowrap}.txAmt.cr{color:var(--success)}.txAmt.db{color:var(--danger)}.txAmt.pending{color:var(--warn)}
+/* ORDER STATS */
+.oStats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.oStat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 6px;text-align:center}
+.oNum{font-family:var(--font-d);font-size:18px;font-weight:800;color:var(--brand)}.oLbl{font-size:10px;color:var(--text3);font-weight:600;margin-top:1px}
+/* NOTIF INLINE */
+.nInline{display:flex;align-items:flex-start;gap:9px;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:var(--r-sm);padding:9px 11px;margin-bottom:6px;cursor:pointer;transition:background var(--t)}
+.nInline:hover{background:var(--surface2)}.nInlineIco{color:var(--brand);flex-shrink:0;margin-top:1px}
+.nInlineTxt{font-size:13px;color:var(--text2);line-height:1.55}.nInlineTxt strong{color:var(--text)}
+/* ADD FUNDS */
+.amountGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+.amountChip{padding:12px 8px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-sm);text-align:center;cursor:pointer;font-weight:700;font-size:14px;color:var(--text2);transition:all var(--t)}
+.amountChip:hover,.amountChip.active{border-color:var(--brand);background:var(--brand-lt);color:var(--brand)}
+.payAccCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;margin-bottom:12px}
+.payAccNum{font-family:var(--font-d);font-size:22px;font-weight:800;letter-spacing:2px;color:var(--text);margin-bottom:10px}
+.copyBtn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;background:var(--brand-lt);color:var(--brand);border:1.5px solid var(--brand);border-radius:var(--r-sm);font-size:12.5px;font-weight:700;transition:all var(--t);font-family:var(--font);cursor:pointer}
+.copyBtn:hover{background:var(--brand);color:#fff}
+.infoBox{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px 16px;font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:14px}
+.infoBox strong{color:var(--text);display:block;margin-bottom:4px}
+/* COUNTRIES */
+.filterRow{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:14px}
+.chipRow{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px}
+.chip{padding:5px 13px;border:1.5px solid var(--border);border-radius:100px;font-size:12.5px;font-weight:600;color:var(--text2);background:var(--surface);cursor:pointer;transition:all var(--t)}
+.chip:hover,.chip.active{border-color:var(--brand);background:var(--brand-lt);color:var(--brand)}
+.countryGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+@media(min-width:480px){.countryGrid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:700px){.countryGrid{grid-template-columns:repeat(4,1fr)}}
+.cCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px;cursor:pointer;transition:all var(--t)}
+.cCard:hover{border-color:var(--brand);transform:translateY(-2px);box-shadow:var(--shadow)}
+.cFlag{font-size:22px;margin-bottom:5px}.cName{font-size:12.5px;font-weight:700;margin-bottom:3px}.cPrice{font-size:12.5px;color:var(--brand);font-weight:700}.cAvail{font-size:10.5px;color:var(--text3)}
+/* STOCK */
+.stockBadge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:700;margin-bottom:6px}
+.stockBadge.instock{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+.stockBadge.lowstock{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.stockBadge.outofstock{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}
+[data-theme="dark"] .stockBadge.instock{background:#052e16;color:#4ade80;border-color:#166534}
+[data-theme="dark"] .stockBadge.lowstock{background:#451a03;color:#fbbf24;border-color:#92400e}
+[data-theme="dark"] .stockBadge.outofstock{background:#450a0a;color:#f87171;border-color:#991b1b}
+.buyBtn.disabled{opacity:.5;cursor:not-allowed;background:var(--surface2)!important;color:var(--text3)!important;border-color:var(--border)!important}
+/* TIER SYSTEM */
+.tierBackBtn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);font-size:13px;font-weight:600;color:var(--text2);transition:all var(--t);font-family:var(--font);cursor:pointer;margin-bottom:14px}
+.tierBackBtn:hover{background:var(--brand-lt);border-color:var(--brand);color:var(--brand)}
+.tierCountryHead{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding:14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.tierFlag{font-size:32px;line-height:1}.tierCountryName{font-family:var(--font-d);font-size:18px;font-weight:800}.tierCountrySub{font-size:12.5px;color:var(--text2);margin-top:2px}
+.tierGrid{display:flex;flex-direction:column;gap:10px}
+.tierCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:all var(--t)}.tierCard:hover{box-shadow:var(--shadow-md)}
+.tierCard.budget{border-left:4px solid #6b7280}.tierCard.standard{border-left:4px solid #3b82f6}.tierCard.premium{border-left:4px solid #8b5cf6}.tierCard.vip{border-left:4px solid #f59e0b}
+.tierCardHead{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;flex-wrap:wrap;gap:8px}
+.tierName{font-family:var(--font-d);font-size:16px;font-weight:800}.tierPrice{font-family:var(--font-d);font-size:22px;font-weight:800;color:var(--brand)}
+.tierBody{padding:0 16px 14px;display:flex;flex-direction:column;gap:7px}
+.reliabilityBadge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:100px;font-size:11.5px;font-weight:700}
+.rel-low{background:#fee2e2;color:#991b1b;border:1px solid #fecaca}.rel-medium{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.rel-high{background:#dcfce7;color:#166534;border:1px solid #86efac}.rel-vip{background:#ede9fe;color:#5b21b6;border:1px solid #c4b5fd}
+[data-theme="dark"] .rel-low{background:#450a0a;color:#f87171;border-color:#991b1b}[data-theme="dark"] .rel-medium{background:#451a03;color:#fbbf24;border-color:#92400e}
+[data-theme="dark"] .rel-high{background:#052e16;color:#4ade80;border-color:#166534}[data-theme="dark"] .rel-vip{background:#2e1065;color:#c4b5fd;border-color:#5b21b6}
+.tierDesc{font-size:12.5px;color:var(--text3);line-height:1.5;font-style:italic}
+.tierTimer{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--warn);font-weight:600;background:#fef3c7;border:1px solid #fde68a;border-radius:var(--r-sm);padding:6px 10px;margin-top:4px}
+[data-theme="dark"] .tierTimer{background:#451a03;border-color:#92400e}
+.tierOrderBtn{width:100%;padding:10px;background:var(--brand);color:#fff;border:none;border-radius:var(--r-sm);font-size:13.5px;font-weight:700;font-family:var(--font);cursor:pointer;transition:all var(--t);margin-top:8px;display:flex;align-items:center;justify-content:center;gap:7px}
+.tierOrderBtn:hover{background:var(--brand-dk)}.tierOrderBtn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed}
+/* ORDER CARDS */
+.ordCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px}
+.ordCardHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.ordID{font-size:12px;font-weight:700;color:var(--text3)}
+.badge{padding:4px 12px;border-radius:100px;font-size:11.5px;font-weight:700}
+.badge.pending{background:#fef3c7;color:#92400e}.badge.processing{background:#dbeafe;color:#1e40af}.badge.delivered,.badge.completed,.badge.approved,.badge.active,.badge.reviewing{background:#d1fae5;color:#065f46}.badge.cancelled,.badge.rejected,.badge.suspended{background:#fee2e2;color:#991b1b}
+[data-theme="dark"] .badge.pending{background:#451a03;color:#fbbf24}[data-theme="dark"] .badge.delivered,[data-theme="dark"] .badge.completed{background:#064e3b;color:#6ee7b7}[data-theme="dark"] .badge.cancelled,[data-theme="dark"] .badge.rejected{background:#450a0a;color:#fca5a5}
+.activationBox{background:var(--surface2);border:1.5px dashed var(--border);border-radius:var(--r-sm);padding:14px;text-align:center;margin-top:10px}
+.activationBox.hasCode{background:var(--brand-lt);border:1.5px solid var(--brand)}
+.activationCode{font-family:var(--font-d);font-size:28px;font-weight:800;letter-spacing:6px;color:var(--brand)}
+.activationWaiting{font-size:13px;color:var(--text3);display:flex;align-items:center;justify-content:center;gap:6px}
+.spinner{width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
+/* PLATFORM TABS */
+.pTabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.pTab{padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;font-weight:700;cursor:pointer;background:var(--surface);color:var(--text2);transition:all var(--t)}
+.pTab.active{background:var(--brand);border-color:var(--brand);color:#fff}
+/* ACCOUNTS GRID */
+.accGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:560px){.accGrid{grid-template-columns:repeat(3,1fr)}}
+.accCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;transition:box-shadow var(--t)}.accCard:hover{box-shadow:var(--shadow-md)}
+.accPlat{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:4px}
+.accType{font-size:13px;font-weight:700;margin-bottom:4px}.accPrice{font-family:var(--font-d);font-size:17px;font-weight:800;color:var(--brand);margin-bottom:4px}
+.buyBtn{display:block;width:100%;text-align:center;padding:8px;background:var(--brand-lt);color:var(--brand);border:1.5px solid var(--brand);border-radius:var(--r-sm);font-size:13px;font-weight:700;transition:all var(--t);font-family:var(--font);cursor:pointer}
+.buyBtn:hover{background:var(--brand);color:#fff}
+/* BOOST */
+.formCard{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px 16px}
+.chipSel{display:flex;flex-wrap:wrap;gap:7px}
+.pSelBtn{padding:7px 14px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:13px;font-weight:600;background:var(--bg);color:var(--text2);cursor:pointer;transition:all var(--t)}
+.pSelBtn.active{background:var(--brand);border-color:var(--brand);color:#fff}
+.pricePrev{display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;font-size:13px;color:var(--text2);margin-bottom:16px}
+.pricePrev strong{font-family:var(--font-d);font-size:18px;font-weight:800;color:var(--brand)}
+/* UPLOAD */
+.uploadZone{border:2px dashed var(--border);border-radius:var(--r);padding:28px 20px;text-align:center;cursor:pointer;transition:all var(--t)}
+.uploadZone:hover{border-color:var(--brand);background:var(--brand-lt)}
+.uploadZone p{font-size:13.5px;color:var(--text2);font-weight:600;margin:8px 0 4px}.uploadZone span{font-size:11.5px;color:var(--text3)}.uploadZone svg{margin:0 auto;color:var(--text3)}
+/* TX TABS */
+.txTabRow{display:flex;gap:5px;margin-bottom:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:2px}
+.txTabRow::-webkit-scrollbar{display:none}
+.txTab{padding:7px 14px;border-radius:100px;font-size:12.5px;font-weight:700;border:1.5px solid var(--border);background:var(--surface);color:var(--text2);white-space:nowrap;transition:all var(--t);cursor:pointer}
+.txTab.active{background:var(--brand);border-color:var(--brand);color:#fff}
+/* SUPPORT */
+.supportChans{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+@media(max-width:360px){.supportChans{grid-template-columns:1fr}}
+.chanCard{display:flex;align-items:center;justify-content:center;gap:9px;padding:15px;border-radius:var(--r);font-size:13.5px;font-weight:700;border:1.5px solid;transition:all var(--t);cursor:pointer;text-decoration:none}
+.chanCard.wa{background:#dcfce7;color:#15803d;border-color:#86efac}.chanCard.wa:hover{background:#15803d;color:#fff}
+.chanCard.em{background:var(--brand-lt);color:var(--brand);border-color:#93c5fd}.chanCard.em:hover{background:var(--brand);color:#fff}
+.sIRow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px}.sIRow:last-child{border-bottom:none}
+.sIRow svg{color:var(--brand);flex-shrink:0}.sILbl{font-weight:600;color:var(--text2);font-size:12px;min-width:65px}.sIVal{color:var(--text);font-weight:600;font-size:13px;word-break:break-all}
+.supportInfoBox{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:16px}
+.faqItem{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;margin-bottom:8px}
+.faqQ{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;cursor:pointer;font-size:13.5px;font-weight:600;transition:background var(--t)}.faqQ:hover{background:var(--surface2)}
+.faqQ svg{flex-shrink:0;transition:transform .2s}.faqItem.open .faqQ svg{transform:rotate(180deg)}
+.faqA{display:none;padding:0 16px 14px;font-size:13px;color:var(--text2);line-height:1.7}.faqItem.open .faqA{display:block}
+/* SETTINGS */
+.setSection{background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:20px;margin-bottom:14px}
+.setTitle{font-family:var(--font-d);font-size:14.5px;font-weight:800;margin-bottom:16px}
+.togRow{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:13.5px;color:var(--text2)}.togRow:last-child{border-bottom:none;padding-bottom:0}
+.tog{position:relative;display:inline-block;width:42px;height:23px}.tog input{opacity:0;width:0;height:0}
+.togSlider{position:absolute;cursor:pointer;inset:0;background:var(--border);border-radius:23px;transition:.28s}
+.togSlider::before{content:'';position:absolute;height:17px;width:17px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.28s}
+.tog input:checked+.togSlider{background:var(--brand)}.tog input:checked+.togSlider::before{transform:translateX(19px)}
+/* MODAL */
+.mOverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:500;display:flex;align-items:flex-end;justify-content:center;padding:0}
+@media(min-width:560px){.mOverlay{align-items:center;padding:20px}}
+.mBox{background:var(--surface);border-radius:20px 20px 0 0;width:100%;max-width:480px;max-height:88vh;overflow-y:auto;padding:24px;animation:slideUp .25s ease}
+@media(min-width:560px){.mBox{border-radius:18px}}
+.mHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.mHead h3{font-family:var(--font-d);font-size:17px;font-weight:800}.mHead button{color:var(--text2);display:flex;background:none;border:none;cursor:pointer}
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;height:var(--bnav-h);background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:200;box-shadow:0 -4px 20px rgba(0,0,0,.07)}
+@media(min-width:900px){.bnav{display:none}}
+.bnItem{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:10px;font-weight:600;color:var(--text3);transition:color var(--t);background:none;border:none;cursor:pointer;font-family:var(--font)}
+.bnItem.active{color:var(--brand)}.bnItem svg{opacity:.7}.bnItem.active svg{opacity:1}
+/* TOAST */
+.toastEl{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#0d1321;color:#fff;padding:10px 22px;border-radius:100px;font-size:13.5px;font-weight:600;z-index:900;white-space:nowrap;box-shadow:0 4px 24px rgba(0,0,0,.3);animation:fadeUp .2s ease}
+@media(min-width:900px){.toastEl{bottom:28px}}
+/* PWA */
+.pwaBar{position:fixed;bottom:var(--bnav-h);left:0;right:0;z-index:250;background:var(--surface);border-top:2px solid var(--brand);padding:12px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 -4px 24px rgba(26,86,219,.15);animation:slideUp .4s ease}
+@media(min-width:900px){.pwaBar{bottom:20px;left:auto;right:20px;width:380px;border:1.5px solid var(--brand);border-radius:var(--r)}}
+.pwaBarIcon{width:42px;height:42px;background:var(--brand);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:22px;font-weight:800;color:#fff;flex-shrink:0}
+.pwaBarText{flex:1;min-width:0}.pwaBarTitle{font-size:14px;font-weight:700;margin-bottom:2px}.pwaBarSub{font-size:12px;color:var(--text2)}
+.pwaBarBtns{display:flex;gap:7px;flex-shrink:0}
+.pwaInstallBtn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:var(--brand);color:#fff;border-radius:var(--r-sm);font-size:12.5px;font-weight:700;transition:all var(--t);font-family:var(--font);border:none;cursor:pointer}
+.pwaInstallBtn:hover{background:var(--brand-dk)}.pwaDismissBtn{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;color:var(--text3);transition:all var(--t);background:none;border:none;cursor:pointer}
+/* DETAIL PAGE */
+.backBtn{display:inline-flex;align-items:center;gap:7px;padding:8px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);font-size:13px;font-weight:600;color:var(--text2);transition:all var(--t);font-family:var(--font);cursor:pointer;margin-bottom:16px}
+.backBtn:hover{background:var(--brand-lt);border-color:var(--brand);color:var(--brand)}
+.detailCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.amtBig{font-family:var(--font-d);font-size:32px;font-weight:800;text-align:center;padding:20px;border-bottom:1px solid var(--border)}
+.amtBig.cr{color:var(--success)}.amtBig.db{color:var(--danger)}.amtBig.pending{color:var(--warn)}
+.detailRow{display:flex;align-items:flex-start;justify-content:space-between;padding:11px 16px;border-bottom:1px solid var(--border);gap:12px}.detailRow:last-child{border-bottom:none}
+.detailLbl{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;flex-shrink:0;padding-top:1px}
+.detailVal{font-size:13.5px;font-weight:600;color:var(--text);text-align:right;word-break:break-all}
+/* MISC */
+.empty{padding:20px 0;text-align:center;color:var(--text3);font-size:13px}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+@media(max-width:360px){body{font-size:13px}.walletNGN{font-size:20px!important}.walletBtns{flex-direction:column}.addFundsBtn,.withdrawBtn{width:100%;justify-content:center}.qActions{grid-template-columns:repeat(2,1fr)}.amountGrid{grid-template-columns:repeat(2,1fr)}.fR2{grid-template-columns:1fr}.countryGrid{grid-template-columns:repeat(2,1fr)}.accGrid{grid-template-columns:1fr}.oStats{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="loadingScreen">
+  <div class="loadLogo">G</div>
+  <div class="loadSub">Global Digits</div>
+  <div class="loadSpinner"></div>
+</div>
+<div id="authScreen" class="hidden">
+  <!-- LOGIN -->
+  <div id="pgLogin" class="authPage active">
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;max-width:440px">
+      <div class="authLogo"><div class="logoMark">G</div><div class="logoText">Global<strong>Digits</strong></div></div>
+      <div class="authCard">
+        <div class="authCardHead"><h1>Welcome back</h1><p>Sign in to your account</p></div>
+        <div class="fG"><label>Email Address</label><input type="email" id="loginEmail" class="fI" placeholder="you@example.com"/></div>
+        <div class="fG"><label>Password</label><div class="iWrap"><input type="password" id="loginPass" class="fI" placeholder="Enter your password"/><button class="eyeBtn" type="button" onclick="togglePwd('loginPass')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+        <div class="authRow"><label class="chkLbl"><input type="checkbox" id="remMe"/> Remember me</label><a href="#" class="lnk" onclick="showAuthPage('pageForgot');return false">Forgot password?</a></div>
+        <button class="btnP full" onclick="doLogin()">Sign In</button>
+        <p class="authSwitch">No account? <a href="#" class="lnk" onclick="showAuthPage('pageRegister');return false">Create one</a></p>
+      </div>
+    </div>
+  </div>
+  <!-- REGISTER -->
+  <div id="pageRegister" class="authPage">
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;max-width:440px">
+      <div class="authLogo"><div class="logoMark">G</div><div class="logoText">Global<strong>Digits</strong></div></div>
+      <div class="authCard">
+        <div class="authCardHead"><h1>Create account</h1><p>Join thousands using Global Digits</p></div>
+        <div class="fR2"><div class="fG"><label>First Name</label><input type="text" id="regFirst" class="fI" placeholder="John"/></div><div class="fG"><label>Last Name</label><input type="text" id="regLast" class="fI" placeholder="Doe"/></div></div>
+        <div class="fG"><label>Email Address</label><input type="email" id="regEmail" class="fI" placeholder="you@example.com"/></div>
+        <div class="fG"><label>Phone Number</label><input type="tel" id="regPhone" class="fI" placeholder="+234 800 000 0000"/></div>
+        <div class="fG"><label>Password</label><input type="password" id="regPass" class="fI" placeholder="Minimum 8 characters"/></div>
+        <div class="fG"><label>Confirm Password</label><input type="password" id="regPass2" class="fI" placeholder="Re-enter password"/></div>
+        <label class="chkLbl mbSm"><input type="checkbox" id="regAgree"/> I agree to the <a href="#" class="lnk">Terms of Service</a></label>
+        <button class="btnP full" onclick="doRegister()">Create Account</button>
+        <p class="authSwitch">Have an account? <a href="#" class="lnk" onclick="showAuthPage('pgLogin');return false">Sign in</a></p>
+      </div>
+    </div>
+  </div>
+  <!-- FORGOT -->
+  <div id="pageForgot" class="authPage">
+    <div style="display:flex;flex-direction:column;align-items:center;width:100%;max-width:440px">
+      <div class="authLogo"><div class="logoMark">G</div><div class="logoText">Global<strong>Digits</strong></div></div>
+      <div class="authCard">
+        <div class="authCardHead"><h1>Reset password</h1><p>Enter your email to receive a reset link</p></div>
+        <div class="fG"><label>Email Address</label><input type="email" id="forgotEmail" class="fI" placeholder="you@example.com"/></div>
+        <button class="btnP full" onclick="doForgot()">Send Reset Link</button>
+        <p class="authSwitch"><a href="#" class="lnk" onclick="showAuthPage('pgLogin');return false">← Back to sign in</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- APP SHELL -->
+<div id="appShell" class="hidden">
+  <aside id="sidebar" class="sidebar">
+    <div class="sHead"><div class="sLogo"><div class="logoMark sm">G</div><div class="logoText">Global<strong>Digits</strong></div></div><button class="sCBtn" onclick="closeSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div class="sUser"><div class="uAv" id="sAvatar">GD</div><div><div class="uName" id="sName">User</div><div class="uEmail" id="sEmail">user@example.com</div></div></div>
+    <nav class="sNav">
+      <a class="nI active" data-page="dashboard" onclick="nav('dashboard');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Dashboard</span></a>
+      <a class="nI" data-page="addfunds" onclick="nav('addfunds');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Add Funds</span></a>
+      <a class="nI" data-page="withdraw" onclick="nav('withdraw');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><polyline points="5 12 12 19 19 12"/><line x1="5" y1="21" x2="19" y2="21"/></svg><span>Withdraw</span></a>
+      <a class="nI" data-page="numbers" onclick="nav('numbers');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.4 2.18 2 2 0 012 .4h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg><span>Buy Virtual Numbers</span></a>
+      <a class="nI" data-page="myorders" onclick="nav('myorders');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>My Orders</span></a>
+      <a class="nI" data-page="accounts" onclick="nav('accounts');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Buy SM Accounts</span></a>
+      <a class="nI" data-page="myaccorders" onclick="nav('myaccorders');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>SM Account Orders</span></a>
+      <a class="nI" data-page="boost" onclick="nav('boost');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span>Boost Social Media</span></a>
+      <a class="nI" data-page="giftcard" onclick="nav('giftcard');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/></svg><span>Redeem Gift Card</span></a>
+      <a class="nI" data-page="transactions" onclick="nav('transactions');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg><span>Transactions</span></a>
+      <a class="nI" data-page="support" onclick="nav('support');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg><span>Support</span></a>
+      <a class="nI" data-page="settings" onclick="nav('settings');return false" href="#"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06-.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span>Settings</span></a>
+    </nav>
+    <div class="sFoot">
+      <button class="themeBtn" onclick="toggleTheme()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/></svg><span id="themeLabel">Dark Mode</span></button>
+      <button class="nI logout" onclick="doLogout()"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>Logout</span></button>
+    </div>
+  </aside>
+  <div id="sOv" class="sOv" onclick="closeSidebar()"></div>
+  <div class="mainWrap">
+    <header class="topbar">
+      <button class="menuBtn" onclick="openSidebar()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+      <div class="topbarTitle" id="topbarTitle">Dashboard</div>
+      <div class="topbarRight">
+        <button class="notifBtn" id="notifBtn" onclick="toggleNotifPanel(event)">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="notifDot" id="notifBadge" style="display:none">0</span>
+        </button>
+        <div id="notifPanel" class="notifPanel hidden">
+          <div class="nPHead"><h4>Notifications</h4><span class="nPClear" onclick="clearNotifs()">Mark all read</span></div>
+          <div class="nPList" id="nPList"><div class="nPEmpty">No notifications yet</div></div>
+        </div>
+        <div class="topbarAv" id="topbarAv" onclick="nav('settings')">GD</div>
+      </div>
+    </header>
+    <main class="pageArea">
+      <!-- DASHBOARD -->
+      <div id="pgDashboard" class="page active">
+        <div class="discBar"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>We are not responsible for WhatsApp bans after verification.</div>
+        <div class="walletCard">
+          <div class="walletIn">
+            <div class="walletTop"><span class="walletLbl">Wallet Balance</span><button class="walletEye" onclick="toggleBal()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+            <div class="walletNGN" id="walletNGN">₦ 0.00</div>
+            <div class="walletUSD" id="walletUSD">≈ $0.00 USD</div>
+            <div class="walletBtns">
+              <button class="addFundsBtn" onclick="nav('addfunds')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Funds</button>
+              <button class="withdrawBtn" onclick="nav('withdraw')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 19V5"/><polyline points="5 12 12 19 19 12"/><line x1="5" y1="21" x2="19" y2="21"/></svg>Withdraw</button>
+            </div>
+          </div>
+          <div class="walletBg"></div>
+        </div>
+        <div class="qActions">
+          <button class="qaBtn" onclick="nav('numbers')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.4 2.18 2 2 0 012 .4h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg><span>Buy Number</span></button>
+          <button class="qaBtn" onclick="nav('boost')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg><span>Boost</span></button>
+          <button class="qaBtn" onclick="nav('accounts')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Accounts</span></button>
+          <button class="qaBtn" onclick="nav('giftcard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/></svg><span>Gift Card</span></button>
+        </div>
+        <div class="secHead"><h3>Recent Transactions</h3><a href="#" class="lnk sm" onclick="nav('transactions');return false">View all</a></div>
+        <div class="txList" id="dashTxList"></div>
+        <div class="secHead mt16"><h3>Order Summary</h3></div>
+        <div class="oStats"><div class="oStat"><div class="oNum" id="statTotal">0</div><div class="oLbl">Total</div></div><div class="oStat"><div class="oNum" id="statCompleted" style="color:var(--success)">0</div><div class="oLbl">Completed</div></div><div class="oStat"><div class="oNum" id="statPending" style="color:var(--warn)">0</div><div class="oLbl">Pending</div></div><div class="oStat"><div class="oNum" id="statCancelled" style="color:var(--danger)">0</div><div class="oLbl">Cancelled</div></div></div>
+        <div class="secHead mt16"><h3>Notifications</h3></div>
+        <div id="notifInline"></div>
+      </div>
+      <!-- ADD FUNDS -->
+      <div id="pgAddfunds" class="page">
+        <div class="pgHead"><h2>Add Funds</h2><p>Transfer to one of the accounts below then notify admin</p></div>
+        <div class="fG"><label>Select or Enter Amount (₦)</label>
+          <div class="amountGrid">
+            <div class="amountChip" onclick="selectAmount(500,this)">₦500</div><div class="amountChip" onclick="selectAmount(1000,this)">₦1,000</div><div class="amountChip" onclick="selectAmount(2000,this)">₦2,000</div>
+            <div class="amountChip" onclick="selectAmount(5000,this)">₦5,000</div><div class="amountChip" onclick="selectAmount(10000,this)">₦10,000</div><div class="amountChip" onclick="selectAmount(20000,this)">₦20,000</div>
+          </div>
+          <input type="number" id="fundAmount" class="fI" placeholder="Or type custom amount..." oninput="clearAmountChips()" min="500"/>
+        </div>
+        <div class="infoBox"><strong>Payment Instructions</strong><p>1. Choose amount · 2. Transfer to account below · 3. Click "I Have Sent Payment" · 4. Admin credits your wallet within minutes</p></div>
+        <div class="secHead"><h3>Payment Accounts</h3></div>
+        <div id="payAccounts"></div>
+        <button class="btnP" style="width:100%;margin-top:8px" onclick="submitDepositRequest()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>I Have Sent Payment</button>
+        <div class="secHead mt16"><h3>Deposit History</h3></div>
+        <div id="depositHistList"></div>
+      </div>
+      <!-- WITHDRAW -->
+      <div id="pgWithdraw" class="page">
+        <div class="pgHead"><h2>Withdraw Funds</h2><p>Withdraw to your bank account (up to 24 hours)</p></div>
+        <div class="formCard">
+          <div class="fG"><label>Amount (₦)</label>
+            <div class="amountGrid" id="wdAmountGrid">
+              <div class="amountChip" onclick="selectWdAmount(500,this)">₦500</div><div class="amountChip" onclick="selectWdAmount(1000,this)">₦1,000</div><div class="amountChip" onclick="selectWdAmount(2000,this)">₦2,000</div>
+              <div class="amountChip" onclick="selectWdAmount(5000,this)">₦5,000</div><div class="amountChip" onclick="selectWdAmount(10000,this)">₦10,000</div><div class="amountChip" onclick="selectWdAmount(20000,this)">₦20,000</div>
+            </div>
+            <input type="number" id="wdAmount" class="fI" placeholder="Or enter custom amount..." oninput="clearWdChips()" min="500" style="margin-top:10px"/>
+          </div>
+          <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:12px 14px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between"><span style="font-size:13px;color:var(--text2)">Available Balance</span><span style="font-family:var(--font-d);font-size:16px;font-weight:800;color:var(--success)" id="wdBalDisplay">₦ 0.00</span></div>
+          <div style="font-family:var(--font-d);font-size:14px;font-weight:800;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)">Payout Account Details</div>
+          <div class="fG"><label>Bank Name</label><input type="text" class="fI" id="wdBank" placeholder="e.g. GTBank, OPay, PalmPay"/></div>
+          <div class="fG"><label>Account Number</label><input type="text" class="fI" id="wdAccNum" placeholder="10-digit account number" maxlength="10" oninput="this.value=this.value.replace(/\D/g,'')"/></div>
+          <div class="fG"><label>Account Name</label><input type="text" class="fI" id="wdAccName" placeholder="e.g. John Doe"/></div>
+          <div class="fG"><label>Note (optional)</label><input type="text" class="fI" id="wdNote" placeholder="e.g. Urgent"/></div>
+          <button class="btnP" style="width:100%" onclick="submitWithdrawal()">Submit Withdrawal Request</button>
+        </div>
+        <div class="secHead mt16"><h3>Withdrawal History</h3></div>
+        <div id="wdHistList"></div>
+      </div>
+      <!-- BUY VIRTUAL NUMBERS -->
+      <div id="pgNumbers" class="page">
+        <div id="numbersCountryView">
+          <div class="pgHead"><h2>Buy Virtual Numbers</h2><p>Select a country then choose your pricing tier</p></div>
+          <div class="filterRow">
+            <input type="text" id="cSearch" class="fI" placeholder="Search country..." oninput="filterCountries()"/>
+            <select class="fI" id="svcFilter" onchange="filterCountries()"><option value="">All Services</option><option>WhatsApp</option><option>Telegram</option><option>Facebook</option><option>TikTok</option><option>Instagram</option><option>Gmail</option><option>Discord</option><option>Twitter/X</option></select>
+          </div>
+          <div class="chipRow" id="svcChips"></div>
+          <div class="countryGrid" id="countryGrid"></div>
+        </div>
+        <div id="numbersTierView" class="hidden">
+          <button class="tierBackBtn" onclick="showCountryList()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back to Countries</button>
+          <div class="tierCountryHead" id="tierCountryHead"></div>
+          <div style="font-size:12.5px;color:var(--text2);margin-bottom:12px">Select a pricing tier to place your order:</div>
+          <div class="tierGrid" id="tierGrid"></div>
+        </div>
+      </div>
+      <!-- MY ORDERS -->
+      <div id="pgMyorders" class="page">
+        <div class="pgHead"><h2>My Orders</h2><p>Track your virtual number orders</p></div>
+        <div id="myOrdersList"></div>
+      </div>
+      <!-- BUY SM ACCOUNTS -->
+      <div id="pgAccounts" class="page">
+        <div class="pgHead"><h2>Buy Social Media Accounts</h2><p>Verified, aged, ready-to-use accounts</p></div>
+        <div class="pTabs" id="accTabs"></div>
+        <div class="accGrid" id="accGrid"></div>
+      </div>
+      <!-- SM ACCOUNT ORDER CONFIRMATION -->
+      <div id="pgAccorder" class="page">
+        <div class="pgHead"><h2>Order Placed</h2><p>Your account purchase was successful</p></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:18px;padding:24px 18px;text-align:center;margin-bottom:16px">
+          <div style="width:60px;height:60px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:var(--font-d);font-size:19px;font-weight:800;margin-bottom:6px">Purchase Successful!</div>
+          <div style="font-size:13.5px;color:var(--text2);margin-bottom:20px">Your order is being processed</div>
+          <div id="accOrderSummary" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:16px;text-align:left"></div>
+          <div style="background:var(--brand-lt);border:1.5px dashed var(--brand);border-radius:var(--r);padding:16px;margin-bottom:16px">
+            <div style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--brand);margin-bottom:8px">Account Details</div>
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text2);font-size:13.5px" id="accOrderDetails"><div class="spinner"></div>Account details will appear here automatically</div>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btnP sm" onclick="nav('myaccorders')">View My Orders</button><button class="btnOutline sm" onclick="nav('accounts')">Buy Another</button></div>
+        </div>
+      </div>
+      <!-- MY ACCOUNT ORDERS -->
+      <div id="pgMyaccorders" class="page">
+        <div class="pgHead"><h2>My Account Orders</h2><p>Track your social media account purchases</p></div>
+        <div id="myAccOrdersList"></div>
+      </div>
+      <!-- BOOST -->
+      <div id="pgBoost" class="page">
+        <div class="pgHead"><h2>Boost Social Media</h2><p>Grow your audience with real engagement</p></div>
+        <div class="formCard">
+          <div class="fG"><label>Select Platform</label><div class="chipSel" id="boostPlats"></div></div>
+          <div class="fG"><label>Boost Type</label><div class="chipSel" id="boostTypes"></div></div>
+          <div class="fG"><label>Profile URL or Username</label><input type="text" id="boostTarget" class="fI" placeholder="https://instagram.com/username"/></div>
+          <div class="fG"><label>Quantity</label><select class="fI" id="boostQty" onchange="calcBoost()"><option value="100">100</option><option value="250">250</option><option value="500" selected>500</option><option value="1000">1,000</option><option value="2500">2,500</option><option value="5000">5,000</option><option value="10000">10,000</option></select></div>
+          <div class="pricePrev"><span>Estimated Cost</span><strong id="boostCost">₦ 2,500</strong></div>
+          <button class="btnP" onclick="submitBoost()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Place Order</button>
+        </div>
+      </div>
+      <!-- BOOST CONFIRMATION -->
+      <div id="pgBoostconf" class="page">
+        <div class="pgHead"><h2>Order Placed</h2><p>Your boost order was submitted successfully</p></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px 18px;text-align:center;margin-bottom:16px">
+          <div style="width:60px;height:60px;background:#dcfce7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div style="font-family:var(--font-d);font-size:19px;font-weight:800;margin-bottom:6px">Order Placed Successfully!</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6">Boosting orders usually take a few minutes or hours to start processing.</div>
+          <div id="boostConfSummary" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:18px;text-align:left"></div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><button class="btnP sm" onclick="nav('transactions')">View Transactions</button><button class="btnOutline sm" onclick="nav('boost')">Place Another</button></div>
+        </div>
+      </div>
+      <!-- GIFT CARD -->
+      <div id="pgGiftcard" class="page">
+        <div class="pgHead"><h2>Redeem Gift Card</h2><p>Exchange your gift cards for Naira</p></div>
+        <div class="formCard">
+          <div class="fG"><label>Gift Card Type</label><select class="fI" id="gcType"><option>Amazon Gift Card</option><option>iTunes / Apple Gift Card</option><option>Google Play Gift Card</option><option>Steam Gift Card</option><option>Razer Gold Gift Card</option><option>Visa Gift Card</option><option>Walmart Gift Card</option></select></div>
+          <div class="fG"><label>Card Country</label><select class="fI" id="gcCountry"><option>United States (USD)</option><option>United Kingdom (GBP)</option><option>Canada (CAD)</option><option>Australia (AUD)</option><option>Brazil (BRL)</option><option>Mexico (MXN)</option></select></div>
+          <div class="fR2"><div class="fG"><label>Card Amount ($)</label><input type="number" class="fI" id="gcAmt" placeholder="50"/></div><div class="fG"><label>Quantity</label><input type="number" class="fI" id="gcQty" placeholder="1" min="1"/></div></div>
+          <div class="fG"><label>Upload Card Image</label><div class="uploadZone" id="uploadZone" onclick="document.getElementById('gcFile').click()"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>Click to upload card image</p><span>JPG, PNG — max 5MB</span></div><input type="file" id="gcFile" accept="image/*" style="display:none" onchange="previewGC(this)"/></div>
+          <div class="secHead"><h4>Payout Details</h4></div>
+          <div class="fG"><label>Bank</label><select class="fI" id="gcBank"><option value="">-- Select Bank --</option><option>Access Bank</option><option>GTBank</option><option>Zenith Bank</option><option>First Bank</option><option>UBA</option><option>OPay</option><option>Kuda Bank</option><option>Moniepoint</option><option>PalmPay</option></select></div>
+          <div class="fG"><label>Account Number</label><input type="text" class="fI" id="gcAccNum" placeholder="10-digit account number" maxlength="10"/></div>
+          <div class="fG"><label>Account Name</label><input type="text" class="fI" id="gcAccName" placeholder="Your account name"/></div>
+          <button class="btnP" onclick="submitGC()">Submit for Review</button>
+        </div>
+      </div>
+      <!-- GIFT CARD STATUS -->
+      <div id="pgGcstatus" class="page">
+        <div class="pgHead"><h2>Gift Card Trade</h2><p>Track your gift card redemption status</p></div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px 18px;text-align:center;margin-bottom:16px">
+          <div id="gcStatusIcon" style="width:60px;height:60px;background:#fef3c7;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><div class="spinner" style="border-color:#f59e0b;border-top-color:transparent"></div></div>
+          <div id="gcStatusTitle" style="font-family:var(--font-d);font-size:19px;font-weight:800;margin-bottom:6px">Order Submitted</div>
+          <div id="gcStatusMsg" style="font-size:13px;color:var(--text2);margin-bottom:18px;line-height:1.6">Gift card trading is currently in progress. Admin will review and process your trade shortly.</div>
+          <div id="gcStatusSummary" style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:14px;text-align:left"></div>
+          <div id="gcPayoutDisplay" class="hidden" style="background:var(--brand-lt);border:1.5px solid var(--brand);border-radius:var(--r);padding:14px;margin-bottom:14px;text-align:center">
+            <div style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--brand);margin-bottom:6px">Payout Amount</div>
+            <div id="gcPayoutAmt" style="font-family:var(--font-d);font-size:28px;font-weight:800;color:var(--brand)">₦0</div>
+          </div>
+          <button class="btnOutline sm" onclick="nav('giftcard')">Submit Another Card</button>
+        </div>
+        <div class="secHead"><h3>My Gift Card Trades</h3></div>
+        <div id="myGcList"></div>
+      </div>
+      <!-- TRANSACTION DETAIL -->
+      <div id="pgTxdetail" class="page">
+        <button class="backBtn" id="txDetailBackBtn" onclick="nav('transactions')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>Back to Transactions</button>
+        <div id="txDetailContent"></div>
+      </div>
+      <!-- TRANSACTIONS -->
+      <div id="pgTransactions" class="page">
+        <div class="pgHead"><h2>Transactions</h2><p>Your complete financial history</p></div>
+        <div class="txTabRow">
+          <button class="txTab active" onclick="filterTx('all',this)">All</button>
+          <button class="txTab" onclick="filterTx('funding',this)">Funding</button>
+          <button class="txTab" onclick="filterTx('purchase',this)">Purchases</button>
+          <button class="txTab" onclick="filterTx('giftcard',this)">Gift Cards</button>
+          <button class="txTab" onclick="filterTx('refund',this)">Refunds</button>
+          <button class="txTab" onclick="filterTx('withdrawal',this)">Withdrawals</button>
+        </div>
+        <div class="txList" id="txMain"></div>
+      </div>
+      <!-- SUPPORT -->
+      <div id="pgSupport" class="page">
+        <div class="pgHead"><h2>Support</h2><p>We're here to help anytime</p></div>
+        <div class="supportInfoBox">
+          <div class="sIRow"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span class="sILbl">WhatsApp</span><span class="sIVal">08081756825</span></div>
+          <div class="sIRow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span class="sILbl">Email</span><span class="sIVal">globaldigitssupportteam@gmail.com</span></div>
+          <div class="sIRow"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="sILbl">Hours</span><span class="sIVal">Mon–Sat, 8AM–10PM WAT</span></div>
+        </div>
+        <div class="supportChans">
+          <a class="chanCard wa" href="https://wa.me/2348081756825" target="_blank"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>Chat on WhatsApp</a>
+          <a class="chanCard em" href="mailto:globaldigitssupportteam@gmail.com"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Send Email</a>
+        </div>
+        <div class="formCard mt12">
+          <div style="font-family:var(--font-d);font-size:15px;font-weight:800;margin-bottom:16px">Submit a Support Ticket</div>
+          <div class="fG"><label>Subject</label><input type="text" id="ticketSubj" class="fI" placeholder="Brief description of your issue"/></div>
+          <div class="fG"><label>Order ID (optional)</label><input type="text" id="ticketOrd" class="fI" placeholder="e.g. ORD-001"/></div>
+          <div class="fG"><label>Message</label><textarea class="fI" id="ticketMsg" rows="4" placeholder="Describe your issue..."></textarea></div>
+          <button class="btnP" onclick="submitTicket()">Submit Ticket</button>
+        </div>
+        <div id="faqList" class="mt16"></div>
+      </div>
+      <!-- SETTINGS -->
+      <div id="pgSettings" class="page">
+        <div class="pgHead"><h2>Settings</h2><p>Manage your account</p></div>
+        <div class="setSection">
+          <div class="setTitle">Profile Information</div>
+          <div class="fR2"><div class="fG"><label>First Name</label><input type="text" class="fI" id="setFirst"/></div><div class="fG"><label>Last Name</label><input type="text" class="fI" id="setLast"/></div></div>
+          <div class="fG"><label>Email Address</label><input type="email" class="fI" id="setEmail"/></div>
+          <div class="fG"><label>Phone Number</label><input type="tel" class="fI" id="setPhone"/></div>
+          <button class="btnP" onclick="saveProfile()">Save Changes</button>
+        </div>
+        <div class="setSection">
+          <div class="setTitle">Change Password</div>
+          <div class="fG"><label>New Password</label><input type="password" class="fI" id="pwNew" placeholder="Minimum 8 characters"/></div>
+          <div class="fG"><label>Confirm New Password</label><input type="password" class="fI" id="pwCon" placeholder="Repeat new password"/></div>
+          <button class="btnP" onclick="changePassword()">Update Password</button>
+        </div>
+      </div>
+    </main>
+    <nav class="bnav">
+      <button class="bnItem active" data-page="dashboard" onclick="nav('dashboard')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span>Home</span></button>
+      <button class="bnItem" data-page="addfunds" onclick="nav('addfunds')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg><span>Add Funds</span></button>
+      <button class="bnItem" data-page="numbers" onclick="nav('numbers')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.4 2.18 2 2 0 012 .4h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg><span>Numbers</span></button>
+      <button class="bnItem" data-page="myorders" onclick="nav('myorders')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg><span>My Orders</span></button>
+      <button class="bnItem" data-page="settings" onclick="nav('settings')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06-.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg><span>Account</span></button>
+    </nav>
+  </div>
+</div>
+<!-- MODALS -->
+<div id="buyModal" class="mOverlay hidden">
+  <div class="mBox"><div class="mHead"><h3 id="mTitle">Buy Number</h3><button onclick="closeModal('buyModal')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div><div id="mBody"></div></div>
+</div>
+<div id="notifModal" class="mOverlay hidden" onclick="closeNotifModal()">
+  <div class="mBox" onclick="event.stopPropagation()" style="max-width:420px">
+    <div class="mHead"><h3>Notification</h3><button onclick="closeNotifModal()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+    <div id="notifModalIcon" style="width:52px;height:52px;border-radius:50%;background:var(--brand-lt);display:flex;align-items:center;justify-content:center;margin-bottom:14px;color:var(--brand)"></div>
+    <div id="notifModalBody" style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:14px"></div>
+    <div id="notifModalMeta" style="font-size:12px;color:var(--text3);margin-bottom:18px"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btnP sm" onclick="closeNotifModal()" style="flex:1">Got it</button><button class="btnOutline sm" onclick="closeNotifModal();nav('transactions')" style="flex:1">View Transactions</button></div>
+  </div>
+</div>
+<div id="pwaBanner" class="pwaBar hidden">
+  <div class="pwaBarIcon">G</div>
+  <div class="pwaBarText"><div class="pwaBarTitle">Install Global Digits</div><div class="pwaBarSub">Add to home screen for faster access</div></div>
+  <div class="pwaBarBtns">
+    <button class="pwaInstallBtn" onclick="triggerPWAInstall()"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><polyline points="5 12 12 19 19 12"/><line x1="5" y1="21" x2="19" y2="21"/></svg>Install</button>
+    <button class="pwaDismissBtn" onclick="dismissPWA()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+  </div>
+</div>
+<div id="toastEl" class="toastEl hidden"></div>
+<script>
+/* ══════════════════════════════════════════
+   SUPABASE + PWA PROMPT (top-level, before anything)
+══════════════════════════════════════════ */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+let deferredPWAPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+  e.preventDefault();
+  deferredPWAPrompt = e;
+  var banner = document.getElementById('pwaBanner');
+  if (banner && !localStorage.getItem('pwa_dismissed')) banner.classList.remove('hidden');
+});
+window.addEventListener('appinstalled', function() {
+  deferredPWAPrompt = null;
+  var b = document.getElementById('pwaBanner');
+  if (b) b.classList.add('hidden');
+  localStorage.setItem('pwa_dismissed', '1');
+});
+
+/* ══════════════════════════════════════════
+   STATE — all variables declared at module scope
+══════════════════════════════════════════ */
+var currentUser = null;
+var balVisible = true;
+var currentSvc = '';
+var currentBoostType = 'Followers';
+var currentBoostPlat = 'Instagram';
+var currentAccTab = '';
+var notifOpen = false;
+var selectedFundAmt = 0;
+var selectedWdAmt = 0;
+var allCountries = [];
+var allAccTypes = [];
+var payAccounts = [];
+var realtimeChannels = [];
+var currentGcId = null;
+var currentTierCountry = null;
+var toastTimer = null;
+
+const BOOST_RATE = {Followers:5, Likes:3, Views:1.5, Comments:8, Shares:4};
+const FAQS = [
+  {q:'How does wallet funding work?', a:'Select amount, transfer to a payment account, click "I Have Sent Payment". Admin verifies and credits your wallet within 5–15 minutes.'},
+  {q:'Are virtual numbers guaranteed?', a:'All numbers are active at delivery. Refunds are issued automatically for undelivered numbers.'},
+  {q:'How long does gift card redemption take?', a:'Reviews take 15–60 minutes during business hours. You are notified once approved.'},
+  {q:'Can I get a refund?', a:'Refunds are issued automatically for failed orders. Completed orders are non-refundable.'},
+];
+
+/* ══ HELPERS ══ */
+function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+function fmtDate(d){ try{ return new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'}); }catch(e){ return d||''; } }
+function fmtTime(d){ try{ return new Date(d).toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return ''; } }
+function copyText(text,msg){ if(navigator.clipboard) navigator.clipboard.writeText(text); toast(msg||'Copied!'); }
+function togglePwd(id){ var i=document.getElementById(id); if(i) i.type=i.type==='password'?'text':'password'; }
+function calcBoostCost(type,qty){ return Math.round(qty*(BOOST_RATE[type]||5)); }
+function closeModal(id){ var el=document.getElementById(id); if(el) el.classList.add('hidden'); }
+
+/* ══ THEME ══ */
+function loadTheme(){
+  var t=localStorage.getItem('gd_theme')||'light';
+  document.documentElement.dataset.theme=t;
+  var lbl=document.getElementById('themeLabel');
+  if(lbl) lbl.textContent=t==='dark'?'Light Mode':'Dark Mode';
+}
+function toggleTheme(){
+  var h=document.documentElement;
+  h.dataset.theme=h.dataset.theme==='dark'?'light':'dark';
+  localStorage.setItem('gd_theme',h.dataset.theme);
+  var lbl=document.getElementById('themeLabel');
+  if(lbl) lbl.textContent=h.dataset.theme==='dark'?'Light Mode':'Dark Mode';
+}
+
+/* ══ TOAST ══ */
+function toast(msg){
+  var el=document.getElementById('toastEl');
+  if(!el) return;
+  el.textContent=msg; el.classList.remove('hidden');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(function(){ el.classList.add('hidden'); },2800);
+}
+
+/* ══ LOADING ══ */
+function hideLoading(){
+  var ls=document.getElementById('loadingScreen');
+  if(ls){ ls.style.opacity='0'; setTimeout(function(){ ls.style.display='none'; },400); }
+}
+
+/* ══ AUTH PAGES ══ */
+function showAuthPage(id){
+  document.querySelectorAll('.authPage').forEach(function(p){ p.classList.remove('active'); });
+  var el=document.getElementById(id);
+  if(el) el.classList.add('active');
+}
+
+/* ══ AUTH ══ */
+async function doLogin(){
+  var email=document.getElementById('loginEmail').value.trim();
+  var pass=document.getElementById('loginPass').value;
+  if(!email||!pass){ toast('Please fill in all fields'); return; }
+  try{
+    var r=await sb.auth.signInWithPassword({email,password:pass});
+    if(r.error) throw r.error;
+    var profile=await loadProfile(r.data.user.id);
+    currentUser={...profile, id:r.data.user.id, email:r.data.user.email};
+    await launchApp();
+  }catch(e){ toast(e.message||'Login failed'); }
+}
+
+async function doRegister(){
+  var first=document.getElementById('regFirst').value.trim();
+  var last=document.getElementById('regLast').value.trim();
+  var email=document.getElementById('regEmail').value.trim();
+  var phone=document.getElementById('regPhone').value.trim();
+  var pass=document.getElementById('regPass').value;
+  var pass2=document.getElementById('regPass2').value;
+  if(!first||!last||!email||!phone||!pass){ toast('Please fill in all fields'); return; }
+  if(pass!==pass2){ toast('Passwords do not match'); return; }
+  if(pass.length<8){ toast('Password must be at least 8 characters'); return; }
+  if(!document.getElementById('regAgree').checked){ toast('Please agree to the Terms of Service'); return; }
+  try{
+    var r=await sb.auth.signUp({email,password:pass,options:{data:{name:first+' '+last,first,last,phone}}});
+    if(r.error) throw r.error;
+    await new Promise(function(res){ setTimeout(res,1000); });
+    await sb.from('profiles').upsert({id:r.data.user.id,name:first+' '+last,first,last,email,phone,balance:0,status:'active'},{onConflict:'id'});
+    await sb.from('notifications').insert({user_id:r.data.user.id,text:'<strong>Welcome to Global Digits!</strong> Your account is ready.',read:false});
+    currentUser={id:r.data.user.id,name:first+' '+last,first,last,email,phone,balance:0,status:'active'};
+    toast('Account created! Welcome, '+first+'!');
+    await launchApp();
+  }catch(e){ toast(e.message||'Registration failed'); }
+}
+
+async function doForgot(){
+  var email=document.getElementById('forgotEmail').value.trim();
+  if(!email){ toast('Please enter your email'); return; }
+  var r=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset.html'});
+  if(r.error){ toast(r.error.message); return; }
+  toast('Reset link sent to '+email);
+}
+
+async function doLogout(){
+  clearRealtimeChannels();
+  await sb.auth.signOut();
+  currentUser=null;
+  document.getElementById('appShell').classList.add('hidden');
+  document.getElementById('authScreen').classList.remove('hidden');
+  showAuthPage('pgLogin');
+}
+
+async function loadProfile(uid){
+  try{
+    var r=await sb.from('profiles').select('*').eq('id',uid).single();
+    return r.data||{id:uid,name:'',first:'',last:'',email:'',phone:'',balance:0};
+  }catch(e){ return {id:uid,name:'',first:'',last:'',email:'',phone:'',balance:0}; }
+}
+
+async function checkSession(){
+  try{
+    var r=await sb.auth.getSession();
+    hideLoading();
+    if(r.data.session){
+      var profile=await loadProfile(r.data.session.user.id);
+      currentUser={...profile, id:r.data.session.user.id, email:r.data.session.user.email};
+      await launchApp();
+    }else{
+      document.getElementById('authScreen').classList.remove('hidden');
+    }
+  }catch(e){
+    hideLoading();
+    document.getElementById('authScreen').classList.remove('hidden');
+  }
+}
+
+/* ══ LAUNCH APP ══ */
+async function launchApp(){
+  hideLoading();
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appShell').classList.remove('hidden');
+  var u=currentUser;
+  var initials=((u.first||u.name||'G')[0]+((u.last||'')[0]||'D')).toUpperCase();
+  var sAv=document.getElementById('sAvatar'); if(sAv) sAv.textContent=initials;
+  var tAv=document.getElementById('topbarAv'); if(tAv) tAv.textContent=initials;
+  var sN=document.getElementById('sName'); if(sN) sN.textContent=u.name||u.email;
+  var sE=document.getElementById('sEmail'); if(sE) sE.textContent=u.email;
+  var sf=document.getElementById('setFirst'); if(sf) sf.value=u.first||'';
+  var sl=document.getElementById('setLast'); if(sl) sl.value=u.last||'';
+  var se=document.getElementById('setEmail'); if(se) se.value=u.email||'';
+  var sp=document.getElementById('setPhone'); if(sp) sp.value=u.phone||'';
+  updateWalletDisplay(u.balance||0);
+  // Load data in parallel — fix: await all before rendering
+  await Promise.all([loadCountries(), loadSmAccTypes(), loadPayAccounts()]);
+  initBoost();
+  initFAQ();
+  await refreshDashboard();
+  setupRealtime();
+  initPWA();
+}
+
+/* ══ NAVIGATION — Fix #1: IDs match page keys exactly ══ */
+var PAGES = {
+  dashboard:   {id:'pgDashboard',   title:'Dashboard'},
+  addfunds:    {id:'pgAddfunds',    title:'Add Funds'},
+  withdraw:    {id:'pgWithdraw',    title:'Withdraw Funds'},
+  numbers:     {id:'pgNumbers',     title:'Buy Virtual Numbers'},
+  myorders:    {id:'pgMyorders',    title:'My Orders'},
+  accounts:    {id:'pgAccounts',    title:'Buy SM Accounts'},
+  accorder:    {id:'pgAccorder',    title:'Order Placed'},
+  myaccorders: {id:'pgMyaccorders', title:'SM Account Orders'},
+  boost:       {id:'pgBoost',       title:'Boost Social Media'},
+  boostconf:   {id:'pgBoostconf',   title:'Boost Order Placed'},
+  giftcard:    {id:'pgGiftcard',    title:'Redeem Gift Card'},
+  gcstatus:    {id:'pgGcstatus',    title:'Gift Card Trade Status'},
+  txdetail:    {id:'pgTxdetail',    title:'Transaction Details'},
+  transactions:{id:'pgTransactions',title:'Transactions'},
+  support:     {id:'pgSupport',     title:'Support'},
+  settings:    {id:'pgSettings',    title:'Settings'},
+};
+
+async function nav(key){
+  var cfg=PAGES[key];
+  if(!cfg){ console.warn('nav: unknown page key:',key); return; }
+  // Hide all pages
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  // Show target page
+  var el=document.getElementById(cfg.id);
+  if(!el){ console.warn('nav: element not found:',cfg.id); return; }
+  el.classList.add('active');
+  // Update title
+  var tt=document.getElementById('topbarTitle'); if(tt) tt.textContent=cfg.title;
+  // Update nav indicators
+  document.querySelectorAll('.nI[data-page]').forEach(function(n){ n.classList.toggle('active',n.dataset.page===key); });
+  document.querySelectorAll('.bnItem[data-page]').forEach(function(b){ b.classList.toggle('active',b.dataset.page===key); });
+  closeSidebar(); closeNotifPanel(); window.scrollTo(0,0);
+  // Page-specific load with error boundaries
+  try{
+    if(key==='addfunds'){ renderPayAccounts(); await loadDepositHistory(); }
+    if(key==='withdraw'){ updateWalletDisplay(currentUser&&currentUser.balance||0); await loadWdHistory(); }
+    if(key==='numbers'){ renderCountries(allCountries); initSvcChips(); }
+    if(key==='myorders') await loadMyOrders();
+    if(key==='accounts') renderAccounts(currentAccTab||'');
+    if(key==='myaccorders') await loadMyAccOrders();
+    if(key==='transactions') await loadTransactions('all');
+    if(key==='gcstatus') await loadMyGiftCards();
+  }catch(e){ console.error('nav load error:',e); }
+}
+
+function openSidebar(){ document.getElementById('sidebar').classList.add('open'); document.getElementById('sOv').classList.add('show'); }
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); document.getElementById('sOv').classList.remove('show'); }
+
+/* ══ REALTIME — Fix #7: proper cleanup on logout ══ */
+function clearRealtimeChannels(){
+  realtimeChannels.forEach(function(c){ try{ sb.removeChannel(c); }catch(e){} });
+  realtimeChannels=[];
+}
+
+function setupRealtime(){
+  if(!currentUser) return;
+  clearRealtimeChannels();
+  var uid=currentUser.id;
+
+  function addCh(ch){ realtimeChannels.push(ch); }
+
+  // Profile balance
+  addCh(sb.channel('prof_'+uid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:'id=eq.'+uid},function(p){
+    if(currentUser){ currentUser.balance=p.new.balance||0; updateWalletDisplay(currentUser.balance); }
+  }).subscribe());
+
+  // Notifications
+  addCh(sb.channel('notif_'+uid).on('postgres_changes',{event:'INSERT',schema:'public',table:'notifications',filter:'user_id=eq.'+uid},function(p){
+    renderNewNotif(p.new);
+  }).subscribe());
+
+  // Orders (number/OTP)
+  addCh(sb.channel('ord_'+uid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'orders',filter:'user_id=eq.'+uid},function(){
+    if(document.getElementById('pgMyorders').classList.contains('active')) loadMyOrders();
+  }).subscribe());
+
+  // SM account orders
+  addCh(sb.channel('acc_'+uid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'acc_orders',filter:'user_id=eq.'+uid},function(p){
+    if(document.getElementById('pgMyaccorders').classList.contains('active')) loadMyAccOrders();
+    if(p.new.account_details){ var d=document.getElementById('accOrderDetails'); if(d) renderAccOrderDetails(p.new); }
+  }).subscribe());
+
+  // Deposits
+  addCh(sb.channel('dep_'+uid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'deposits',filter:'user_id=eq.'+uid},function(){
+    loadDepositHistory(); refreshDashboard();
+  }).subscribe());
+
+  // Withdrawals
+  addCh(sb.channel('wd_'+uid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'withdrawals',filter:'user_id=eq.'+uid},function(){
+    loadWdHistory();
+  }).subscribe());
+
+  // Gift cards (status updates)
+  addCh(sb.channel('gc_'+uid).on('postgres_changes',{event:'UPDATE',schema:'public',table:'gift_cards',filter:'user_id=eq.'+uid},function(){
+    loadMyGiftCards();
+  }).subscribe());
+
+  // Country prices (admin changes → instant update)
+  addCh(sb.channel('cp_pub').on('postgres_changes',{event:'*',schema:'public',table:'country_prices'},async function(){
+    await loadCountries(); filterCountries();
+  }).subscribe());
+
+  // SM account types (admin price changes → instant update)
+  addCh(sb.channel('sm_pub').on('postgres_changes',{event:'*',schema:'public',table:'sm_account_types'},async function(){
+    await loadSmAccTypes(); renderAccounts(currentAccTab);
+  }).subscribe());
+
+  // Number tiers (admin changes → instant update)
+  addCh(sb.channel('nt_pub').on('postgres_changes',{event:'*',schema:'public',table:'number_tiers'},async function(){
+    if(currentTierCountry) await openCountryTiers(currentTierCountry);
+  }).subscribe());
+
+  // Payment accounts
+  addCh(sb.channel('pa_pub').on('postgres_changes',{event:'*',schema:'public',table:'payment_accounts'},async function(){
+    await loadPayAccounts(); renderPayAccounts();
+  }).subscribe());
+}
+
+/* ══ WALLET ══ */
+function updateWalletDisplay(bal){
+  var ngn=document.getElementById('walletNGN');
+  var usd=document.getElementById('walletUSD');
+  var wdb=document.getElementById('wdBalDisplay');
+  if(ngn) ngn.textContent=balVisible?'₦ '+(bal||0).toLocaleString('en-NG',{minimumFractionDigits:2}):'₦ ••••••';
+  if(usd) usd.textContent=balVisible?'≈ $'+((bal||0)/1601).toFixed(2)+' USD':'≈ $•••• USD';
+  if(wdb) wdb.textContent='₦ '+(bal||0).toLocaleString('en-NG',{minimumFractionDigits:2});
+}
+function toggleBal(){ balVisible=!balVisible; updateWalletDisplay(currentUser&&currentUser.balance||0); }
+
+/* ══ DASHBOARD ══ */
+async function refreshDashboard(){
+  if(!currentUser) return;
+  try{
+    var p=await loadProfile(currentUser.id);
+    currentUser={...currentUser,...p};
+    updateWalletDisplay(currentUser.balance||0);
+    var txR=await sb.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(5);
+    renderTxList('dashTxList',txR.data||[]);
+    var oR=await sb.from('orders').select('id,status').eq('user_id',currentUser.id);
+    var orders=oR.data||[];
+    var st=document.getElementById('statTotal'); if(st) st.textContent=orders.length;
+    var sc=document.getElementById('statCompleted'); if(sc) sc.textContent=orders.filter(function(o){return o.status==='completed'||o.status==='delivered';}).length;
+    var sp=document.getElementById('statPending'); if(sp) sp.textContent=orders.filter(function(o){return o.status==='pending'||o.status==='processing';}).length;
+    var sca=document.getElementById('statCancelled'); if(sca) sca.textContent=orders.filter(function(o){return o.status==='cancelled';}).length;
+    var nR=await sb.from('notifications').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(3);
+    renderNotifInline(nR.data||[]);
+    renderNotifBadge(nR.data||[]);
+  }catch(e){ console.error('refreshDashboard error:',e); }
+}
+
+/* ══ TX LIST — Fix #2: defined here, used everywhere ══ */
+function renderTxList(elId, txs){
+  var el=document.getElementById(elId);
+  if(!el) return;
+  if(!txs||!txs.length){ el.innerHTML='<p class="empty">No transactions yet</p>'; return; }
+  el.innerHTML=txs.map(function(tx){
+    var isPending=tx.status==='pending';
+    var isRejected=tx.status==='rejected';
+    var cls=isPending?'pending':isRejected?'db':tx.direction==='cr'?'cr':'db';
+    var amt=Math.abs(tx.amount||0);
+    var amtLabel=isPending?'Pending':isRejected?'Rejected':tx.direction==='cr'?'+\u20a6'+amt.toLocaleString():'\u2212\u20a6'+amt.toLocaleString();
+    var ico=isPending
+      ?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
+      :tx.direction==='cr'
+        ?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>'
+        :'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg>';
+    return '<div class="txItem" onclick="openTxDetail(\''+encodeURIComponent(JSON.stringify(tx))+'\')">'
+      +'<div class="txIco '+cls+'">'+ico+'</div>'
+      +'<div class="txInfo"><div class="txTitle">'+(tx.title||'Transaction')+'</div><div class="txMeta">'+fmtDate(tx.created_at)+'</div></div>'
+      +'<div class="txAmt '+cls+'">'+amtLabel+'</div>'
+      +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text3);flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>'
+      +'</div>';
+  }).join('');
+}
+
+/* ══ TX DETAIL — Fix #6: correct ID pgTxdetail ══ */
+function openTxDetail(encoded){
+  var tx; try{ tx=JSON.parse(decodeURIComponent(encoded)); }catch(e){ return; }
+  var isPending=tx.status==='pending';
+  var isRejected=tx.status==='rejected';
+  var cls=isPending?'pending':isRejected?'db':tx.direction==='cr'?'cr':'db';
+  var amt=Math.abs(tx.amount||0);
+  var amtLabel=isPending?'Pending':isRejected?'Rejected':tx.direction==='cr'?'+\u20a6'+amt.toLocaleString():'\u2212\u20a6'+amt.toLocaleString();
+  var statusLabel=isPending?'Pending':isRejected?'Rejected':cap(tx.status||'Completed');
+  var statusColor=isPending?'var(--warn)':isRejected?'var(--danger)':'var(--success)';
+  var methodMap={funding:'Wallet Funding',purchase:'Wallet Balance',withdrawal:'Bank Transfer',giftcard:'Gift Card',refund:'Auto Refund'};
+  var el=document.getElementById('txDetailContent');
+  if(el) el.innerHTML='<div class="detailCard">'
+    +'<div class="amtBig '+cls+'">'+amtLabel+'</div>'
+    +'<div class="detailRow"><span class="detailLbl">Status</span><span class="detailVal" style="color:'+statusColor+';font-weight:800">'+statusLabel+'</span></div>'
+    +'<div class="detailRow"><span class="detailLbl">Description</span><span class="detailVal">'+(tx.title||'Transaction')+'</span></div>'
+    +'<div class="detailRow"><span class="detailLbl">Category</span><span class="detailVal">'+cap(tx.category||'purchase')+'</span></div>'
+    +'<div class="detailRow"><span class="detailLbl">Payment Method</span><span class="detailVal">'+(methodMap[tx.category]||'Wallet Balance')+'</span></div>'
+    +'<div class="detailRow"><span class="detailLbl">Amount</span><span class="detailVal" style="font-family:var(--font-d);font-weight:800">\u20a6'+amt.toLocaleString()+'</span></div>'
+    +'<div class="detailRow"><span class="detailLbl">Date</span><span class="detailVal">'+fmtDate(tx.created_at)+'</span></div>'
+    +'<div class="detailRow"><span class="detailLbl">Time</span><span class="detailVal">'+fmtTime(tx.created_at)+'</span></div>'
+    +(tx.id?'<div class="detailRow"><span class="detailLbl">Tx ID</span><span class="detailVal" style="font-size:11px;font-family:monospace">'+tx.id+'</span></div>':'')
+    +'</div>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btnP sm" onclick="nav(\'transactions\')" style="flex:1">All Transactions</button></div>';
+  nav('txdetail');
+}
+
+/* ══ NOTIFICATIONS — Fix #2: all functions defined ══ */
+function renderNewNotif(n){
+  var el=document.getElementById('nPList');
+  if(!el) return;
+  if(el.querySelector('.nPEmpty')) el.innerHTML='';
+  var item=document.createElement('div');
+  item.className='nPItem unread';
+  item.innerHTML='<div class="nPDot new"></div><div style="flex:1"><div class="nPTxt">'+n.text+'</div><div class="nPTime">Just now</div></div>';
+  item.onclick=function(){ openNotifDetail(n.id,n.text,n.created_at||new Date().toISOString()); };
+  el.prepend(item);
+  var badge=document.getElementById('notifBadge');
+  if(badge){ badge.textContent=parseInt(badge.textContent||'0')+1; badge.style.display='flex'; }
+}
+
+function renderNotifBadge(notifs){
+  var unread=(notifs||[]).filter(function(n){return !n.read;}).length;
+  var badge=document.getElementById('notifBadge');
+  if(badge){ badge.textContent=unread; badge.style.display=unread>0?'flex':'none'; }
+}
+
+function renderNotifInline(notifs){
+  var el=document.getElementById('notifInline');
+  if(!el) return;
+  if(!notifs||!notifs.length){ el.innerHTML='<p class="empty">No notifications</p>'; return; }
+  el.innerHTML=notifs.map(function(n){
+    return '<div class="nInline" onclick="openNotifDetail(\''+n.id+'\',\''+encodeURIComponent(n.text)+'\',\''+n.created_at+'\')">'
+      +'<div class="nInlineIco"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div>'
+      +'<div class="nInlineTxt">'+n.text+'</div></div>';
+  }).join('');
+}
+
+async function loadNotifs(){
+  if(!currentUser) return [];
+  try{ var r=await sb.from('notifications').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(20); return r.data||[]; }
+  catch(e){ return []; }
+}
+
+async function renderNotifPanel(){
+  var notifs=await loadNotifs();
+  var el=document.getElementById('nPList');
+  if(!el) return;
+  if(!notifs.length){ el.innerHTML='<div class="nPEmpty">No notifications yet</div>'; return; }
+  el.innerHTML=notifs.map(function(n){
+    return '<div class="nPItem '+(n.read?'':'unread')+'" onclick="openNotifDetail(\''+n.id+'\',\''+encodeURIComponent(n.text)+'\',\''+n.created_at+'\')">'
+      +'<div class="nPDot '+(n.read?'old':'new')+'"></div>'
+      +'<div style="flex:1"><div class="nPTxt">'+n.text+'</div><div class="nPTime">'+fmtDate(n.created_at)+'</div></div>'
+      +'<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--text3);flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>'
+      +'</div>';
+  }).join('');
+  renderNotifBadge(notifs);
+}
+
+async function markNotifRead(id, el){
+  try{ await sb.from('notifications').update({read:true}).eq('id',id); }catch(e){}
+  if(el){ el.classList.remove('unread'); var dot=el.querySelector('.nPDot'); if(dot){ dot.classList.remove('new'); dot.classList.add('old'); } }
+}
+
+async function clearNotifs(){
+  if(!currentUser) return;
+  try{ await sb.from('notifications').update({read:true}).eq('user_id',currentUser.id); }catch(e){}
+  await renderNotifPanel();
+}
+
+function toggleNotifPanel(e){
+  e.stopPropagation();
+  notifOpen=!notifOpen;
+  var p=document.getElementById('notifPanel');
+  if(p) p.classList.toggle('hidden',!notifOpen);
+  if(notifOpen) renderNotifPanel();
+}
+function closeNotifPanel(){ notifOpen=false; var p=document.getElementById('notifPanel'); if(p) p.classList.add('hidden'); }
+document.addEventListener('click',function(e){
+  var btn=document.getElementById('notifBtn');
+  if(notifOpen&&btn&&!btn.contains(e.target)) closeNotifPanel();
+});
+
+/* ══ NOTIFICATION POPUP ══ */
+function closeNotifModal(){ var el=document.getElementById('notifModal'); if(el) el.classList.add('hidden'); }
+
+async function openNotifDetail(notifId, notifText, notifDate){
+  var text=decodeURIComponent(notifText||'');
+  try{ await sb.from('notifications').update({read:true}).eq('id',notifId); }catch(e){}
+  var badge=document.getElementById('notifBadge');
+  if(badge){ var c=Math.max(0,parseInt(badge.textContent||'0')-1); badge.textContent=c; badge.style.display=c>0?'flex':'none'; }
+  var lower=text.toLowerCase();
+  var iconSvg,iconBg='var(--brand-lt)',iconColor='var(--brand)';
+  if(lower.includes('approved')||lower.includes('credited')||lower.includes('redeemed')){
+    iconSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>';iconBg='#dcfce7';iconColor='#16a34a';
+  }else if(lower.includes('rejected')||lower.includes('failed')||lower.includes('cancel')){
+    iconSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';iconBg='#fee2e2';iconColor='#dc2626';
+  }else if(lower.includes('refund')){
+    iconSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>';iconBg='#dcfce7';iconColor='#16a34a';
+  }else if(lower.includes('order')||lower.includes('number')||lower.includes('otp')){
+    iconSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.4 2.18 2 2 0 012 .4h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>';
+  }else if(lower.includes('withdraw')){
+    iconSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><polyline points="5 12 12 19 19 12"/><line x1="5" y1="21" x2="19" y2="21"/></svg>';iconBg='#fef3c7';iconColor='#92400e';
+  }else if(lower.includes('gift')||lower.includes('card')){
+    iconSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/></svg>';iconBg='#ede9fe';iconColor='#5b21b6';
+  }else{
+    iconSvg='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>';
+  }
+  var ico=document.getElementById('notifModalIcon'); if(ico){ico.innerHTML=iconSvg;ico.style.background=iconBg;ico.style.color=iconColor;}
+  var bod=document.getElementById('notifModalBody'); if(bod) bod.innerHTML=text;
+  var met=document.getElementById('notifModalMeta'); if(met) met.textContent=fmtDate(notifDate)+' at '+fmtTime(notifDate);
+  closeNotifPanel();
+  var nm=document.getElementById('notifModal'); if(nm) nm.classList.remove('hidden');
+}
+
+/* ══ COUNTRIES ══ */
+async function loadCountries(){
+  try{
+    var r=await sb.from('country_prices').select('*').eq('active',true).order('name');
+    allCountries=r.data||[];
+  }catch(e){ allCountries=[]; }
+}
+
+function initSvcChips(){
+  var svcs=['WhatsApp','Telegram','Facebook','TikTok','Instagram','Gmail','Discord','Twitter/X'];
+  var el=document.getElementById('svcChips');
+  if(!el) return;
+  el.innerHTML=['All',...svcs].map(function(s,i){
+    return '<div class="chip'+(i===0?' active':'')+'" onclick="selectSvc(\''+s+'\',this)">'+s+'</div>';
+  }).join('');
+  renderCountries(allCountries);
+}
+
+function selectSvc(svc,el){
+  document.querySelectorAll('#svcChips .chip').forEach(function(c){c.classList.remove('active');});
+  el.classList.add('active');
+  currentSvc=svc==='All'?'':svc;
+  var sf=document.getElementById('svcFilter'); if(sf) sf.value=currentSvc;
+  filterCountries();
+}
+
+function filterCountries(){
+  var q=(document.getElementById('cSearch')||{}).value||'';
+  q=q.toLowerCase();
+  var svc=currentSvc||(document.getElementById('svcFilter')||{}).value||'';
+  renderCountries(allCountries.filter(function(c){
+    return c.name.toLowerCase().includes(q)&&(!svc||((c.services||[]).includes(svc)));
+  }));
+}
+
+function stockBadgeHtml(stock){
+  if((stock||0)<=0) return '<span class="stockBadge outofstock">\u2715 Out of Stock</span>';
+  if((stock||0)<=5) return '<span class="stockBadge lowstock">\u26a0 Low Stock ('+stock+' left)</span>';
+  return '<span class="stockBadge instock">\u2713 In Stock ('+stock+')</span>';
+}
+
+function renderCountries(list){
+  var el=document.getElementById('countryGrid'); if(!el) return;
+  if(!list||!list.length){ el.innerHTML='<p class="empty" style="grid-column:1/-1">No countries found</p>'; return; }
+  el.innerHTML=list.map(function(c){
+    var avail=c.available||0;
+    var oos=avail<=0;
+    var low=avail>0&&avail<=5;
+    var style=oos?'opacity:.55;cursor:not-allowed':'cursor:pointer';
+    return '<div class="cCard" style="'+style+'" onclick="'+(oos?'toast(\'No numbers available for '+c.name+' right now\')':'openCountryTiers(this)')+'"'
+      +' data-country="'+encodeURIComponent(JSON.stringify(c))+'">'
+      +'<div class="cFlag">'+(c.flag||'\uD83C\uDF0D')+'</div>'
+      +'<div class="cName">'+c.name+'</div>'
+      +'<div class="cPrice">From \u20a6'+(c.price||0).toLocaleString()+'/OTP</div>'
+      +(oos?'<div style="font-size:10.5px;color:#991b1b;font-weight:700">\u2298 Out of Stock</div>'
+           :low?'<div style="font-size:10.5px;color:#92400e;font-weight:700">\u26a0 Low Stock ('+avail+')</div>'
+               :'<div class="cAvail">'+avail+' available \u00b7 Tap for tiers</div>')
+      +'</div>';
+  }).join('');
+}
+
+/* ══ TIER SYSTEM — Fix #5: no JSON in onclick, use data attr ══ */
+function showCountryList(){
+  currentTierCountry=null;
+  var cv=document.getElementById('numbersCountryView'); if(cv) cv.classList.remove('hidden');
+  var tv=document.getElementById('numbersTierView'); if(tv) tv.classList.add('hidden');
+}
+
+async function openCountryTiers(el){
+  var data=el&&el.dataset&&el.dataset.country;
+  var country; try{ country=JSON.parse(decodeURIComponent(data||'{}')); }catch(e){ return; }
+  currentTierCountry=country;
+  var cv=document.getElementById('numbersCountryView'); if(cv) cv.classList.add('hidden');
+  var tv=document.getElementById('numbersTierView'); if(tv) tv.classList.remove('hidden');
+  var head=document.getElementById('tierCountryHead');
+  if(head) head.innerHTML='<div class="tierFlag">'+(country.flag||'\uD83C\uDF0D')+'</div><div><div class="tierCountryName">'+country.name+'</div><div class="tierCountrySub">'+((country.services||[]).slice(0,4).join(' \u00b7'))+'</div></div>';
+  var grid=document.getElementById('tierGrid'); if(grid) grid.innerHTML='<p class="empty">Loading tiers...</p>';
+  try{
+    var r=await sb.from('number_tiers').select('*').eq('country',country.name).eq('active',true).order('price',{ascending:true});
+    renderTierView(country,r.data||[]);
+  }catch(e){ var g=document.getElementById('tierGrid'); if(g) g.innerHTML='<p class="empty">Error loading tiers. Please try again.</p>'; }
+  window.scrollTo(0,0);
+}
+
+function reliabilityBadge(level){
+  var map={low:{cls:'rel-low',label:'Low Reliability'},medium:{cls:'rel-medium',label:'Medium Reliability'},high:{cls:'rel-high',label:'High Reliability'},vip:{cls:'rel-vip',label:'VIP Reliability'}};
+  var r=map[(level||'medium').toLowerCase()]||map.medium;
+  return '<span class="reliabilityBadge '+r.cls+'">'+r.label+'</span>';
+}
+function tierClass(name){ var n=(name||'').toLowerCase(); if(n.includes('vip'))return 'vip'; if(n.includes('premium'))return 'premium'; if(n.includes('standard'))return 'standard'; return 'budget'; }
+
+function renderTierView(country,tiers){
+  var el=document.getElementById('tierGrid'); if(!el) return;
+  if(!tiers||!tiers.length){
+    el.innerHTML='<div style="text-align:center;padding:28px 16px;color:var(--text3);font-size:13.5px">No pricing tiers available for '+country.name+' right now.<br><span style="font-size:12px">Please check back later or contact support.</span></div>';
+    return;
+  }
+  el.innerHTML=tiers.map(function(t){
+    var oos=(t.quantity||0)<=0;
+    return '<div class="tierCard '+tierClass(t.tier_name)+'">'
+      +'<div class="tierCardHead"><div><div class="tierName">'+t.tier_name+'</div>'+reliabilityBadge(t.reliability)+'</div><div class="tierPrice">\u20a6'+(t.price||0).toLocaleString()+'</div></div>'
+      +'<div class="tierBody">'
+      +'<div>'+stockBadgeHtml(t.quantity||0)+'</div>'
+      +(t.description?'<div class="tierDesc">'+t.description+'</div>':'')
+      +'<div class="tierTimer"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>You have 30 minutes to input number and request code</div>'
+      +'<button class="tierOrderBtn" '+(oos?'disabled':'')+' onclick="orderTier(\''+t.id+'\',\''+encodeURIComponent(t.tier_name)+'\','+t.price+',\''+t.reliability+'\')">'+
+      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>'
+      +(oos?'Out of Stock':'Order This Tier')+'</button>'
+      +'</div></div>';
+  }).join('');
+}
+
+/* ══ ORDER TIER ══ */
+async function orderTier(tierId,encTierName,price,reliability){
+  var tierName=decodeURIComponent(encTierName);
+  var country=currentTierCountry;
+  if(!currentUser||!country){ toast('Please log in'); return; }
+  if((currentUser.balance||0)<price){ toast('Insufficient balance. Please add funds.'); nav('addfunds'); return; }
+  try{
+    // Fresh stock check — Fix #5: atomic
+    var freshR=await sb.from('number_tiers').select('quantity,active').eq('id',tierId).single();
+    if(!freshR.data||!freshR.data.active||(freshR.data.quantity||0)<=0){ toast('Sorry — this tier is out of stock'); if(currentTierCountry) await openCountryTiers(document.querySelector('[data-country="'+encodeURIComponent(JSON.stringify(currentTierCountry))+'"]')||{dataset:{country:encodeURIComponent(JSON.stringify(currentTierCountry))}}); return; }
+    // Deduct balance
+    var newBal=(currentUser.balance||0)-price;
+    var bErr=await sb.from('profiles').update({balance:newBal}).eq('id',currentUser.id);
+    if(bErr.error){ toast('Purchase failed — please try again'); return; }
+    currentUser.balance=newBal; updateWalletDisplay(newBal);
+    // Decrement stock atomically
+    var sErr=await sb.from('number_tiers').update({quantity:freshR.data.quantity-1}).eq('id',tierId).gt('quantity',0);
+    if(sErr.error){ await autoRefund(currentUser.id,price,'Tier stock unavailable'); toast('Stock unavailable — refunded automatically.'); return; }
+    // Create order
+    var ordR=await sb.from('orders').insert({user_id:currentUser.id,service:tierName,country:country.name,flag:country.flag||'\uD83C\uDF0D',price,tier_id:tierId,tier_name:tierName,reliability,number:'',otp:'',status:'pending'}).select().single();
+    if(ordR.error){
+      await autoRefund(currentUser.id,price,'Order creation failed');
+      await sb.from('number_tiers').update({quantity:freshR.data.quantity}).eq('id',tierId);
+      toast('Order failed — refunded automatically.'); return;
+    }
+    // Log tx
+    await sb.from('transactions').insert({user_id:currentUser.id,category:'purchase',title:tierName+' Number — '+country.name,amount:-price,direction:'db',status:'paid'});
+    await sb.from('notifications').insert({user_id:currentUser.id,text:'<strong>Order '+ordR.data.id+'</strong> placed — '+tierName+' number for '+country.flag+' '+country.name+'.',read:false});
+    toast('Order placed! Awaiting number assignment...');
+    showCountryList();
+    await loadMyOrders();
+    nav('myorders');
+  }catch(e){ toast('Error: '+(e.message||'Please try again')); console.error('orderTier error:',e); }
+}
+
+/* ══ AUTO REFUND ══ */
+async function autoRefund(userId,amount,reason){
+  if(!amount||amount<=0) return;
+  try{
+    var pR=await sb.from('profiles').select('balance').eq('id',userId).single();
+    var newBal=(pR.data&&pR.data.balance||0)+amount;
+    await sb.from('profiles').update({balance:newBal}).eq('id',userId);
+    if(currentUser&&currentUser.id===userId){ currentUser.balance=newBal; updateWalletDisplay(newBal); }
+    await sb.from('transactions').insert({user_id:userId,category:'refund',title:'Auto Refund — '+reason,amount,direction:'cr',status:'paid'});
+    await sb.from('notifications').insert({user_id:userId,text:'<strong>Auto Refund: \u20a6'+amount.toLocaleString()+'</strong> returned to your wallet.',read:false});
+    toast('\u20a6'+amount.toLocaleString()+' refunded to your wallet.');
+  }catch(e){ console.error('autoRefund error:',e); }
+}
+
+/* ══ MY ORDERS ══ */
+async function loadMyOrders(){
+  if(!currentUser) return;
+  var el=document.getElementById('myOrdersList'); if(!el) return;
+  try{
+    var r=await sb.from('orders').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    renderMyOrders(r.data||[]);
+  }catch(e){ el.innerHTML='<p class="empty">Error loading orders</p>'; }
+}
+
+function renderMyOrders(orders){
+  var el=document.getElementById('myOrdersList'); if(!el) return;
+  if(!orders||!orders.length){ el.innerHTML='<p class="empty">No orders yet. Buy a virtual number to get started.</p>'; return; }
+  el.innerHTML=orders.map(function(o){
+    return '<div class="ordCard">'
+      +'<div class="ordCardHead"><span class="ordID">'+(o.id||'')+' \u00b7 '+(o.tier_name||o.service||'')+' \u00b7 '+(o.flag||'')+(o.country||'')+'</span><span class="badge '+(o.status||'pending')+'">'+cap(o.status||'pending')+'</span></div>'
+      +'<div style="font-size:15px;font-weight:800;margin-bottom:4px">'+(o.tier_name||o.service||'Number Order')+'</div>'
+      +(o.number?'<div style="font-family:var(--font-d);font-size:18px;font-weight:800;color:var(--brand);margin-bottom:8px">'+o.number+'</div>':'<div style="font-size:13px;color:var(--text3);margin-bottom:4px">Number will appear here when assigned</div>')
+      +'<div class="activationBox'+(o.otp?' hasCode':'')+'"><div style="font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text3);margin-bottom:6px">Activation Code</div>'
+      +(o.otp?'<div class="activationCode">'+o.otp+'</div>':'<div class="activationWaiting"><span class="spinner"></span>Activation code will appear here automatically</div>')
+      +'</div><div style="font-size:11.5px;color:var(--text3);margin-top:8px">\u20a6'+(o.price||0).toLocaleString()+' \u00b7 '+fmtDate(o.created_at)+' '+fmtTime(o.created_at)+'</div></div>';
+  }).join('');
+}
+
+/* ══ SM ACCOUNTS ══ */
+async function loadSmAccTypes(){
+  try{
+    var r=await sb.from('sm_account_types').select('*').eq('active',true).order('platform').order('type');
+    allAccTypes=r.data||[];
+  }catch(e){ allAccTypes=[]; }
+  initAccounts();
+}
+
+function initAccounts(){
+  var platforms=[...new Set(allAccTypes.map(function(a){return a.platform;}))];
+  var tabEl=document.getElementById('accTabs');
+  if(!tabEl) return;
+  if(!platforms.length){ tabEl.innerHTML=''; var g=document.getElementById('accGrid'); if(g) g.innerHTML='<p class="empty" style="grid-column:1/-1">No accounts available</p>'; return; }
+  if(!currentAccTab||!platforms.includes(currentAccTab)) currentAccTab=platforms[0];
+  tabEl.innerHTML=platforms.map(function(p){
+    return '<button class="pTab'+(p===currentAccTab?' active':'')+'" onclick="switchAccTab(\''+p+'\',this)">'+p+'</button>';
+  }).join('');
+  renderAccounts(currentAccTab);
+}
+
+function switchAccTab(p,el){
+  document.querySelectorAll('.pTab').forEach(function(t){t.classList.remove('active');});
+  el.classList.add('active'); currentAccTab=p; renderAccounts(p);
+}
+
+function renderAccounts(platform){
+  var types=(allAccTypes||[]).filter(function(a){return a.platform===platform;});
+  var el=document.getElementById('accGrid'); if(!el) return;
+  if(!types.length){ el.innerHTML='<p class="empty" style="grid-column:1/-1">No accounts available for this platform</p>'; return; }
+  el.innerHTML=types.map(function(a){
+    var oos=(a.stock||0)<=0;
+    return '<div class="accCard">'
+      +'<div class="accPlat">'+a.platform+'</div>'
+      +'<div class="accType">'+a.type+'</div>'
+      +'<div class="accPrice">\u20a6'+(a.price||0).toLocaleString()+'</div>'
+      +stockBadgeHtml(a.stock||0)
+      +'<button class="buyBtn'+(oos?' disabled':'')+'" '+(oos?'disabled':'')+' onclick="'+( oos?'toast(\'Out of stock\')':'buyAccount(\''+a.platform+'\',\''+a.type+'\','+a.price+',\''+a.id+'\')')+'">'+(oos?'Out of Stock':'Buy Now')+'</button>'
+      +'</div>';
+  }).join('');
+}
+
+async function buyAccount(platform,type,price,typeId){
+  if(!currentUser){ toast('Please log in'); return; }
+  if((currentUser.balance||0)<price){ toast('Insufficient balance — add funds first'); setTimeout(function(){nav('addfunds');},1200); return; }
+  try{
+    var freshR=await sb.from('sm_account_types').select('stock,active,sold').eq('id',typeId).single();
+    if(!freshR.data||!freshR.data.active||(freshR.data.stock||0)<=0){ toast('Sorry — this account type is out of stock'); await loadSmAccTypes(); return; }
+    var newBal=(currentUser.balance||0)-price;
+    var bErr=await sb.from('profiles').update({balance:newBal}).eq('id',currentUser.id);
+    if(bErr.error){ toast('Purchase failed — please try again'); return; }
+    currentUser.balance=newBal; updateWalletDisplay(newBal);
+    var sErr=await sb.from('sm_account_types').update({stock:freshR.data.stock-1,sold:(freshR.data.sold||0)+1}).eq('id',typeId).gt('stock',0);
+    if(sErr.error){ await autoRefund(currentUser.id,price,'Stock update failed'); toast('Purchase failed — refunded.'); await loadSmAccTypes(); return; }
+    var ordR=await sb.from('acc_orders').insert({user_id:currentUser.id,platform,type,price,account_details:'',status:'pending'}).select().single();
+    if(ordR.error){ await autoRefund(currentUser.id,price,'Order creation failed'); await sb.from('sm_account_types').update({stock:freshR.data.stock,sold:freshR.data.sold||0}).eq('id',typeId); toast('Order failed — refunded.'); return; }
+    await sb.from('transactions').insert({user_id:currentUser.id,category:'purchase',title:platform+' Account — '+type,amount:-price,direction:'db',status:'paid'});
+    await sb.from('notifications').insert({user_id:currentUser.id,text:'<strong>'+platform+' account order '+ordR.data.id+'</strong> placed. Details will be delivered shortly.',read:false});
+    await loadSmAccTypes();
+    showAccOrderConfirm(ordR.data); nav('accorder');
+  }catch(e){ toast('Error: '+(e.message||'Please try again')); }
+}
+
+function showAccOrderConfirm(order){
+  var s=document.getElementById('accOrderSummary');
+  if(s) s.innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px">'
+    +'<span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Order ID</span><span style="font-weight:800;color:var(--brand)">'+(order.id||'—')+'</span>'
+    +'<span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Platform</span><span style="font-weight:700">'+(order.platform||'—')+'</span>'
+    +'<span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Type</span><span style="font-weight:700">'+(order.type||'—')+'</span>'
+    +'<span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Amount</span><span style="font-weight:800;color:var(--danger)">\u20a6'+(order.price||0).toLocaleString()+'</span>'
+    +'</div>';
+}
+
+function renderAccOrderDetails(order){
+  var el=document.getElementById('accOrderDetails'); if(!el) return;
+  if(order.account_details){
+    el.innerHTML='<div style="width:100%;text-align:left"><div style="font-size:13px;font-weight:700;color:var(--success);margin-bottom:10px">\u2713 Account details ready!</div><div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;font-size:13px;line-height:1.9;white-space:pre-wrap;word-break:break-all">'+order.account_details+'</div></div>';
+  }
+}
+
+async function loadMyAccOrders(){
+  if(!currentUser) return;
+  var el=document.getElementById('myAccOrdersList'); if(!el) return;
+  try{
+    var r=await sb.from('acc_orders').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    var orders=r.data||[];
+    if(!orders.length){ el.innerHTML='<p class="empty">No account orders yet</p>'; return; }
+    el.innerHTML=orders.map(function(o){
+      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:6px"><span style="font-size:12px;font-weight:700;color:var(--text3)">'+(o.id||'')+'</span><span class="badge '+(o.status||'pending')+'">'+cap(o.status||'pending')+'</span></div>'
+        +'<div style="font-size:16px;font-weight:800;margin-bottom:3px">'+(o.platform||'')+'</div>'
+        +'<div style="font-size:13.5px;color:var(--text2);margin-bottom:12px">'+(o.type||'')+' \u00b7 <span style="color:var(--danger);font-weight:700">\u20a6'+(o.price||0).toLocaleString()+'</span></div>'
+        +'<div style="background:'+(o.account_details?'var(--brand-lt)':'var(--surface2)')+';border:'+(o.account_details?'1.5px solid var(--brand)':'1.5px dashed var(--border)')+';border-radius:var(--r-sm);padding:14px">'
+        +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:'+(o.account_details?'var(--brand)':'var(--text3)')+';margin-bottom:8px">Account Details</div>'
+        +(o.account_details?'<div style="font-size:13px;line-height:1.9;white-space:pre-wrap;word-break:break-all">'+o.account_details+'</div>':'<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3)"><div class="spinner"></div>Details will appear here automatically</div>')
+        +'</div></div>';
+    }).join('');
+  }catch(e){ el.innerHTML='<p class="empty">Error loading orders</p>'; }
+}
+
+/* ══ ADD FUNDS ══ */
+async function loadPayAccounts(){
+  try{
+    var r=await sb.from('payment_accounts').select('*').eq('active',true);
+    payAccounts=r.data||[];
+  }catch(e){ payAccounts=[]; }
+}
+
+function renderPayAccounts(){
+  var el=document.getElementById('payAccounts'); if(!el) return;
+  if(!payAccounts.length){ el.innerHTML='<div class="infoBox"><p>No payment accounts available. Contact support.</p></div>'; return; }
+  el.innerHTML=payAccounts.map(function(a){
+    return '<div class="payAccCard">'
+      +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">'
+      +'<div><div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:3px">'+(a.type||'Bank Transfer')+'</div><div style="font-size:13px;color:var(--text2)">'+a.bank+'</div></div>'
+      +'<span style="font-size:11px;background:var(--brand-lt);color:var(--brand);border-radius:100px;padding:3px 10px;font-weight:700">Active</span></div>'
+      +'<div class="payAccNum">'+(a.account_number||'').replace(/(\d{4})(?=\d)/g,'$1 ')+'</div>'
+      +'<div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;margin-bottom:10px">'+a.account_name+'</div>'
+      +'<button class="copyBtn" onclick="copyText(\''+a.account_number+'\',\'Account number copied!\')"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy Number</button>'
+      +'</div>';
+  }).join('');
+}
+
+function selectAmount(amt,el){ document.querySelectorAll('#pgAddfunds .amountChip').forEach(function(c){c.classList.remove('active');}); el.classList.add('active'); selectedFundAmt=amt; var fi=document.getElementById('fundAmount'); if(fi) fi.value=''; }
+function clearAmountChips(){ document.querySelectorAll('#pgAddfunds .amountChip').forEach(function(c){c.classList.remove('active');}); selectedFundAmt=0; }
+
+async function submitDepositRequest(){
+  var custom=parseInt((document.getElementById('fundAmount')||{}).value||0)||0;
+  var amount=selectedFundAmt||custom;
+  if(!amount||amount<500){ toast('Minimum deposit is \u20a6500'); return; }
+  try{
+    var depR=await sb.from('deposits').insert({user_id:currentUser.id,amount,status:'pending'}).select().single();
+    await sb.from('transactions').insert({user_id:currentUser.id,category:'funding',title:'Wallet Funding — Pending',amount,direction:'cr',status:'pending'});
+    await sb.from('notifications').insert({user_id:currentUser.id,text:'<strong>Deposit '+depR.data.id+'</strong> submitted for \u20a6'+amount.toLocaleString()+'. Admin will confirm shortly.',read:false});
+    toast('Payment request submitted!');
+    var fi=document.getElementById('fundAmount'); if(fi) fi.value='';
+    clearAmountChips(); selectedFundAmt=0;
+    await loadDepositHistory();
+  }catch(e){ toast('Error: '+(e.message||'Please try again')); }
+}
+
+async function loadDepositHistory(){
+  if(!currentUser) return;
+  var el=document.getElementById('depositHistList'); if(!el) return;
+  try{
+    var r=await sb.from('deposits').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    var deps=r.data||[];
+    if(!deps.length){ el.innerHTML='<p class="empty">No deposits yet</p>'; return; }
+    el.innerHTML=deps.map(function(d){
+      return '<div class="txItem">'
+        +'<div class="txIco '+(d.status==='approved'?'cr':d.status==='rejected'?'db':'pending')+'">'+(d.status==='approved'?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>':d.status==='rejected'?'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>':'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>')+'</div>'
+        +'<div class="txInfo"><div class="txTitle">\u20a6'+(d.amount||0).toLocaleString()+' Deposit</div><div class="txMeta">'+(d.id||'')+' \u00b7 '+fmtDate(d.created_at)+'</div></div>'
+        +'<span class="badge '+(d.status||'pending')+'">'+cap(d.status||'pending')+'</span></div>';
+    }).join('');
+  }catch(e){ el.innerHTML='<p class="empty">Error loading deposits</p>'; }
+}
+
+/* ══ WITHDRAW ══ */
+function selectWdAmount(amt,el){ document.querySelectorAll('#wdAmountGrid .amountChip').forEach(function(c){c.classList.remove('active');}); el.classList.add('active'); selectedWdAmt=amt; var wa=document.getElementById('wdAmount'); if(wa) wa.value=''; }
+function clearWdChips(){ document.querySelectorAll('#wdAmountGrid .amountChip').forEach(function(c){c.classList.remove('active');}); selectedWdAmt=0; }
+
+async function submitWithdrawal(){
+  var custom=parseInt((document.getElementById('wdAmount')||{}).value||0)||0;
+  var amount=selectedWdAmt||custom;
+  var bank=(document.getElementById('wdBank')||{}).value||'';
+  var accNum=(document.getElementById('wdAccNum')||{}).value||'';
+  var accName=(document.getElementById('wdAccName')||{}).value||'';
+  var note=(document.getElementById('wdNote')||{}).value||'';
+  if(!amount||amount<500){ toast('Minimum withdrawal is \u20a6500'); return; }
+  if(!bank.trim()){ toast('Please enter your bank name'); return; }
+  if(!accNum||accNum.length<10){ toast('Please enter a valid 10-digit account number'); return; }
+  if(!accName.trim()){ toast('Please enter your account name'); return; }
+  if((currentUser&&currentUser.balance||0)<amount){ toast('Insufficient balance'); return; }
+  try{
+    var newBal=(currentUser.balance||0)-amount;
+    await sb.from('profiles').update({balance:newBal}).eq('id',currentUser.id);
+    currentUser.balance=newBal; updateWalletDisplay(newBal);
+    var wdR=await sb.from('withdrawals').insert({user_id:currentUser.id,amount,bank,acc_num:accNum,acc_name:accName,note,status:'pending'}).select().single();
+    await sb.from('transactions').insert({user_id:currentUser.id,category:'withdrawal',title:'Withdrawal — '+bank+' ('+accNum+')',amount:-amount,direction:'db',status:'pending'});
+    await sb.from('notifications').insert({user_id:currentUser.id,text:'<strong>Withdrawal '+wdR.data.id+'</strong> submitted for \u20a6'+amount.toLocaleString()+'. Processing within 24 hours.',read:false});
+    toast('Withdrawal submitted!');
+    ['wdAmount','wdBank','wdAccNum','wdAccName','wdNote'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+    clearWdChips(); selectedWdAmt=0;
+    await loadWdHistory(); await refreshDashboard();
+  }catch(e){ toast('Error: '+(e.message||'Please try again')); }
+}
+
+async function loadWdHistory(){
+  if(!currentUser) return;
+  var el=document.getElementById('wdHistList'); if(!el) return;
+  try{
+    var r=await sb.from('withdrawals').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    var wds=r.data||[];
+    if(!wds.length){ el.innerHTML='<p class="empty">No withdrawals yet</p>'; return; }
+    el.innerHTML=wds.map(function(w){
+      return '<div class="txItem"><div class="txIco db"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5"/><polyline points="5 12 12 19 19 12"/></svg></div><div class="txInfo"><div class="txTitle">\u20a6'+(w.amount||0).toLocaleString()+' \u2192 '+w.bank+'</div><div class="txMeta">'+(w.id||'')+' \u00b7 '+w.acc_num+' \u00b7 '+fmtDate(w.created_at)+'</div></div><span class="badge '+(w.status||'pending')+'">'+cap(w.status||'pending')+'</span></div>';
+    }).join('');
+  }catch(e){ el.innerHTML='<p class="empty">Error loading withdrawals</p>'; }
+}
+
+/* ══ TRANSACTIONS ══ */
+async function loadTransactions(cat){
+  if(!currentUser) return;
+  try{
+    var q=sb.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    if(cat&&cat!=='all') q=q.eq('category',cat);
+    var r=await q;
+    renderTxList('txMain',r.data||[]);
+  }catch(e){ var el=document.getElementById('txMain'); if(el) el.innerHTML='<p class="empty">Error loading transactions</p>'; }
+}
+function filterTx(cat,el){ document.querySelectorAll('.txTab').forEach(function(t){t.classList.remove('active');}); el.classList.add('active'); loadTransactions(cat); }
+
+/* ══ BOOST ══ */
+function initBoost(){
+  var platEl=document.getElementById('boostPlats'); var typeEl=document.getElementById('boostTypes');
+  if(platEl) platEl.innerHTML=['Instagram','TikTok','Facebook','Twitter/X','YouTube'].map(function(p,i){return '<button class="pSelBtn'+(i===0?' active':'')+'" onclick="selectBPlat(\''+p+'\',this)">'+p+'</button>';}).join('');
+  if(typeEl) typeEl.innerHTML=Object.keys(BOOST_RATE).map(function(t,i){return '<button class="pSelBtn'+(i===0?' active':'')+'" onclick="selectBType(\''+t+'\',this)">'+t+'</button>';}).join('');
+  calcBoost();
+}
+function selectBPlat(p,el){ document.querySelectorAll('#boostPlats .pSelBtn').forEach(function(b){b.classList.remove('active');}); el.classList.add('active'); currentBoostPlat=p; }
+function selectBType(t,el){ document.querySelectorAll('#boostTypes .pSelBtn').forEach(function(b){b.classList.remove('active');}); el.classList.add('active'); currentBoostType=t; calcBoost(); }
+function calcBoost(){ var qty=parseInt((document.getElementById('boostQty')||{}).value||'500'); var cost=calcBoostCost(currentBoostType,qty); var el=document.getElementById('boostCost'); if(el) el.textContent='\u20a6 '+cost.toLocaleString(); }
+
+async function submitBoost(){
+  var target=(document.getElementById('boostTarget')||{}).value||'';
+  var qty=parseInt((document.getElementById('boostQty')||{}).value||'500');
+  var cost=calcBoostCost(currentBoostType,qty);
+  if(!target.trim()){ toast('Please enter a profile URL or username'); return; }
+  if((currentUser&&currentUser.balance||0)<cost){ toast('Insufficient balance.'); nav('addfunds'); return; }
+  try{
+    var newBal=(currentUser.balance||0)-cost;
+    var bErr=await sb.from('profiles').update({balance:newBal}).eq('id',currentUser.id);
+    if(bErr.error){ toast('Purchase failed'); return; }
+    currentUser.balance=newBal; updateWalletDisplay(newBal);
+    var boR=await sb.from('boost_orders').insert({user_id:currentUser.id,platform:currentBoostPlat,boost_type:currentBoostType,quantity:qty,target_url:target,amount:cost,status:'pending'}).select().single();
+    if(boR.error){ await autoRefund(currentUser.id,cost,'Boost order creation failed'); toast('Boost order failed — refunded.'); return; }
+    await sb.from('transactions').insert({user_id:currentUser.id,category:'purchase',title:currentBoostPlat+' '+currentBoostType+' \u00d7'+qty.toLocaleString(),amount:-cost,direction:'db',status:'paid'});
+    await sb.from('notifications').insert({user_id:currentUser.id,text:'<strong>Boost order placed!</strong> '+qty.toLocaleString()+' '+currentBoostType+' for '+currentBoostPlat+'.',read:false});
+    var s=document.getElementById('boostConfSummary');
+    if(s) s.innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px"><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Order ID</span><span style="font-weight:800;color:var(--brand)">'+(boR.data.id||'—')+'</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Platform</span><span style="font-weight:700">'+currentBoostPlat+'</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Type</span><span style="font-weight:700">'+currentBoostType+'</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Quantity</span><span style="font-weight:700">'+qty.toLocaleString()+'</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Target</span><span style="font-size:12px;word-break:break-all">'+target+'</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Amount Paid</span><span style="font-weight:800;color:var(--danger)">\u20a6'+cost.toLocaleString()+'</span></div>';
+    var bt=document.getElementById('boostTarget'); if(bt) bt.value='';
+    nav('boostconf');
+  }catch(e){ toast('Error: '+(e.message||'Please try again')); }
+}
+
+/* ══ GIFT CARD ══ */
+function previewGC(inp){
+  if(inp.files&&inp.files[0]){
+    var r=new FileReader();
+    r.onload=function(e){ document.getElementById('uploadZone').innerHTML='<img src="'+e.target.result+'" style="max-height:130px;border-radius:8px;margin:0 auto;display:block" alt="Card preview"/>'; inp.dataset.base64=e.target.result; };
+    r.readAsDataURL(inp.files[0]);
+  }
+}
+
+async function submitGC(){
+  var amt=(document.getElementById('gcAmt')||{}).value||'';
+  var bank=(document.getElementById('gcBank')||{}).value||'';
+  var accNum=(document.getElementById('gcAccNum')||{}).value||'';
+  var accName=(document.getElementById('gcAccName')||{}).value||'';
+  var fileInp=document.getElementById('gcFile');
+  var file=fileInp&&fileInp.files&&fileInp.files[0];
+  if(!amt||!bank||!accNum||!accName){ toast('Please fill in all required fields'); return; }
+  if(accNum.length<10){ toast('Please enter a valid 10-digit account number'); return; }
+  if(!file){ toast('Please upload your gift card image'); return; }
+  toast('Uploading image...');
+  var imageUrl='';
+  try{
+    var ext=(file.name.split('.').pop()||'jpg');
+    var fileName='gc_'+currentUser.id+'_'+Date.now()+'.'+ext;
+    var upR=await sb.storage.from('gift-cards').upload(fileName,file,{cacheControl:'3600',upsert:false,contentType:file.type});
+    if(upR.error) throw upR.error;
+    var urlR=sb.storage.from('gift-cards').getPublicUrl(fileName);
+    imageUrl=urlR.data&&urlR.data.publicUrl||'';
+  }catch(e){
+    // Fix #10: fallback to compressed base64 — never fail silently
+    try{
+      imageUrl=await compressImage(file,0.5);
+    }catch(e2){ imageUrl=''; }
+  }
+  try{
+    var gcR=await sb.from('gift_cards').insert({user_id:currentUser.id,type:(document.getElementById('gcType')||{}).value||'Gift Card',country:(document.getElementById('gcCountry')||{}).value||'',amount:amt,bank,acc_num:accNum,acc_name:accName,status:'reviewing',image_url:imageUrl}).select().single();
+    if(gcR.error) throw gcR.error;
+    await sb.from('notifications').insert({user_id:currentUser.id,text:'<strong>Gift card '+gcR.data.id+'</strong> submitted for review. We will process within 15–60 minutes.',read:false});
+    var fi=document.getElementById('gcFile'); if(fi){ fi.value=''; if(fi.dataset) delete fi.dataset.base64; }
+    var uz=document.getElementById('uploadZone'); if(uz) uz.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>Click to upload card image</p><span>JPG, PNG — max 5MB</span>';
+    ['gcAmt','gcAccNum','gcAccName'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+    var gb=document.getElementById('gcBank'); if(gb) gb.value='';
+    showGcStatusPage(gcR.data);
+    nav('gcstatus');
+  }catch(e){ toast('Submission failed: '+(e.message||'Please try again')); }
+}
+
+function compressImage(file,quality){
+  return new Promise(function(resolve,reject){
+    var img=new Image();
+    var url=URL.createObjectURL(file);
+    img.onload=function(){
+      var canvas=document.createElement('canvas');
+      var maxW=800,maxH=800,w=img.width,h=img.height;
+      if(w>maxW){ h=Math.round(h*maxW/w); w=maxW; }
+      if(h>maxH){ w=Math.round(w*maxH/h); h=maxH; }
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL('image/jpeg',quality||0.5));
+    };
+    img.onerror=function(){ URL.revokeObjectURL(url); reject(new Error('Image load failed')); };
+    img.src=url;
+  });
+}
+
+/* ══ GIFT CARD STATUS ══ */
+function showGcStatusPage(gc){ currentGcId=gc.id; renderGcStatus(gc); loadMyGiftCards(); }
+
+function renderGcStatus(gc){
+  var iconEl=document.getElementById('gcStatusIcon');
+  var titleEl=document.getElementById('gcStatusTitle');
+  var msgEl=document.getElementById('gcStatusMsg');
+  var payoutEl=document.getElementById('gcPayoutDisplay');
+  var payoutAmtEl=document.getElementById('gcPayoutAmt');
+  var summaryEl=document.getElementById('gcStatusSummary');
+  if(!titleEl) return;
+  if(gc.status==='approved'){
+    if(iconEl){ iconEl.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'; iconEl.style.background='#dcfce7'; }
+    titleEl.textContent='Gift Card Redeemed Successfully'; titleEl.style.color='var(--success)';
+    if(msgEl) msgEl.textContent='Your gift card has been redeemed. The payout has been sent to your wallet.';
+    if(payoutEl) payoutEl.classList.remove('hidden');
+    if(payoutAmtEl) payoutAmtEl.textContent='\u20a6'+(gc.payout_amount||0).toLocaleString();
+  }else if(gc.status==='rejected'){
+    if(iconEl){ iconEl.innerHTML='<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; iconEl.style.background='#fee2e2'; }
+    titleEl.textContent='Trade Failed'; titleEl.style.color='var(--danger)';
+    if(msgEl) msgEl.textContent='Your gift card trade was rejected. Please contact support if you believe this is an error.';
+    if(payoutEl) payoutEl.classList.add('hidden');
+  }else{
+    if(iconEl){ iconEl.innerHTML='<div class="spinner" style="border-color:#f59e0b;border-top-color:transparent"></div>'; iconEl.style.background='#fef3c7'; }
+    titleEl.textContent='Order Submitted'; titleEl.style.color='var(--text)';
+    if(msgEl) msgEl.textContent='Gift card trading is currently in progress. Admin will review and process your trade shortly.';
+    if(payoutEl) payoutEl.classList.add('hidden');
+  }
+  if(summaryEl) summaryEl.innerHTML='<div style="display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13px"><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Trade ID</span><span style="font-weight:800;color:var(--brand)">'+(gc.id||'—').substring(0,12)+'...</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Amount</span><span style="font-weight:700">$'+(gc.amount||'—')+'</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Bank</span><span>'+(gc.bank||'—')+'</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Account</span><span>'+(gc.acc_num||'—')+'</span><span style="color:var(--text3);font-weight:700;font-size:11px;text-transform:uppercase">Status</span><span class="badge '+(gc.status||'reviewing')+'">'+cap(gc.status||'reviewing')+'</span></div>';
+}
+
+async function loadMyGiftCards(){
+  if(!currentUser) return;
+  try{
+    var r=await sb.from('gift_cards').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    var list=r.data||[];
+    if(currentGcId){ var cur=list.find(function(g){return g.id===currentGcId;}); if(cur) renderGcStatus(cur); }
+    var el=document.getElementById('myGcList'); if(!el) return;
+    if(!list.length){ el.innerHTML='<p class="empty">No gift card trades yet</p>'; return; }
+    el.innerHTML=list.map(function(g){
+      return '<div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:10px;cursor:pointer" onclick="currentGcId=\''+g.id+'\';renderGcStatus('+encodeURIComponent(JSON.stringify(g))+')">'
+        +'<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span style="font-size:12px;font-weight:700;color:var(--text3)">'+(g.id||'').substring(0,12)+'... \u00b7 '+fmtDate(g.created_at)+'</span><span class="badge '+(g.status||'reviewing')+'">'+(g.status==='approved'?'Redeemed':g.status==='rejected'?'Failed':cap(g.status||'reviewing'))+'</span></div>'
+        +'<div style="font-size:15px;font-weight:800;margin-bottom:2px">$'+(g.amount||'—')+' Gift Card</div>'
+        +'<div style="font-size:12.5px;color:var(--text2)">'+(g.bank||'—')+' — '+(g.acc_num||'—')+(g.payout_amount>0?' \u00b7 <span style="color:var(--success);font-weight:700">\u20a6'+g.payout_amount.toLocaleString()+' paid</span>':'')+'</div>'
+        +'</div>';
+    }).join('');
+  }catch(e){ console.error('loadMyGiftCards error:',e); }
+}
+
+/* ══ SUPPORT ══ */
+async function submitTicket(){
+  var subj=(document.getElementById('ticketSubj')||{}).value||'';
+  var msg=(document.getElementById('ticketMsg')||{}).value||'';
+  var ordId=(document.getElementById('ticketOrd')||{}).value||'';
+  if(!subj.trim()||!msg.trim()){ toast('Please fill in subject and message'); return; }
+  try{
+    var tkR=await sb.from('tickets').insert({user_id:currentUser.id,subject:subj,message:msg,order_id:ordId,status:'open'}).select().single();
+    await sb.from('notifications').insert({user_id:currentUser.id,text:'<strong>Ticket '+tkR.data.id+'</strong> submitted. We\'ll respond within 24 hours.',read:false});
+    toast('Ticket '+tkR.data.id+' submitted!');
+    ['ticketSubj','ticketOrd','ticketMsg'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
+  }catch(e){ toast('Error: '+(e.message||'Please try again')); }
+}
+
+function initFAQ(){
+  var el=document.getElementById('faqList'); if(!el) return;
+  el.innerHTML=FAQS.map(function(f){
+    return '<div class="faqItem"><div class="faqQ" onclick="this.closest(\'.faqItem\').classList.toggle(\'open\')"><span>'+f.q+'</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faqA">'+f.a+'</div></div>';
+  }).join('');
+}
+
+/* ══ SETTINGS ══ */
+async function saveProfile(){
+  var first=(document.getElementById('setFirst')||{}).value||'';
+  var last=(document.getElementById('setLast')||{}).value||'';
+  var phone=(document.getElementById('setPhone')||{}).value||'';
+  if(!first.trim()){ toast('First name is required'); return; }
+  try{
+    await sb.from('profiles').update({name:first+' '+last,first,last,phone}).eq('id',currentUser.id);
+    currentUser={...currentUser,name:first+' '+last,first,last,phone};
+    var initials=((first[0]||'')+(last[0]||'')).toUpperCase()||'GD';
+    var sa=document.getElementById('sAvatar'); if(sa) sa.textContent=initials;
+    var ta=document.getElementById('topbarAv'); if(ta) ta.textContent=initials;
+    var sn=document.getElementById('sName'); if(sn) sn.textContent=first+' '+last;
+    toast('Profile updated');
+  }catch(e){ toast('Error: '+(e.message||'Please try again')); }
+}
+
+async function changePassword(){
+  var nw=(document.getElementById('pwNew')||{}).value||'';
+  var con=(document.getElementById('pwCon')||{}).value||'';
+  if(!nw||!con){ toast('Please fill in both password fields'); return; }
+  if(nw.length<8){ toast('Password must be at least 8 characters'); return; }
+  if(nw!==con){ toast('Passwords do not match'); return; }
+  try{
+    var r=await sb.auth.updateUser({password:nw});
+    if(r.error) throw r.error;
+    var pn=document.getElementById('pwNew'); if(pn) pn.value='';
+    var pc=document.getElementById('pwCon'); if(pc) pc.value='';
+    toast('Password updated');
+  }catch(e){ toast(e.message||'Password update failed'); }
+}
+
+/* ══ PWA ══ */
+function initPWA(){
+  if('serviceWorker' in navigator){
+    try{
+      // Fix #9: inline SW blob — properly handles fetch event
+      var swLines=[
+        'const C="gd-v2";',
+        'self.addEventListener("install",function(e){e.waitUntil(caches.open(C).then(function(c){return c.addAll(["./index.html"]).catch(function(){});}).then(function(){return self.skipWaiting();}));});',
+        'self.addEventListener("activate",function(e){e.waitUntil(caches.keys().then(function(ks){return Promise.all(ks.filter(function(k){return k!==C;}).map(function(k){return caches.delete(k);}));}).then(function(){return self.clients.claim();}));});',
+        'self.addEventListener("fetch",function(e){if(e.request.method!=="GET"||!e.request.url.startsWith("http"))return;e.respondWith(fetch(e.request).then(function(res){if(res&&res.status===200&&res.type==="basic"){var cl=res.clone();caches.open(C).then(function(c){c.put(e.request,cl);});}return res;}).catch(function(){return caches.match(e.request);}));});'
+      ];
+      var sw=swLines.join('\n');
+      var blob=new Blob([sw],{type:'application/javascript'});
+      var url=URL.createObjectURL(blob);
+      navigator.serviceWorker.register(url,{scope:'./'}).catch(function(){});
+    }catch(e){}
+  }
+  var isInstalled=window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+  if(!isInstalled&&!localStorage.getItem('pwa_dismissed')){
+    setTimeout(function(){ var b=document.getElementById('pwaBanner'); if(b) b.classList.remove('hidden'); },1500);
+  }
+}
+
+async function triggerPWAInstall(){
+  if(deferredPWAPrompt){
+    deferredPWAPrompt.prompt();
+    var r=await deferredPWAPrompt.userChoice;
+    deferredPWAPrompt=null;
+    if(r.outcome==='accepted'){ var b=document.getElementById('pwaBanner'); if(b) b.classList.add('hidden'); localStorage.setItem('pwa_dismissed','1'); }
+  }else{
+    var isIOS=/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream;
+    if(isIOS) toast('Tap the Share button (\u2191) then "Add to Home Screen"');
+    else toast('Installation ready — try again in a moment or reload the page');
+  }
+}
+function dismissPWA(){ var b=document.getElementById('pwaBanner'); if(b) b.classList.add('hidden'); localStorage.setItem('pwa_dismissed','1'); }
+
+/* ══ INIT ══ */
+loadTheme();
+checkSession();
+</script>
+</body>
+</html>
