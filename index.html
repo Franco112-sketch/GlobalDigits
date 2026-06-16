@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover"/>
+<title>Global Digits — Buy Foreign Numbers, SM Accounts &amp; Redeem Gift Cards in Nigeria</title>
+<meta name="description" content="Global Digits is Nigeria's #1 platform for buying foreign virtual numbers, social media accounts, boosting services and redeeming gift cards for Naira instantly."/>
+<meta name="robots" content="index,follow,max-snippet:-1,max-image-preview:large"/>
+<meta name="author" content="Global Digits"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="Global Digits"/>
+<meta property="og:title" content="Global Digits — Buy Foreign Numbers, SM Accounts &amp; Redeem Gift Cards"/>
+<meta property="og:description" content="Nigeria's #1 platform for foreign virtual numbers, social media accounts, boosting and gift card redemption."/>
+<meta property="og:url" content="https://globaldigits.shop/"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="theme-color" content="#1a56db"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-title" content="Global Digits"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* ===== RESET + MOBILE-FIRST SCALING FIX ===== */
+:root {
+  --brand: #1a56db;
+  --brand-dk: #1342b0;
+  --brand-lt: #e8f0ff;
+  --danger: #ef4444;
+  --warn: #f59e0b;
+  --success: #10b981;
+  --bg: #f4f6fb;
+  --surface: #fff;
+  --surface2: #eef1f8;
+  --border: #e1e6f0;
+  --text: #0d1321;
+  --text2: #5a6580;
+  --text3: #9aa3b8;
+  --sidebar-bg: #0d1321;
+  --topbar-h: 48px;
+  --sidebar-w: 240px;
+  --bnav-h: 52px;
+  --r: 8px;
+  --r-sm: 6px;
+  --shadow: 0 2px 8px rgba(15,25,50,.05);
+  --shadow-md: 0 4px 16px rgba(15,25,50,.08);
+  --font: 'Plus Jakarta Sans', sans-serif;
+  --font-d: 'Syne', sans-serif;
+  --t: .18s ease;
+}
+[data-theme="dark"] {
+  --bg: #090d18;
+  --surface: #111827;
+  --surface2: #19223a;
+  --border: #1e2a42;
+  --text: #e8edf8;
+  --text2: #7a87a2;
+  --text3: #3d4d66;
+  --brand-lt: #0f1e3d;
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+html, body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+  background: var(--bg);
+  font-size: 14px;
+  line-height: 1.5;
+}
+body {
+  font-family: var(--font);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+h1, h2, h3, p, div, section {
+  max-width: 100%;
+}
+button, input, select, textarea {
+  font-family: var(--font);
+  font-size: 14px;
+}
+.pageArea {
+  padding: 12px 12px calc(var(--bnav-h) + 12px);
+  max-width: 100%;
+  width: 100%;
+  margin: 0 auto;
+}
+@media (min-width: 640px) {
+  .pageArea {
+    padding: 16px 20px calc(var(--bnav-h) + 16px);
+    max-width: 560px;
+  }
+}
+.walletCard {
+  background: linear-gradient(135deg,#1a56db 0%,#0f34a0 100%);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.walletNGN {
+  font-family: var(--font-d);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 2px;
+}
+.walletUSD {
+  font-size: 10px;
+  opacity: 0.7;
+}
+.walletBtns {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+/* 🔽 REDUCED BUTTON SIZE (Add Funds + Withdraw) 🔽 */
+.addFundsBtn, .withdrawBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 4px 8px;  /* was 5px 10px — significantly smaller */
+  font-size: 10px;    /* reduced from 11px */
+  font-weight: 700;
+  border-radius: 8px;
+  backdrop-filter: blur(6px);
+  transition: all var(--t);
+  font-family: var(--font);
+  border: none;
+  cursor: pointer;
+}
+.addFundsBtn {
+  background: rgba(255,255,255,.15);
+  border: 1.2px solid rgba(255,255,255,.35);
+  color: #fff;
+}
+.addFundsBtn:hover {
+  background: rgba(255,255,255,.28);
+}
+.withdrawBtn {
+  background: rgba(255,255,255,.08);
+  border: 1.2px solid rgba(255,255,255,.25);
+  color: #fff;
+}
+.withdrawBtn:hover {
+  background: rgba(255,255,255,.2);
+}
+.addFundsBtn svg, .withdrawBtn svg {
+  width: 12px;
+  height: 12px;
+}
+/* quick actions */
+.qActions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.qaBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 6px 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text2);
+  transition: all var(--t);
+  cursor: pointer;
+}
+.qaBtn svg {
+  width: 18px;
+  height: 18px;
+  color: var(--brand);
+}
+.qaBtn:hover {
+  border-color: var(--brand);
+  background: var(--brand-lt);
+  color: var(--brand);
+}
+.txItem, .ordCard, .cCard, .accCard, .tierCard, .formCard {
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+.txItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 8px 10px;
+  cursor: pointer;
+}
+.txTitle {
+  font-size: 12px;
+  font-weight: 600;
+}
+.txMeta {
+  font-size: 10px;
+  color: var(--text3);
+}
+.txIco {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.oStats {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 8px;
+  margin: 8px 0 12px;
+}
+.oStat {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 6px 4px;
+  text-align: center;
+}
+.oNum {
+  font-family: var(--font-d);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--brand);
+}
+.oLbl {
+  font-size: 9px;
+  color: var(--text3);
+}
+.amountGrid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.amountChip {
+  padding: 8px 6px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  text-align: center;
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 13px;
+  transition: all var(--t);
+}
+.btnP {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background: var(--brand);
+  color: #fff;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  transition: all var(--t);
+  border: none;
+  cursor: pointer;
+}
+.btnP.sm, .btnOutline.sm {
+  padding: 6px 12px;
+  font-size: 12px;
+}
+.countryGrid {
+  display: grid;
+  grid-template-columns: repeat(2,1fr);
+  gap: 10px;
+}
+.cCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 8px;
+  cursor: pointer;
+  transition: all var(--t);
+}
+.cFlag {
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+.cName {
+  font-size: 12px;
+  font-weight: 700;
+}
+.cPrice {
+  font-size: 12px;
+  color: var(--brand);
+  font-weight: 700;
+}
+.tierCardHead {
+  padding: 12px 14px 6px;
+}
+.tierName {
+  font-size: 15px;
+  font-weight: 800;
+}
+.tierPrice {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--brand);
+}
+.tierBody {
+  padding: 0 14px 14px;
+}
+.tierOrderBtn {
+  width: 100%;
+  padding: 8px;
+  background: var(--brand);
+  color: #fff;
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 700;
+  font-family: var(--font);
+  cursor: pointer;
+  transition: all var(--t);
+}
+.accPrice {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--brand);
+}
+.buyBtn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  padding: 7px;
+  background: var(--brand-lt);
+  color: var(--brand);
+  border: 1.5px solid var(--brand);
+  border-radius: var(--r-sm);
+  font-size: 12px;
+  font-weight: 700;
+  transition: all var(--t);
+  cursor: pointer;
+}
+.pgHead h2 {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+.pgHead p {
+  font-size: 11px;
+  color: var(--text2);
+}
+.secHead h3 {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.bnItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text3);
+  transition: color var(--t);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.bnItem svg {
+  width: 18px;
+  height: 18px;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  height: 48px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+}
+.topbarTitle {
+  font-family: var(--font-d);
+  font-weight: 800;
+  font-size: 14px;
+  flex: 1;
+}
+.notifBtn svg {
+  width: 18px;
+  height: 18px;
+}
+.notifDot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  min-width: 16px;
+  height: 16px;
+  border-radius: 100px;
+  background: var(--danger);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--surface);
+}
+.infoBox {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 14px;
+}
+.chip {
+  padding: 5px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.fI {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r-sm);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+  outline: none;
+}
+.formCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 12px;
+}
+.payAccCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.payAccNum {
+  font-family: var(--font-d);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin: 6px 0;
+}
+.copyBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: var(--brand-lt);
+  color: var(--brand);
+  border: 1.5px solid var(--brand);
+  border-radius: var(--r-sm);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.activationCode {
+  font-family: var(--font-d);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--brand);
+}
+.supportChans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.chanCard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border-radius: var(--r);
+  font-size: 13px;
+  font-weight: 700;
+  border: 1.5px solid;
+  transition: all var(--t);
+  cursor: pointer;
+  text-decoration: none;
+}
+.stockBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.stockBadge.instock { background: #dcfce7; color: #15803d; }
+.stockBadge.outofstock { background: #fee2e2; color: #991b1b; }
+[data-theme="dark"] .stockBadge.instock { background:#052e16; color:#4ade80; }
+[data-theme="dark"] .stockBadge.outofstock { background:#450a0a; color:#f87171; }
+.badge {
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.badge.pending { background:#fef3c7; color:#92400e; }
+.badge.completed { background:#d1fae5; color:#065f46; }
+.empty {
+  padding: 20px 0;
+  text-align: center;
+  color: var(--text3);
+  font-size: 12px;
+}
+@media (max-width: 400px) {
+  .qActions { gap: 6px; }
+  .qaBtn span { font-size: 9px; }
+  .walletNGN { font-size: 18px; }
+  .countryGrid { grid-template-columns: repeat(2,1fr); }
+}
+</style>
+</head>
+<body>
+<div id="loadingScreen" style="position:fixed;inset:0;background:var(--brand);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999">
+  <div class="loadLogo" style="font-family:var(--font-d);font-size:42px;font-weight:800;color:#fff">G</div>
+  <div class="loadSub" style="font-size:13px;color:rgba(255,255,255,.7);margin-bottom:20px">Global Digits</div>
+  <div class="loadSpinner" style="width:28px;height:28px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite"></div>
+</div>
+<div id="authScreen" style="display:none;min-height:100vh;align-items:center;justify-content:center;background:var(--bg);padding:16px"></div>
+<div id="appShell" style="display:none;flex-direction:column;min-height:100vh"></div>
+<div id="toastEl" class="toastEl hidden" style="position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#0d1321;color:#fff;padding:6px 16px;border-radius:40px;font-size:12px;z-index:999"></div>
+<script>
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+let currentUser = null, balVisible = true, allCountries = [], allAccTypes = [], payAccounts = [], currentSvc = '', currentAccTab = '';
+let notifOpen = false, selectedFundAmt = 0, selectedWdAmt = 0, currentTierCountry = null;
+let toastTimer = null, realtimeChannels = [];
+const BOOST_RATE = {Followers:5, Likes:3, Views:1.5, Comments:8, Shares:4};
+const FAQS = [{q:'How does wallet funding work?',a:'Select amount, transfer to account, click "I Have Sent Payment". Admin credits within minutes.'},{q:'Are virtual numbers guaranteed?',a:'All numbers active at delivery. Refunds for undelivered numbers.'},{q:'How long does gift card redemption take?',a:'15-60 minutes during business hours.'},{q:'Can I get a refund?',a:'Refunds for failed orders only.'}];
+function toast(msg){ let el=document.getElementById('toastEl'); if(el){ el.textContent=msg; el.classList.remove('hidden'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.add('hidden'),2500); } }
+function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : s; }
+function fmtDate(d){ try{ return new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short'}); }catch(e){ return ''; } }
+function updateWalletDisplay(bal){ let ngn=document.getElementById('walletNGN'); let usd=document.getElementById('walletUSD'); let wdb=document.getElementById('wdBalDisplay'); if(ngn) ngn.textContent=balVisible?'₦ '+(bal||0).toLocaleString('en-NG',{minimumFractionDigits:2}):'₦ ••••'; if(usd) usd.textContent=balVisible?'≈ $'+((bal||0)/1601).toFixed(2)+' USD':'≈ $••••'; if(wdb) wdb.textContent='₦ '+(bal||0).toLocaleString(); }
+function toggleBal(){ balVisible=!balVisible; updateWalletDisplay(currentUser?.balance||0); }
+function copyText(t,m){ navigator.clipboard?.writeText(t); toast(m||'Copied'); }
+function nav(key){ let titles={dashboard:'Dashboard',addfunds:'Add Funds',numbers:'Buy Numbers',myorders:'My Orders',accounts:'SM Accounts',myaccorders:'Account Orders',boost:'Boost',transactions:'Transactions',support:'Support',settings:'Settings',txdetail:'Transaction'}; document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); let pageMap={dashboard:'pgDashboard',addfunds:'pgAddfunds',numbers:'pgNumbers',myorders:'pgMyorders',accounts:'pgAccounts',myaccorders:'pgMyaccorders',boost:'pgBoost',transactions:'pgTransactions',support:'pgSupport',settings:'pgSettings',txdetail:'pgTxdetail'}; let pid=pageMap[key]; if(pid) document.getElementById(pid).classList.add('active'); let tt=document.getElementById('topbarTitle'); if(tt) tt.innerText=titles[key]||key; if(key==='numbers'){ document.getElementById('numbersCountryView').style.display='block'; document.getElementById('numbersTierView').style.display='none'; filterCountries(); } if(key==='transactions') loadTransactions('all'); if(key==='myorders') loadMyOrders(); if(key==='myaccorders') loadMyAccOrders(); if(key==='accounts') renderAccounts(currentAccTab); if(key==='addfunds') renderPayAccounts(); if(key==='withdraw') updateWalletDisplay(currentUser?.balance||0); closeSidebar(); }
+function openSidebar(){ document.getElementById('sidebar')?.classList.add('open'); document.getElementById('sOv')?.classList.add('show'); }
+function closeSidebar(){ document.getElementById('sidebar')?.classList.remove('open'); document.getElementById('sOv')?.classList.remove('show'); }
+async function loadCountries(){ try{ let r=await sb.from('country_prices').select('*').eq('active',true).order('name'); allCountries=r.data||[]; filterCountries(); }catch(e){ allCountries=[]; } }
+function filterCountries(){ let q=(document.getElementById('cSearch')?.value||'').toLowerCase(); let svc=currentSvc||(document.getElementById('svcFilter')?.value||''); let list=allCountries.filter(c=>c.name.toLowerCase().includes(q)&&(!svc||(c.services||[]).includes(svc))); let el=document.getElementById('countryGrid'); if(!el) return; if(!list.length){ el.innerHTML='<p class="empty">No countries</p>'; return; } el.innerHTML=list.map(c=>`<div class="cCard" onclick='openCountryTiers(${JSON.stringify(c)})'><div class="cFlag">${c.flag||'🌍'}</div><div class="cName">${c.name}</div><div class="cPrice">From ₦${(c.price||0).toLocaleString()}</div><div class="cAvail">${c.available||0} left</div></div>`).join(''); }
+async function openCountryTiers(country){ currentTierCountry=country; document.getElementById('numbersCountryView').style.display='none'; document.getElementById('numbersTierView').style.display='block'; document.getElementById('tierCountryHead').innerHTML=`<div class="tierFlag">${country.flag||'🌍'}</div><div><div class="tierCountryName">${country.name}</div></div>`; let r=await sb.from('number_tiers').select('*').eq('country',country.name).eq('active',true).order('price'); let tiers=r.data||[]; let grid=document.getElementById('tierGrid'); if(!tiers.length){ grid.innerHTML='<p class="empty">No tiers</p>'; return; } grid.innerHTML=tiers.map(t=>`<div class="tierCard"><div class="tierCardHead"><div><div class="tierName">${t.tier_name}</div></div><div class="tierPrice">₦${(t.price||0).toLocaleString()}</div></div><div class="tierBody"><button class="tierOrderBtn" onclick='orderTier("${t.id}","${t.tier_name}",${t.price})'>Order Now</button></div></div>`).join(''); }
+async function orderTier(tierId,name,price){ if((currentUser.balance||0)<price){ toast('Insufficient balance'); nav('addfunds'); return; } let newBal=currentUser.balance-price; await sb.from('profiles').update({balance:newBal}).eq('id',currentUser.id); currentUser.balance=newBal; updateWalletDisplay(newBal); await sb.from('orders').insert({user_id:currentUser.id,service:name,country:currentTierCountry.name,price,status:'pending'}); toast('Order placed!'); await loadMyOrders(); nav('myorders'); }
+async function loadMyOrders(){ if(!currentUser) return; let r=await sb.from('orders').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}); let ords=r.data||[]; let el=document.getElementById('myOrdersList'); if(!el) return; if(!ords.length){ el.innerHTML='<p class="empty">No orders</p>'; return; } el.innerHTML=ords.map(o=>`<div class="ordCard"><div class="ordCardHead"><span>${o.id||''} · ${o.service}</span><span class="badge ${o.status}">${cap(o.status)}</span></div><div>₦${(o.price||0).toLocaleString()}</div><div class="activationBox">${o.otp?`<div class="activationCode">${o.otp}</div>`:'<div class="activationWaiting"><div class="spinner"></div> Waiting OTP</div>'}</div></div>`).join(''); }
+async function loadMyAccOrders(){ if(!currentUser) return; let r=await sb.from('acc_orders').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}); let list=r.data||[]; let el=document.getElementById('myAccOrdersList'); if(!el) return; if(!list.length){ el.innerHTML='<p class="empty">No account orders</p>'; return; } el.innerHTML=list.map(o=>`<div style="background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px"><div>${o.platform} · ${o.type}</div><div>₦${(o.price||0).toLocaleString()}</div>${o.account_details?`<div style="margin-top:8px">${o.account_details}</div>`:'<div class="activationWaiting"><div class="spinner"></div> Awaiting delivery</div>'}</div>`).join(''); }
+async function loadSmAccTypes(){ try{ let r=await sb.from('sm_account_types').select('*').eq('active',true).order('platform'); allAccTypes=r.data||[]; initAccounts(); }catch(e){ allAccTypes=[]; } }
+function initAccounts(){ let platforms=[...new Set(allAccTypes.map(a=>a.platform))]; if(!platforms.length) return; if(!currentAccTab||!platforms.includes(currentAccTab)) currentAccTab=platforms[0]; document.getElementById('accTabs').innerHTML=platforms.map(p=>`<button class="pTab ${p===currentAccTab?'active':''}" onclick="switchAccTab('${p}',this)">${p}</button>`).join(''); renderAccounts(currentAccTab); }
+function switchAccTab(p,el){ document.querySelectorAll('.pTab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); currentAccTab=p; renderAccounts(p); }
+function renderAccounts(platform){ let types=allAccTypes.filter(a=>a.platform===platform); let grid=document.getElementById('accGrid'); if(!types.length){ grid.innerHTML='<p class="empty">No accounts</p>'; return; } grid.innerHTML=types.map(a=>`<div class="accCard"><div class="accPlat">${a.platform}</div><div class="accType">${a.type}</div><div class="accPrice">₦${(a.price||0).toLocaleString()}</div><button class="buyBtn" onclick='buyAccount("${a.platform}","${a.type}",${a.price},"${a.id}")'>Buy Now</button></div>`).join(''); }
+async function buyAccount(platform,type,price,typeId){ if((currentUser.balance||0)<price){ toast('Insufficient balance'); nav('addfunds'); return; } let newBal=currentUser.balance-price; await sb.from('profiles').update({balance:newBal}).eq('id',currentUser.id); currentUser.balance=newBal; updateWalletDisplay(newBal); await sb.from('sm_account_types').update({stock:sb.sql`stock-1`}).eq('id',typeId); await sb.from('acc_orders').insert({user_id:currentUser.id,platform,type,price,status:'pending'}); toast('Order placed!'); nav('myaccorders'); await loadMyAccOrders(); }
+async function loadPayAccounts(){ try{ let r=await sb.from('payment_accounts').select('*').eq('active',true); payAccounts=r.data||[]; renderPayAccounts(); }catch(e){ payAccounts=[]; } }
+function renderPayAccounts(){ let el=document.getElementById('payAccounts'); if(!el) return; if(!payAccounts.length){ el.innerHTML='<p class="empty">No payment accounts</p>'; return; } el.innerHTML=payAccounts.map(a=>`<div class="payAccCard"><div><strong>${a.bank}</strong></div><div class="payAccNum">${a.account_number}</div><div>${a.account_name}</div><button class="copyBtn" onclick="copyText('${a.account_number}','Copied!')">Copy Number</button></div>`).join(''); }
+function selectAmount(amt,el){ document.querySelectorAll('#pgAddfunds .amountChip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); selectedFundAmt=amt; document.getElementById('fundAmount').value=''; }
+async function submitDepositRequest(){ let amount=selectedFundAmt||parseInt(document.getElementById('fundAmount').value||0); if(amount<500){ toast('Min ₦500'); return; } await sb.from('deposits').insert({user_id:currentUser.id,amount,status:'pending'}); await sb.from('transactions').insert({user_id:currentUser.id,category:'funding',title:'Wallet Funding',amount,direction:'cr',status:'pending'}); toast('Deposit request submitted!'); selectedFundAmt=0; document.getElementById('fundAmount').value=''; await refreshDashboard(); }
+function selectWdAmount(amt,el){ document.querySelectorAll('#wdAmountGrid .amountChip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); selectedWdAmt=amt; document.getElementById('wdAmount').value=''; }
+async function submitWithdrawal(){ let amount=selectedWdAmt||parseInt(document.getElementById('wdAmount').value||0); if(amount<500){ toast('Min ₦500'); return; } if((currentUser.balance||0)<amount){ toast('Insufficient balance'); return; } let newBal=currentUser.balance-amount; await sb.from('profiles').update({balance:newBal}).eq('id',currentUser.id); currentUser.balance=newBal; updateWalletDisplay(newBal); await sb.from('withdrawals').insert({user_id:currentUser.id,amount,bank:'GTBank',acc_num:'0000000000',acc_name:'User',status:'pending'}); toast('Withdrawal submitted'); await refreshDashboard(); }
+async function loadTransactions(cat){ let q=sb.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}); if(cat!=='all') q=q.eq('category',cat); let r=await q; renderTxList('txMain',r.data||[]); }
+function renderTxList(elId,txs){ let el=document.getElementById(elId); if(!el) return; if(!txs.length){ el.innerHTML='<p class="empty">No transactions</p>'; return; } el.innerHTML=txs.map(tx=>`<div class="txItem" onclick='openTxDetail(${JSON.stringify(tx)})'><div class="txIco ${tx.direction==='cr'?'cr':'db'}">${tx.direction==='cr'?'+':'-'}</div><div class="txInfo"><div class="txTitle">${tx.title||'Tx'}</div><div class="txMeta">${fmtDate(tx.created_at)}</div></div><div class="txAmt">₦${Math.abs(tx.amount||0).toLocaleString()}</div></div>`).join(''); }
+function openTxDetail(tx){ let detailDiv=document.getElementById('txDetailContent'); if(detailDiv) detailDiv.innerHTML=`<div class="detailCard"><div>₦${Math.abs(tx.amount||0)}</div><div>${tx.title}</div><div>${tx.status}</div></div><button class="btnP sm" onclick="nav('transactions')">Back</button>`; nav('txdetail'); }
+function filterTx(cat,el){ document.querySelectorAll('.txTab').forEach(t=>t.classList.remove('active')); el.classList.add('active'); loadTransactions(cat); }
+function initBoost(){ let platEl=document.getElementById('boostPlats'); if(platEl) platEl.innerHTML=['Instagram','TikTok','Facebook','YouTube'].map(p=>`<button class="pSelBtn" onclick="selectBPlat('${p}',this)">${p}</button>`).join(''); let typeEl=document.getElementById('boostTypes'); if(typeEl) typeEl.innerHTML=Object.keys(BOOST_RATE).map(t=>`<button class="pSelBtn" onclick="selectBType('${t}',this)">${t}</button>`).join(''); calcBoost(); }
+function calcBoost(){ let qty=parseInt(document.getElementById('boostQty')?.value||500); let cost=qty*(BOOST_RATE[currentBoostType||'Followers']||5); document.getElementById('boostCost').innerHTML='₦ '+cost.toLocaleString(); }
+let currentBoostPlat='Instagram', currentBoostType='Followers';
+function selectBPlat(p,el){ document.querySelectorAll('#boostPlats .pSelBtn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); currentBoostPlat=p; }
+function selectBType(t,el){ document.querySelectorAll('#boostTypes .pSelBtn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); currentBoostType=t; calcBoost(); }
+async function submitBoost(){ let target=document.getElementById('boostTarget').value; let qty=parseInt(document.getElementById('boostQty')?.value||500); let cost=qty*(BOOST_RATE[currentBoostType]||5); if(!target) return toast('Enter target'); if((currentUser.balance||0)<cost){ toast('Insufficient balance'); return; } let newBal=currentUser.balance-cost; await sb.from('profiles').update({balance:newBal}).eq('id',currentUser.id); currentUser.balance=newBal; updateWalletDisplay(newBal); await sb.from('boost_orders').insert({user_id:currentUser.id,platform:currentBoostPlat,boost_type:currentBoostType,quantity:qty,target_url:target,amount:cost}); toast('Boost order placed!'); nav('dashboard'); }
+function initFAQ(){ let faqDiv=document.getElementById('faqList'); if(faqDiv) faqDiv.innerHTML=FAQS.map(f=>`<div class="faqItem"><div class="faqQ" onclick="this.closest('.faqItem').classList.toggle('open')"><span>${f.q}</span><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faqA">${f.a}</div></div>`).join(''); }
+async function refreshDashboard(){ if(!currentUser) return; updateWalletDisplay(currentUser.balance); let txR=await sb.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(5); renderTxList('dashTxList',txR.data||[]); let oR=await sb.from('orders').select('id,status').eq('user_id',currentUser.id); document.getElementById('statTotal').innerText=oR.data?.length||0; document.getElementById('statCompleted').innerText=oR.data?.filter(o=>o.status==='completed').length||0; }
+function clearRealtimeChannels(){ realtimeChannels.forEach(c=>{ try{ sb.removeChannel(c); }catch(e){} }); realtimeChannels=[]; }
+function setupRealtime(){ if(!currentUser) return; clearRealtimeChannels(); let ch=sb.channel(`user_${currentUser.id}`).on('postgres_changes',{event:'UPDATE',schema:'public',table:'profiles',filter:`id=eq.${currentUser.id}`},()=>refreshDashboard()).subscribe(); realtimeChannels.push(ch); }
+async function saveProfile(){ let first=document.getElementById('setFirst').value, last=document.getElementById('setLast').value, phone=document.getElementById('setPhone').value; await sb.from('profiles').update({first,last,name:first+' '+last,phone}).eq('id',currentUser.id); currentUser.first=first; currentUser.last=last; currentUser.phone=phone; toast('Profile updated'); }
+async function changePassword(){ let nw=document.getElementById('pwNew').value, con=document.getElementById('pwCon').value; if(nw!==con||nw.length<8) return toast('Check password'); await sb.auth.updateUser({password:nw}); toast('Password updated'); }
+async function doLogin(){ let email=document.getElementById('loginEmail').value, pass=document.getElementById('loginPass').value; if(!email||!pass) return toast('Fill fields'); let r=await sb.auth.signInWithPassword({email,password:pass}); if(r.error) return toast(r.error.message); let p=await sb.from('profiles').select('*').eq('id',r.data.user.id).single(); currentUser={...p.data, id:r.data.user.id, email:r.data.user.email}; await launchApp(); }
+async function doRegister(){ let first=document.getElementById('regFirst').value, last=document.getElementById('regLast').value, email=document.getElementById('regEmail').value, phone=document.getElementById('regPhone').value, pass=document.getElementById('regPass').value, pass2=document.getElementById('regPass2').value; if(!first||!last||!email||!phone||!pass||pass!==pass2||pass.length<8) return toast('Invalid data'); let r=await sb.auth.signUp({email,password:pass,options:{data:{name:first+' '+last,first,last,phone}}}); if(r.error) return toast(r.error.message); await sb.from('profiles').upsert({id:r.data.user.id,name:first+' '+last,first,last,email,phone,balance:0}); currentUser={id:r.data.user.id,name:first+' '+last,first,last,email,phone,balance:0}; await launchApp(); }
+async function doLogout(){ clearRealtimeChannels(); await sb.auth.signOut(); currentUser=null; document.getElementById('appShell').style.display='none'; document.getElementById('authScreen').style.display='flex'; showAuthPage('pgLogin'); }
+function showAuthPage(id){ document.querySelectorAll('.authPage').forEach(p=>p.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+async function launchApp(){ document.getElementById('loadingScreen').style.display='none'; document.getElementById('authScreen').style.display='none'; document.getElementById('appShell').style.display='flex'; let u=currentUser; document.getElementById('sAvatar').innerText=((u.first||'G')[0]+(u.last||'D')[0]).toUpperCase(); document.getElementById('topbarAv').innerText=((u.first||'G')[0]+(u.last||'D')[0]).toUpperCase(); document.getElementById('sName').innerText=u.name||u.email; document.getElementById('sEmail').innerText=u.email; document.getElementById('setFirst').value=u.first||''; document.getElementById('setLast').value=u.last||''; document.getElementById('setEmail').value=u.email||''; document.getElementById('setPhone').value=u.phone||''; updateWalletDisplay(u.balance||0); await Promise.all([loadCountries(), loadSmAccTypes(), loadPayAccounts()]); initBoost(); initFAQ(); await refreshDashboard(); setupRealtime(); }
+function renderAuthAndApp(){ document.getElementById('loadingScreen').style.display='none'; let authDiv=document.getElementById('authScreen'); authDiv.style.display='flex'; authDiv.innerHTML=`<div id="pgLogin" class="authPage active"><div class="authLogo"><div class="logoMark">G</div><div class="logoText">Global<strong>Digits</strong></div></div><div class="authCard"><input id="loginEmail" class="fI" placeholder="Email"/><input id="loginPass" class="fI" type="password" placeholder="Password"/><button class="btnP full" onclick="doLogin()">Sign In</button><p class="authSwitch">No account? <a href="#" onclick="showAuthPage('pageRegister');return false">Create</a></p></div></div><div id="pageRegister" class="authPage"><div class="authCard"><input id="regFirst" class="fI" placeholder="First name"/><input id="regLast" class="fI" placeholder="Last name"/><input id="regEmail" class="fI" placeholder="Email"/><input id="regPhone" class="fI" placeholder="Phone"/><input id="regPass" class="fI" type="password" placeholder="Password"/><input id="regPass2" class="fI" type="password" placeholder="Confirm"/><label><input type="checkbox" id="regAgree"/> I agree</label><button class="btnP full" onclick="doRegister()">Register</button></div></div>`; let shell=document.getElementById('appShell'); shell.innerHTML=`<div id="sidebar" class="sidebar"><div class="sHead"><div class="sLogo">GlobalDigits</div></div><div class="sUser"><div id="sAvatar" class="uAv">GD</div><div><div id="sName" class="uName">User</div><div id="sEmail" class="uEmail">user@example.com</div></div></div><nav class="sNav"><a class="nI" data-page="dashboard" onclick="nav('dashboard')">Dashboard</a><a class="nI" onclick="nav('numbers')">Buy Numbers</a><a class="nI" onclick="nav('accounts')">SM Accounts</a><a class="nI" onclick="nav('myorders')">My Orders</a><a class="nI" onclick="nav('transactions')">Transactions</a><a class="nI" onclick="nav('support')">Support</a><a class="nI" onclick="nav('settings')">Settings</a><button class="nI logout" onclick="doLogout()">Logout</button></nav></div><div class="mainWrap"><div class="topbar"><button class="menuBtn" onclick="openSidebar()">☰</button><div class="topbarTitle" id="topbarTitle">Dashboard</div><div class="topbarRight"><div id="topbarAv" class="topbarAv">GD</div></div></div><main class="pageArea"><div id="pgDashboard" class="page active"><div class="walletCard"><div class="walletNGN" id="walletNGN">₦0.00</div><div class="walletUSD" id="walletUSD">$0</div><div class="walletBtns"><button class="addFundsBtn" onclick="nav('addfunds')">➕ Add Funds</button><button class="withdrawBtn" onclick="nav('withdraw')">⬇️ Withdraw</button></div></div><div class="qActions"><button class="qaBtn" onclick="nav('numbers')">📞 Number</button><button class="qaBtn" onclick="nav('boost')">⚡ Boost</button><button class="qaBtn" onclick="nav('accounts')">👤 Account</button><button class="qaBtn" onclick="nav('giftcard')">🎁 Card</button></div><div class="txList" id="dashTxList"></div><div class="oStats"><div class="oStat"><div id="statTotal">0</div><div class="oLbl">Total</div></div><div class="oStat"><div id="statCompleted">0</div><div class="oLbl">Completed</div></div></div></div><div id="pgNumbers" class="page"><div id="numbersCountryView"><input id="cSearch" class="fI" placeholder="Search country"/><div class="countryGrid" id="countryGrid"></div></div><div id="numbersTierView" style="display:none"><button class="tierBackBtn" onclick="document.getElementById('numbersCountryView').style.display='block';this.parentElement.style.display='none'">← Back</button><div id="tierCountryHead"></div><div id="tierGrid"></div></div></div><div id="pgAddfunds" class="page"><div class="amountGrid"><div class="amountChip" onclick="selectAmount(500,this)">₦500</div><div class="amountChip" onclick="selectAmount(1000,this)">₦1k</div><div class="amountChip" onclick="selectAmount(5000,this)">₦5k</div></div><input id="fundAmount" class="fI" placeholder="Custom amount"/><div id="payAccounts"></div><button class="btnP" onclick="submitDepositRequest()">I have sent payment</button></div><div id="pgWithdraw" class="page"><div class="amountGrid" id="wdAmountGrid"><div class="amountChip" onclick="selectWdAmount(500,this)">₦500</div><div class="amountChip" onclick="selectWdAmount(1000,this)">₦1k</div><div class="amountChip" onclick="selectWdAmount(5000,this)">₦5k</div></div><input id="wdAmount" class="fI" placeholder="Custom amount"/><div id="wdBalDisplay" style="margin:10px 0">₦0</div><button class="btnP" onclick="submitWithdrawal()">Request Withdrawal</button></div><div id="pgTransactions" class="page"><div class="txTabRow"><button class="txTab active" onclick="filterTx('all',this)">All</button><button class="txTab" onclick="filterTx('purchase',this)">Purchases</button></div><div class="txList" id="txMain"></div></div><div id="pgSupport" class="page"><div id="faqList"></div><div class="formCard"><input id="ticketSubj" class="fI" placeholder="Subject"/><textarea id="ticketMsg" class="fI" rows="2" placeholder="Message"></textarea><button class="btnP" onclick="submitTicket()">Submit Ticket</button></div></div><div id="pgSettings" class="page"><div class="setSection"><input id="setFirst" class="fI" placeholder="First name"/><input id="setLast" class="fI" placeholder="Last name"/><input id="setPhone" class="fI" placeholder="Phone"/><button class="btnP" onclick="saveProfile()">Update Profile</button></div><div class="setSection"><input id="pwNew" class="fI" type="password" placeholder="New password"/><input id="pwCon" class="fI" type="password" placeholder="Confirm"/><button class="btnP" onclick="changePassword()">Change Password</button></div></div><div id="pgTxdetail" class="page"><button class="backBtn" onclick="nav('transactions')">← Back</button><div id="txDetailContent"></div></div><div id="pgMyorders" class="page"><div id="myOrdersList"></div></div><div id="pgMyaccorders" class="page"><div id="myAccOrdersList"></div></div><div id="pgBoost" class="page"><div class="formCard"><div id="boostPlats" class="chipSel"></div><div id="boostTypes" class="chipSel"></div><input id="boostTarget" class="fI" placeholder="Profile URL"/><select id="boostQty" class="fI"><option>500</option><option>1000</option></select><div class="pricePrev">Cost: <strong id="boostCost">₦0</strong></div><button class="btnP" onclick="submitBoost()">Place Boost Order</button></div></div><div id="pgAccounts" class="page"><div id="accTabs" class="pTabs"></div><div id="accGrid" class="accGrid"></div></div></main></div>`; loadTheme(); initFAQ(); checkSession(); }
+function checkSession(){ sb.auth.getSession().then(async({data})=>{ if(data.session){ let profile=await sb.from('profiles').select('*').eq('id',data.session.user.id).single(); currentUser={...profile.data, id:data.session.user.id, email:data.session.user.email}; launchApp(); }else{ document.getElementById('loadingScreen').style.display='none'; document.getElementById('authScreen').style.display='flex'; } }); }
+window.onload=()=>{ renderAuthAndApp(); };
+</script>
+</body>
+</html>
