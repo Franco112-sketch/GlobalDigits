@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<title>Refer & Earn — Global Digits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;
+  --bg:#f4f6fb;--surface:#fff;--surface2:#eef1f8;--border:#e1e6f0;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --r:14px;--r-sm:9px;
+  --shadow:0 2px 12px rgba(15,25,50,.07);
+  --shadow-md:0 10px 34px rgba(15,25,50,.13);
+  --font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;
+  --t:.18s ease;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;font-family:var(--font);font-size:12px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+body{padding-bottom:36px}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:640px;margin:0 auto;padding:0 14px}
+/* topbar */
+#topbar{background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+#topbar .wrap{display:flex;align-items:center;gap:10px;height:52px}
+#backBtn{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:center;color:var(--text2)}
+#topbar h1{font-family:var(--font-d);font-size:14px;font-weight:700}
+/* hero */
+.hero{background:linear-gradient(135deg,var(--brand),#3b7cf0 60%,#5b93ff);border-radius:0 0 24px 24px;padding:28px 14px 34px;color:#fff;margin-bottom:-18px}
+.hero h2{font-family:var(--font-d);font-size:21px;font-weight:800;margin-bottom:6px;letter-spacing:-.2px}
+.hero p{font-size:12px;opacity:.92;line-height:1.5;max-width:420px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-top:16px}
+.cardTitle{font-size:12.5px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.skeleton{background:linear-gradient(90deg,var(--surface2) 25%,var(--border) 37%,var(--surface2) 63%);background-size:400% 100%;animation:sk 1.4s ease infinite;border-radius:8px}
+@keyframes sk{0%{background-position:100% 0}100%{background-position:0 0}}
+/* referral link box */
+.codeBox{background:var(--brand-lt);border-radius:var(--r-sm);padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.codeBox .code{font-family:var(--font-d);font-weight:800;font-size:16px;color:var(--brand-dk);letter-spacing:1px}
+.linkRow{margin-top:10px;background:var(--surface2);border-radius:var(--r-sm);padding:9px 12px;font-size:11px;color:var(--text2);word-break:break-all}
+.btnRow{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.btn{flex:1;min-width:100px;padding:10px;border-radius:var(--r-sm);font-size:11.5px;font-weight:600;border:none;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--t)}
+.btnP{background:var(--brand);color:#fff}
+.btnP:hover{background:var(--brand-dk)}
+.btnG{background:var(--surface2);color:var(--text)}
+.btnWA{background:#25D366;color:#fff}
+.btn svg{width:14px;height:14px}
+/* reward rule cards */
+.ruleGrid{display:grid;grid-template-columns:1fr;gap:8px}
+.ruleCard{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:var(--r-sm);padding:10px 12px}
+.ruleIcon{width:32px;height:32px;border-radius:9px;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ruleIcon svg{width:16px;height:16px}
+.ruleCard b{color:var(--brand-dk)}
+/* progress */
+.progWrap{background:var(--surface2);border-radius:20px;height:10px;overflow:hidden;margin:10px 0 6px}
+.progBar{height:100%;background:linear-gradient(90deg,var(--brand),#5b93ff);border-radius:20px;transition:width .4s ease}
+.progLabel{display:flex;justify-content:space-between;font-size:11px;color:var(--text2)}
+/* points wallet */
+.ptsHero{text-align:center;padding:6px 0 4px}
+.ptsHero .num{font-family:var(--font-d);font-size:30px;font-weight:800;color:var(--brand-dk)}
+.ptsHero .sub{font-size:11px;color:var(--text2);margin-top:2px}
+.ptsGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.ptsMini{background:var(--surface2);border-radius:var(--r-sm);padding:9px 10px}
+.ptsMini .l{font-size:10px;color:var(--text3)}
+.ptsMini .v{font-weight:700;font-size:13px;margin-top:2px}
+/* people/history rows */
+.rowItem{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.rowItem:last-child{border-bottom:none}
+.rowItem .l{font-weight:600;font-size:11.5px}
+.rowItem .r{font-size:11px;color:var(--text2);text-align:right}
+.pill{font-size:9.5px;font-weight:700;padding:2px 7px;border-radius:20px;display:inline-block}
+.pill.done{background:#dcfce7;color:#15803d}
+.pill.pending{background:#fef3c7;color:#92400e}
+.pill.no{background:#fee2e2;color:#991b1b}
+.ptsPos{color:var(--success);font-weight:700}
+.ptsNeg{color:var(--danger);font-weight:700}
+.empty{text-align:center;padding:22px 10px;color:var(--text3);font-size:11.5px}
+/* leaderboard */
+.lbRow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.lbRow:last-child{border-bottom:none}
+.lbRank{width:22px;text-align:center;font-weight:800;font-size:11.5px;color:var(--text2)}
+.lbRow.me{background:var(--brand-lt);border-radius:9px;padding:8px 10px;margin:0 -10px}
+.lbAvatar{width:30px;height:30px;border-radius:50%;background:var(--surface2);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--brand);font-size:11px}
+.lbAvatar img{width:100%;height:100%;object-fit:cover}
+.lbName{font-weight:600;font-size:11.5px;flex:1}
+.lbStat{font-size:11px;color:var(--text2);text-align:right}
+/* modal */
+.modalBg{position:fixed;inset:0;background:rgba(10,15,30,.5);display:none;align-items:flex-end;justify-content:center;z-index:300}
+.modalBg.open{display:flex}
+.modal{background:var(--surface);width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:18px;max-height:88vh;overflow:auto}
+.fG{margin-bottom:12px}
+.fG label{font-size:11px;color:var(--text2);display:block;margin-bottom:5px;font-weight:600}
+.fI{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:12.5px;font-family:inherit;background:var(--surface)}
+.fI:focus{outline:none;border-color:var(--brand)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(20px);background:#0d1321;color:#fff;padding:10px 18px;border-radius:30px;font-size:12px;opacity:0;transition:.25s ease;z-index:400;pointer-events:none;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.tabs{display:flex;gap:6px;margin-bottom:12px;overflow-x:auto}
+.tab{padding:7px 12px;border-radius:20px;background:var(--surface2);font-size:11px;font-weight:600;color:var(--text2);white-space:nowrap;border:none}
+.tab.active{background:var(--brand);color:#fff}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="topbar"><div class="wrap">
+  <button id="backBtn" onclick="location.href='./index.html'">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h1>Refer & Earn</h1>
+</div></div>
+
+<div class="hero"><div class="wrap">
+  <h2>Refer & Earn Airtime Points</h2>
+  <p>Invite friends to Global Digits and earn reward points whenever they join and become active customers.</p>
+</div></div>
+
+<div class="wrap">
+
+  <div class="card hidden" id="pausedBanner" style="border-color:#f59e0b;background:#fffbeb;text-align:center;padding:14px">
+    <div style="font-weight:700;color:#92400e;font-size:13px">⏸ Referral Program Currently Unavailable</div>
+    <div style="font-size:11.5px;color:#92400e;margin-top:4px">New referral rewards are paused by the admin. Your existing points, referrals and history are safe and unaffected.</div>
+  </div>
+
+  <!-- REFERRAL LINK -->
+  <div class="card">
+    <div class="cardTitle">Your Referral Link</div>
+    <div class="codeBox">
+      <div>
+        <div style="font-size:10px;color:var(--text2);margin-bottom:2px">Referral Code</div>
+        <div class="code" id="refCode">••••••</div>
+      </div>
+    </div>
+    <div class="linkRow" id="refLink">Loading…</div>
+    <div class="btnRow">
+      <button class="btn btnG" onclick="copyRefLink()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Copy Link
+      </button>
+      <button class="btn btnWA" onclick="shareWhatsapp()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 00-8.5 15.2L2 22l4.9-1.5A10 10 0 1012 2zm0 18a8 8 0 01-4.1-1.1l-.3-.2-3 .9.9-2.9-.2-.3A8 8 0 1112 20z"/></svg>WhatsApp
+      </button>
+      <button class="btn btnP" onclick="nativeShare()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>Share
+      </button>
+    </div>
+  </div>
+
+  <!-- REWARD RULES -->
+  <div class="card">
+    <div class="cardTitle">How You Earn</div>
+    <div class="ruleGrid" id="ruleGrid">
+      <div class="skeleton" style="height:52px"></div>
+      <div class="skeleton" style="height:52px"></div>
+      <div class="skeleton" style="height:52px"></div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="card">
+    <div class="cardTitle">Referral Progress</div>
+    <div class="progLabel"><span id="progCount">0 referrals</span><span id="progGoal">Goal: 5</span></div>
+    <div class="progWrap"><div class="progBar" id="progBar" style="width:0%"></div></div>
+    <div style="font-size:11px;color:var(--text2);margin-top:6px" id="progNote">Refer 5 friends to unlock your next milestone reward.</div>
+  </div>
+
+  <!-- POINTS WALLET -->
+  <div class="card">
+    <div class="cardTitle">Points Wallet</div>
+    <div class="ptsHero">
+      <div class="num" id="ptsBalance">0 Points</div>
+      <div class="sub">Redeemable Airtime: <b id="ptsAirtime">₦0</b></div>
+    </div>
+    <div class="ptsGrid">
+      <div class="ptsMini"><div class="l">Total Earned</div><div class="v" id="ptsEarned">0</div></div>
+      <div class="ptsMini"><div class="l">Total Redeemed</div><div class="v" id="ptsRedeemed">0</div></div>
+    </div>
+    <button class="btn btnP" style="width:100%;margin-top:12px" onclick="openRedeemModal()">Redeem Airtime</button>
+  </div>
+
+  <!-- PEOPLE REFERRED -->
+  <div class="card">
+    <div class="cardTitle">People You Referred <span style="color:var(--text3);font-weight:500" id="referredCount"></span></div>
+    <div id="referredList"><div class="skeleton" style="height:60px"></div></div>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="card">
+    <div class="cardTitle">Referral History</div>
+    <div id="historyList"><div class="skeleton" style="height:60px"></div></div>
+  </div>
+
+  <!-- LEADERBOARD -->
+  <div class="card">
+    <div class="cardTitle">Live Leaderboard</div>
+    <div id="leaderboardList"><div class="skeleton" style="height:120px"></div></div>
+  </div>
+
+</div>
+
+<!-- REDEEM MODAL -->
+<div class="modalBg" id="redeemModalBg"><div class="modal">
+  <div class="cardTitle">Redeem Airtime<button onclick="closeRedeemModal()" style="background:none;border:none;color:var(--text3)">✕</button></div>
+  <div class="fG"><label>Phone Number</label><input type="tel" id="rdPhone" class="fI" placeholder="080XXXXXXXX" maxlength="11"/></div>
+  <div class="fG"><label>Network</label>
+    <select id="rdNetwork" class="fI">
+      <option value="MTN">MTN</option><option value="Airtel">Airtel</option>
+      <option value="Glo">Glo</option><option value="9mobile">9mobile</option>
+    </select>
+  </div>
+  <div class="fG"><label>Points to Redeem</label><input type="number" id="rdPoints" class="fI" placeholder="e.g. 100"/></div>
+  <div style="font-size:11px;color:var(--text2);margin-bottom:12px">Available balance: <b id="rdAvail">0</b> points</div>
+  <button class="btn btnP" style="width:100%" id="rdSubmitBtn" onclick="submitRedeem()">Redeem Now</button>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+/* ══ CONFIG — same Supabase project as the main site, so the session is shared automatically ══ */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+var currentUser=null, refSettings=null, channels=[];
+
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._tt);window._tt=setTimeout(function(){t.classList.remove('show');},2600);}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):'';}
+function fmtDate(d){try{return new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'});}catch(e){return '';}}
+function money(n){return '₦'+Math.round(n||0).toLocaleString();}
+
+/* ══ BOOT — reuses the existing auth session, no re-login required ══ */
+(async function boot(){
+  var s=await sb.auth.getSession();
+  if(!s.data.session){ location.href='./index.html'; return; }
+  currentUser=s.data.session.user;
+
+  var pr=await sb.from('profiles').select('*').eq('id',currentUser.id).single();
+  if(pr.error||!pr.data){ toast('Could not load your profile'); return; }
+  currentUser=Object.assign(currentUser,pr.data);
+
+  if(!currentUser.referral_code){
+    var codeR=await sb.rpc('ensure_referral_code',{p_user_id:currentUser.id});
+    if(!codeR.error) currentUser.referral_code=codeR.data;
+  }
+  renderRefLink();
+
+  var setR=await sb.from('referral_settings').select('*').eq('id',1).single();
+  refSettings=setR.data||{required_referrals:5,milestone_points:100,signup_points:20,topup_points:50,purchase_min_amount:1000,purchase_points:200,points_to_naira_rate:1,program_active:true};
+  renderRules();
+
+  await Promise.all([loadReferred(), loadHistory(), loadLeaderboard(), refreshWallet()]);
+  setupRealtime();
+})();
+
+function renderRefLink(){
+  document.getElementById('refCode').textContent=currentUser.referral_code||'—';
+  var link=location.origin+location.pathname.replace('referral.html','')+'index.html?ref='+(currentUser.referral_code||'');
+  document.getElementById('refLink').textContent=link;
+  window._refLink=link;
+}
+function copyRefLink(){
+  navigator.clipboard.writeText(window._refLink||'').then(function(){toast('Link copied!');}).catch(function(){toast('Could not copy link');});
+}
+function shareWhatsapp(){
+  var msg=encodeURIComponent('Join me on Global Digits! Use my referral link: '+(window._refLink||''));
+  window.open('https://wa.me/?text='+msg,'_blank');
+}
+function nativeShare(){
+  if(navigator.share){navigator.share({title:'Global Digits',text:'Join me on Global Digits and earn rewards!',url:window._refLink||''}).catch(function(){});}
+  else{copyRefLink();}
+}
+
+function renderRules(){
+  var s=refSettings;
+  var icons=['<path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/>',
+    '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    '<path d="M12 2l2.9 6.3L22 9.3l-5 4.9 1.2 7-6.2-3.3L5.8 21.2 7 14.2 2 9.3l7.1-1z"/>'];
+  var html='<div class="ruleCard"><div class="ruleIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+icons[0]+'</svg></div>'+
+    '<div>Refer <b>'+s.required_referrals+' users</b> → Earn <b>'+s.milestone_points+' Points</b></div></div>'+
+    '<div class="ruleCard"><div class="ruleIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+icons[1]+'</svg></div>'+
+    '<div>Every referred user that completes a <b>Top-up</b> → Earn <b>'+s.topup_points+' Points</b></div></div>'+
+    '<div class="ruleCard"><div class="ruleIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+icons[2]+'</svg></div>'+
+    '<div>Purchase worth <b>'+money(s.purchase_min_amount)+'+</b> → Earn <b>'+s.purchase_points+' Points</b></div></div>';
+  document.getElementById('ruleGrid').innerHTML=html;
+  document.getElementById('pausedBanner').classList.toggle('hidden',!!s.program_active);
+  if(!s.program_active){document.getElementById('progNote').textContent='The referral program is currently paused by the admin. Existing points and records are safe.';}
+}
+
+async function refreshWallet(){
+  var pr=await sb.from('profiles').select('points_balance,points_earned_total,points_redeemed_total').eq('id',currentUser.id).single();
+  if(pr.error||!pr.data)return;
+  currentUser.points_balance=pr.data.points_balance||0;
+  currentUser.points_earned_total=pr.data.points_earned_total||0;
+  currentUser.points_redeemed_total=pr.data.points_redeemed_total||0;
+  document.getElementById('ptsBalance').textContent=currentUser.points_balance.toLocaleString()+' Points';
+  document.getElementById('ptsAirtime').textContent=money(currentUser.points_balance*(refSettings.points_to_naira_rate||1));
+  document.getElementById('ptsEarned').textContent=currentUser.points_earned_total.toLocaleString();
+  document.getElementById('ptsRedeemed').textContent=currentUser.points_redeemed_total.toLocaleString();
+}
+
+async function loadReferred(){
+  var r=await sb.from('referrals').select('*,referred:referred_id(name,created_at)').eq('referrer_id',currentUser.id).order('created_at',{ascending:false});
+  var rows=r.data||[];
+  document.getElementById('referredCount').textContent=rows.length?'('+rows.length+')':'';
+  var required=refSettings.required_referrals||5;
+  var pct=Math.min(100,Math.round((rows.length%required||(rows.length?required:0))/required*100));
+  if(rows.length && rows.length%required===0) pct=100;
+  document.getElementById('progCount').textContent=rows.length+' referral'+(rows.length===1?'':'s');
+  document.getElementById('progGoal').textContent='Goal: '+required;
+  document.getElementById('progBar').style.width=pct+'%';
+  var remaining=required-(rows.length%required||0);
+  if(rows.length && rows.length%required===0) remaining=required;
+  if(refSettings.program_active) document.getElementById('progNote').textContent=remaining+' more referral'+(remaining===1?'':'s')+' to your next '+refSettings.milestone_points+'-point milestone.';
+
+  if(!rows.length){document.getElementById('referredList').innerHTML='<div class="empty">No referrals yet — share your link to get started!</div>';return;}
+  document.getElementById('referredList').innerHTML=rows.map(function(g){
+    var nm=(g.referred&&g.referred.name)||'User';
+    return '<div class="rowItem"><div><div class="l">'+nm+'</div><div class="r" style="text-align:left;margin-top:2px">Joined '+fmtDate((g.referred&&g.referred.created_at)||g.created_at)+'</div></div>'+
+      '<div class="r">'+
+        '<span class="pill '+(g.topup_rewarded?'done':'pending')+'">Top-up '+(g.topup_rewarded?'✓':'…')+'</span> '+
+        '<span class="pill '+(g.purchase_rewarded?'done':'pending')+'">Purchase '+(g.purchase_rewarded?'✓':'…')+'</span>'+
+      '</div></div>';
+  }).join('');
+}
+
+async function loadHistory(){
+  var r=await sb.from('referral_events').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(30);
+  var rows=r.data||[];
+  if(!rows.length){document.getElementById('historyList').innerHTML='<div class="empty">No activity yet.</div>';return;}
+  document.getElementById('historyList').innerHTML=rows.map(function(e){
+    var pos=e.points>=0;
+    return '<div class="rowItem"><div><div class="l">'+(e.description||cap(e.type))+'</div><div class="r" style="text-align:left;margin-top:2px">'+fmtDate(e.created_at)+'</div></div>'+
+      '<div class="'+(pos?'ptsPos':'ptsNeg')+'">'+(pos?'+':'')+e.points+'</div></div>';
+  }).join('');
+}
+
+async function loadLeaderboard(){
+  var r=await sb.from('referral_leaderboard').select('*').limit(10);
+  var rows=r.data||[];
+  var meInTop=rows.some(function(x){return x.user_id===currentUser.id;});
+  var html=rows.map(function(x){return lbRowHtml(x);}).join('');
+  if(!meInTop){
+    var meR=await sb.from('referral_leaderboard').select('*').eq('user_id',currentUser.id).maybeSingle();
+    if(meR.data) html+='<div style="text-align:center;color:var(--text3);font-size:10px;margin:4px 0">•••</div>'+lbRowHtml(meR.data);
+  }
+  document.getElementById('leaderboardList').innerHTML=html||'<div class="empty">No referrers yet — be the first!</div>';
+}
+function lbRowHtml(x){
+  var isMe=x.user_id===currentUser.id;
+  var initials=(x.name||'U').split(' ').map(function(w){return w[0];}).slice(0,2).join('').toUpperCase();
+  return '<div class="lbRow'+(isMe?' me':'')+'"><div class="lbRank">#'+x.rank+'</div>'+
+    '<div class="lbAvatar">'+(x.avatar_url?'<img src="'+x.avatar_url+'"/>':initials)+'</div>'+
+    '<div class="lbName">'+(x.name||'User')+(isMe?' (You)':'')+'</div>'+
+    '<div class="lbStat">'+x.successful_referrals+' refs · '+x.total_points+' pts</div></div>';
+}
+
+/* ══ REALTIME — auto-updates without page refresh ══ */
+function setupRealtime(){
+  channels.push(sb.channel('ref_events_'+currentUser.id).on('postgres_changes',
+    {event:'INSERT',schema:'public',table:'referral_events',filter:'user_id=eq.'+currentUser.id},
+    function(payload){ loadHistory(); refreshWallet(); if(payload.new&&payload.new.points>0) toast(payload.new.description||'Points earned!'); }
+  ).subscribe());
+  channels.push(sb.channel('ref_rows_'+currentUser.id).on('postgres_changes',
+    {event:'*',schema:'public',table:'referrals',filter:'referrer_id=eq.'+currentUser.id},
+    function(){ loadReferred(); loadLeaderboard(); toast('Someone joined using your referral link!'); }
+  ).subscribe());
+  channels.push(sb.channel('ref_leaderboard').on('postgres_changes',
+    {event:'*',schema:'public',table:'referrals'},
+    function(){ loadLeaderboard(); }
+  ).subscribe());
+  channels.push(sb.channel('ref_settings').on('postgres_changes',
+    {event:'UPDATE',schema:'public',table:'referral_settings',filter:'id=eq.1'},
+    function(payload){
+      refSettings=payload.new;
+      renderRules();
+      loadReferred();
+      toast(refSettings.program_active?'Referral program is now active':'Referral program has been paused');
+    }
+  ).subscribe());
+}
+window.addEventListener('beforeunload',function(){channels.forEach(function(c){sb.removeChannel(c);});});
+
+/* ══ REDEEM ══ */
+function openRedeemModal(){
+  document.getElementById('rdAvail').textContent=(currentUser.points_balance||0).toLocaleString();
+  document.getElementById('redeemModalBg').classList.add('open');
+}
+function closeRedeemModal(){document.getElementById('redeemModalBg').classList.remove('open');}
+async function submitRedeem(){
+  var phone=document.getElementById('rdPhone').value.trim();
+  var network=document.getElementById('rdNetwork').value;
+  var pts=parseFloat(document.getElementById('rdPoints').value)||0;
+  if(!/^0\d{10}$/.test(phone)){toast('Enter a valid 11-digit Nigerian number');return;}
+  if(pts<=0){toast('Enter a valid points amount');return;}
+  if(pts>(currentUser.points_balance||0)){toast('Insufficient points balance');return;}
+  var btn=document.getElementById('rdSubmitBtn');btn.disabled=true;btn.textContent='Processing…';
+  try{
+    var r=await sb.rpc('redeem_points_for_airtime',{p_user_id:currentUser.id,p_phone:phone,p_network:network,p_points:pts});
+    if(r.error) throw r.error;
+    if(!r.data||!r.data.success){toast(r.data&&r.data.message||'Redemption failed');}
+    else{toast('Redeemed! Airtime is being processed.');closeRedeemModal();await refreshWallet();await loadHistory();}
+  }catch(e){toast(e.message||'Redemption failed');}
+  btn.disabled=false;btn.textContent='Redeem Now';
+}
+</script>
+</body>
+</html>
