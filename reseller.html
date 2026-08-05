@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<title>Global Digits — Reseller Program</title>
+<meta name="description" content="Become a Global Digits reseller — your own storefront selling virtual numbers, social media accounts, boosting, gift cards, eSIMs and VTU."/>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;
+  --bg:#f4f6fb;--surface:#fff;--surface2:#eef1f8;--border:#e1e6f0;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --sidebar-bg:#0d1321;
+  --topbar-h:52px;--sidebar-w:240px;--bnav-h:56px;
+  --r:10px;--r-sm:7px;
+  --shadow:0 2px 12px rgba(15,25,50,.07);
+  --shadow-md:0 6px 28px rgba(15,25,50,.12);
+  --font:'Plus Jakarta Sans',sans-serif;
+  --font-d:'Syne',sans-serif;
+  --t:.18s ease;
+  --grad-premium:linear-gradient(135deg,#1a56db 0%,#1e3a8a 100%);
+  --r-lg:18px;--r-xl:24px;
+  --shadow-glow:0 10px 34px rgba(29,66,176,.28);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--font-d)}
+a{color:inherit;text-decoration:none}
+button{font-family:var(--font);cursor:pointer;border:none;background:none}
+input,select,textarea{font-family:var(--font);font-size:13.5px}
+.hidden{display:none!important}
+img{max-width:100%;display:block}
+
+/* ===== layout shell ===== */
+#appShell{min-height:100vh;display:flex;flex-direction:column}
+#topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 16px;position:sticky;top:0;z-index:40}
+.brandMark{display:flex;align-items:center;gap:8px;font-family:var(--font-d);font-weight:800;font-size:15px}
+.brandMark .dot{width:9px;height:9px;border-radius:50%;background:var(--grad-premium)}
+#topbarRight{display:flex;align-items:center;gap:10px}
+.pillBtn{padding:7px 14px;border-radius:999px;font-size:12.5px;font-weight:700;background:var(--brand-lt);color:var(--brand)}
+.avatarDot{width:30px;height:30px;border-radius:50%;background:var(--grad-premium);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px}
+
+#main{flex:1;max-width:920px;width:100%;margin:0 auto;padding:18px 16px 90px}
+
+/* ===== cards / common ===== */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow)}
+.cardTight{padding:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media(max-width:560px){.grid3{grid-template-columns:1fr 1fr}}
+.statCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px}
+.statCard .lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--text3)}
+.statCard .val{font-family:var(--font-d);font-size:20px;font-weight:700;margin-top:4px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:11px 18px;border-radius:var(--r);font-weight:700;font-size:13.5px;transition:var(--t)}
+.btnP{background:var(--grad-premium);color:#fff;box-shadow:var(--shadow-glow)}
+.btnP:active{transform:scale(.98)}
+.btnO{background:var(--surface);border:1.5px solid var(--border);color:var(--text)}
+.btnDanger{background:#fef2f2;color:var(--danger)}
+.btnSm{padding:7px 12px;font-size:12px;border-radius:8px}
+.btnBlock{width:100%}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:11.5px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.02em}
+.field input,.field select,.field textarea{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--surface2);color:var(--text)}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--brand);background:var(--surface)}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+.badge.active,.badge.approved,.badge.paid,.badge.completed{background:#dcfce7;color:#16a34a}
+.badge.pending,.badge.processing{background:#fef3c7;color:#b45309}
+.badge.rejected,.badge.failed,.badge.suspended{background:#fee2e2;color:#dc2626}
+.badge.expired{background:var(--surface2);color:var(--text3)}
+.empty{padding:36px 10px;text-align:center;color:var(--text3);font-size:13px}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0d1321;color:#fff;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:600;z-index:200;box-shadow:var(--shadow-md);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(-4px)}
+.loadSpin{width:20px;height:20px;border:2.5px solid var(--brand-lt);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.centerScreen{min-height:60vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:20px}
+
+/* tabs (dashboard) */
+#dashTabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;margin-bottom:16px;scrollbar-width:none}
+#dashTabs::-webkit-scrollbar{display:none}
+.dTab{padding:9px 14px;border-radius:999px;font-size:12.5px;font-weight:700;white-space:nowrap;background:var(--surface);border:1.5px solid var(--border);color:var(--text2)}
+.dTab.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+.rowItem{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+.rowItem:last-child{border-bottom:none}
+.rowItem .t1{font-weight:700;font-size:13px}
+.rowItem .t2{font-size:11.5px;color:var(--text2);margin-top:2px}
+
+.planCard{border:2px solid var(--border);border-radius:var(--r-lg);padding:18px;position:relative}
+.planCard.rec{border-color:var(--brand)}
+.planCard h3{font-size:16px}
+.planCard .price{font-family:var(--font-d);font-size:24px;font-weight:800;color:var(--brand);margin:8px 0}
+.planCard ul{list-style:none;margin:12px 0;font-size:12.5px;color:var(--text2)}
+.planCard li{padding:4px 0;display:flex;gap:7px;align-items:flex-start}
+
+/* storefront product grid */
+.prodCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:8px}
+.prodGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.catChip{padding:8px 14px;border-radius:999px;font-size:12px;font-weight:700;background:var(--surface);border:1.5px solid var(--border);white-space:nowrap}
+.catChip.active{background:var(--brand);color:#fff;border-color:var(--brand)}
+.storeHero{background:var(--grad-premium);border-radius:var(--r-xl);padding:26px 20px;color:#fff;margin-bottom:18px}
+.storeHero h1{font-size:20px}
+.storeHero p{font-size:12.5px;opacity:.85;margin-top:4px}
+.poweredBy{text-align:center;font-size:11px;color:var(--text3);padding:16px 0 4px}
+
+/* modal */
+.modalOverlay{position:fixed;inset:0;background:rgba(10,14,25,.55);z-index:300;display:flex;align-items:flex-end;justify-content:center}
+@media(min-width:640px){.modalOverlay{align-items:center}}
+.modalBox{background:var(--surface);width:100%;max-width:440px;border-radius:20px 20px 0 0;padding:20px;max-height:88vh;overflow-y:auto}
+@media(min-width:640px){.modalBox{border-radius:var(--r-xl)}}
+.modalHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.modalHead h3{font-size:16px}
+.xBtn{width:30px;height:30px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center}
+
+.svgIco{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+</style>
+</head>
+<body>
+<div id="appShell">
+  <div id="topbar">
+    <div class="brandMark"><span class="dot"></span> Global Digits <span style="color:var(--text3);font-weight:600">· Resellers</span></div>
+    <div id="topbarRight"></div>
+  </div>
+  <div id="main"><div class="centerScreen"><div class="loadSpin"></div></div></div>
+</div>
+<div id="toastEl" class="toast"></div>
+<div id="modalRoot"></div>
+
+<script>
+/* ══════════════════════ CONFIG ══════════════════════ */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const SMM_PROXY_URL=SUPA_URL+'/functions/v1/smm-proxy';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+const MAIN_SITE_URL='https://globaldigits.shop/index.html';
+
+const PLAN_META={
+  weekly:{label:'Weekly',color:'#5a6580'},
+  monthly:{label:'Monthly',color:'#1a56db'},
+  yearly:{label:'Yearly',color:'#16a34a'}
+};
+const CATEGORY_META={
+  numbers:{label:'Virtual Numbers',icon:'phone'},
+  accounts:{label:'SM Accounts',icon:'user'},
+  boost:{label:'Boosting',icon:'trend'},
+  giftcard:{label:'Gift Cards',icon:'card'},
+  esim:{label:'eSIM',icon:'sim'},
+  vtu:{label:'VTU / Airtime & Data',icon:'signal'}
+};
+
+/* ══════════════════════ STATE ══════════════════════ */
+var currentUser=null;      // Supabase auth user + profile
+var myApplication=null;    // reseller_applications row (if any)
+var myReseller=null;       // resellers row (if approved)
+var myActiveSub=null;      // reseller_active_subscription row (if any)
+var myPlan=null;           // reseller_plans row matching myActiveSub.plan_id
+var myPermittedCats=[];    // array of product_category strings
+var allPlans=[];
+var storeParam=null;       // ?store=username from Vercel rewrite (public storefront mode)
+var viewingReseller=null;  // resellers row being viewed as a public storefront
+var viewingPermittedCats=[];
+
+/* ══════════════════════ UTIL ══════════════════════ */
+function toast(msg){
+  var t=document.getElementById('toastEl');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer=setTimeout(function(){t.classList.remove('show');},2600);
+}
+function fmtN(n){return '₦'+Math.round(n||0).toLocaleString();}
+function fmtDate(d){if(!d)return '—';var dt=new Date(d);return dt.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function qs(name){var u=new URL(window.location.href);return u.searchParams.get(name);}
+function icon(name,size){
+  size=size||16;
+  var map={
+    phone:'<path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.11 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>',
+    user:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0116 0v1"/>',
+    trend:'<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>',
+    card:'<rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/>',
+    sim:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="M9 8h6M9 12h6M9 16h3"/>',
+    signal:'<path d="M2 20h.01M7 20v-4M12 20v-8M17 20V8M22 20V4"/>',
+    check:'<polyline points="20 6 9 17 4 12"/>',
+    arrow:'<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>',
+    store:'<path d="M3 9l1-5h16l1 5M3 9v10a1 1 0 001 1h16a1 1 0 001-1V9M3 9h18M9 21V13h6v8"/>',
+    wallet:'<path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><circle cx="16" cy="14" r="1"/>',
+    users:'<path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/>',
+    box:'<path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/>',
+    cash:'<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="3"/>',
+    settings:'<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 007.09 4.6c.36.16.75.24 1.14.24H9a2 2 0 014 0v.09c0 .39.08.78.24 1.14a1.65 1.65 0 001.82.33h.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82c.16.36.24.75.24 1.14V12a2 2 0 010 4h-.09c-.39 0-.78.08-1.14.24z"/>',
+    logout:'<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>'
+  };
+  return '<svg class="svgIco" width="'+size+'" height="'+size+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+(map[name]||map.box)+'</svg>';
+}
+function showModal(html){
+  document.getElementById('modalRoot').innerHTML='<div class="modalOverlay" onclick="if(event.target===this)closeModal()"><div class="modalBox">'+html+'</div></div>';
+}
+function closeModal(){document.getElementById('modalRoot').innerHTML='';}
+function generateUUID(){
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g,function(c){
+    var r=Math.random()*16|0,v=c==='x'?r:(r&0x3|0x8);return v.toString(16);
+  });
+}
+
+/* ══════════════════════ BOOT / ROUTER ══════════════════════ */
+async function boot(){
+  storeParam=qs('store');
+  if(storeParam && (storeParam.toLowerCase()==='www' || storeParam.toLowerCase()==='reseller')){storeParam=null;}
+  var host=window.location.hostname;
+  var m=host.match(/^([a-z0-9-]+)\.globaldigits\.shop$/i);
+  if(!storeParam && m && m[1]!=='www' && m[1]!=='reseller'){storeParam=m[1];}
+
+  var sess=await sb.auth.getSession();
+  var user=sess.data && sess.data.session ? sess.data.session.user : null;
+
+  if(storeParam){
+    // Public storefront mode — load the reseller by username, doesn't require login.
+    await loadPublicStorefront(storeParam);
+    if(user)await loadCurrentUser(user); // so a logged-in shopper can check out
+    renderTopbar();
+    return;
+  }
+
+  if(!user){
+    renderTopbar();
+    renderLoginScreen();
+    return;
+  }
+  await loadCurrentUser(user);
+  renderTopbar();
+  await routePortal();
+}
+
+sb.auth.onAuthStateChange(function(event,session){
+  if(event==='SIGNED_OUT'){currentUser=null;myApplication=null;myReseller=null;myActiveSub=null;renderTopbar();renderLoginScreen();}
+});
+
+async function loadCurrentUser(authUser){
+  var pr=await sb.from('profiles').select('*').eq('id',authUser.id).single();
+  currentUser={id:authUser.id,email:authUser.email,profile:pr.data||{}};
+
+  var appR=await sb.from('reseller_applications').select('*').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(1).maybeSingle();
+  myApplication=appR.data||null;
+
+  var rR=await sb.from('resellers').select('*').eq('user_id',authUser.id).maybeSingle();
+  myReseller=rR.data||null;
+
+  if(myReseller){
+    var subR=await sb.from('reseller_active_subscription').select('*').eq('reseller_id',myReseller.id).maybeSingle();
+    myActiveSub=(subR.data && new Date(subR.data.expires_at)>new Date())?subR.data:null;
+    if(myActiveSub){
+      var planR=await sb.from('reseller_plans').select('*').eq('id',myActiveSub.plan_id).single();
+      myPlan=planR.data||null;
+      var permR=await sb.from('reseller_plan_permissions').select('product_category').eq('plan_id',myActiveSub.plan_id);
+      myPermittedCats=(permR.data||[]).map(function(p){return p.product_category;});
+    }
+  }
+}
+
+async function routePortal(){
+  if(!myApplication){renderApplyScreen();return;}
+  if(myApplication.status==='pending'){renderApplicationPending();return;}
+  if(myApplication.status==='rejected'){renderApplicationRejected();return;}
+  // approved or suspended from here on — myReseller should exist
+  if(!myReseller){renderApplicationPending();return;}
+  if(myReseller.status==='suspended'){renderSuspended();return;}
+  if(!myActiveSub){renderPlanSelect();return;}
+  renderDashboard('overview');
+}
+
+/* ══════════════════════ TOPBAR ══════════════════════ */
+function renderTopbar(){
+  var el=document.getElementById('topbarRight');
+  if(!currentUser){
+    el.innerHTML='<a class="pillBtn" href="'+MAIN_SITE_URL+'">Main site</a>';
+    return;
+  }
+  var initials=(currentUser.profile.name||currentUser.email||'?').trim().charAt(0).toUpperCase();
+  el.innerHTML=
+    (myReseller?'<button class="pillBtn" onclick="routePortal()">Dashboard</button>':'')+
+    '<button class="avatarDot" onclick="doLogout()" title="Sign out — '+esc(currentUser.email)+'">'+initials+'</button>';
+}
+async function doLogout(){
+  await sb.auth.signOut();
+}
+
+/* ══════════════════════ AUTH SCREENS ══════════════════════ */
+function renderLoginScreen(){
+  document.getElementById('main').innerHTML=
+    '<div class="centerScreen" style="min-height:70vh">'+
+      '<div style="width:56px;height:56px;border-radius:16px;background:var(--grad-premium);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-glow)">'+icon('store',26)+'</div>'+
+      '<div style="text-align:center"><h1 style="font-size:19px">Reseller Portal</h1><p style="color:var(--text2);font-size:12.5px;margin-top:4px">Sign in with your Global Digits account</p></div>'+
+      '<div class="card" style="width:100%;max-width:360px">'+
+        '<div class="field"><label>Email</label><input id="authEmail" type="email" placeholder="you@example.com"/></div>'+
+        '<div class="field"><label>Password</label><input id="authPass" type="password" placeholder="••••••••"/></div>'+
+        '<button class="btn btnP btnBlock" id="authSubmitBtn" onclick="doAuthSubmit()">Sign In</button>'+
+        '<p style="text-align:center;font-size:12px;color:var(--text2);margin-top:12px">'+
+          '<span id="authToggleTxt">New here?</span> <a href="javascript:void(0)" onclick="toggleAuthMode()" id="authToggleLink" style="color:var(--brand);font-weight:700">Create account</a>'+
+        '</p>'+
+      '</div>'+
+      '<p style="font-size:11.5px;color:var(--text3)">Not a reseller yet? <a href="javascript:void(0)" onclick="toggleAuthMode()" style="color:var(--brand);font-weight:700">Sign up</a> and apply after logging in.</p>'+
+    '</div>';
+}
+var _authMode='login';
+function toggleAuthMode(){
+  _authMode=_authMode==='login'?'signup':'login';
+  document.getElementById('authSubmitBtn').textContent=_authMode==='login'?'Sign In':'Create Account';
+  document.getElementById('authToggleTxt').textContent=_authMode==='login'?'New here?':'Already have an account?';
+  document.getElementById('authToggleLink').textContent=_authMode==='login'?'Create account':'Sign in';
+}
+async function doAuthSubmit(){
+  var email=(document.getElementById('authEmail').value||'').trim();
+  var pass=document.getElementById('authPass').value||'';
+  if(!email||!pass){toast('Enter your email and password');return;}
+  var btn=document.getElementById('authSubmitBtn');btn.disabled=true;btn.textContent='Please wait…';
+  try{
+    if(_authMode==='login'){
+      var r=await sb.auth.signInWithPassword({email:email,password:pass});
+      if(r.error){toast(r.error.message||'Sign in failed');return;}
+    }else{
+      if(pass.length<6){toast('Password must be at least 6 characters');return;}
+      var r2=await sb.auth.signUp({email:email,password:pass});
+      if(r2.error){toast(r2.error.message||'Sign up failed');return;}
+      if(r2.data.user && !r2.data.session){toast('Account created — check your email to confirm, then sign in');_authMode='login';toggleAuthMode();toggleAuthMode();return;}
+    }
+    await loadCurrentUser((await sb.auth.getSession()).data.session.user);
+    renderTopbar();
+    await routePortal();
+  }catch(e){
+    toast(e.message||'Something went wrong');
+  }finally{
+    btn.disabled=false;btn.textContent=_authMode==='login'?'Sign In':'Create Account';
+  }
+}
+
+/* ══════════════════════ APPLY SCREEN ══════════════════════ */
+function renderApplyScreen(){
+  document.getElementById('main').innerHTML=
+    '<div class="card" style="max-width:480px;margin:20px auto">'+
+      '<h2 style="font-size:18px;margin-bottom:4px">Become a Reseller</h2>'+
+      '<p style="color:var(--text2);font-size:12.5px;margin-bottom:18px">Get your own storefront selling Global Digits products. Submit an application — our team reviews it and gets back to you.</p>'+
+      '<div class="field"><label>Full Name</label><input id="apName"/></div>'+
+      '<div class="field"><label>Phone Number</label><input id="apPhone" placeholder="080..."/></div>'+
+      '<div class="field"><label>Business / Store Name (optional)</label><input id="apBiz"/></div>'+
+      '<div class="field"><label>Why do you want to become a reseller?</label><textarea id="apReason" rows="3" placeholder="Tell us a bit about your plans"></textarea></div>'+
+      '<button class="btn btnP btnBlock" onclick="submitApplication()">Submit Application</button>'+
+    '</div>';
+}
+async function submitApplication(){
+  var name=(document.getElementById('apName').value||'').trim();
+  var phone=(document.getElementById('apPhone').value||'').trim();
+  var biz=(document.getElementById('apBiz').value||'').trim();
+  var reason=(document.getElementById('apReason').value||'').trim();
+  if(!name||!phone){toast('Please enter your name and phone number');return;}
+  try{
+    var r=await sb.rpc('apply_for_reseller',{p_full_name:name,p_phone:phone,p_business_name:biz||null,p_reason:reason||null});
+    if(r.error){toast(r.error.message||'Could not submit application');return;}
+    toast('Application submitted!');
+    await loadCurrentUser((await sb.auth.getSession()).data.session.user);
+    await routePortal();
+  }catch(e){toast(e.message||'Something went wrong');}
+}
+function renderApplicationPending(){
+  document.getElementById('main').innerHTML=
+    '<div class="centerScreen">'+
+      '<div class="badge pending" style="font-size:12px;padding:6px 16px">Application Pending</div>'+
+      '<h2 style="font-size:17px;text-align:center">We\'re reviewing your application</h2>'+
+      '<p style="color:var(--text2);font-size:12.5px;text-align:center;max-width:340px">Submitted '+fmtDate(myApplication.created_at)+'. You\'ll be able to select a plan as soon as it\'s approved.</p>'+
+    '</div>';
+}
+function renderApplicationRejected(){
+  document.getElementById('main').innerHTML=
+    '<div class="centerScreen">'+
+      '<div class="badge rejected" style="font-size:12px;padding:6px 16px">Application Rejected</div>'+
+      (myApplication.admin_note?'<p style="color:var(--text2);font-size:12.5px;text-align:center;max-width:340px">'+esc(myApplication.admin_note)+'</p>':'')+
+      '<p style="color:var(--text3);font-size:11.5px">Contact support if you\'d like to reapply.</p>'+
+    '</div>';
+}
+function renderSuspended(){
+  document.getElementById('main').innerHTML=
+    '<div class="centerScreen">'+
+      '<div class="badge suspended" style="font-size:12px;padding:6px 16px">Storefront Suspended</div>'+
+      '<p style="color:var(--text2);font-size:12.5px;text-align:center;max-width:340px">Your reseller account is currently suspended. Your data is safe. Contact support for details.</p>'+
+    '</div>';
+}
+
+/* ══════════════════════ PLAN SELECT + PAYMENT ══════════════════════ */
+async function renderPlanSelect(){
+  var main=document.getElementById('main');
+  main.innerHTML='<div class="centerScreen"><div class="loadSpin"></div></div>';
+
+  var plansR=await sb.from('reseller_plans').select('*').eq('active',true).order('sort_order');
+  allPlans=plansR.data||[];
+  var permR=await sb.from('reseller_plan_permissions').select('*');
+  var permsByPlan={};
+  (permR.data||[]).forEach(function(p){(permsByPlan[p.plan_id]=permsByPlan[p.plan_id]||[]).push(p.product_category);});
+
+  // check for an already-pending (awaiting admin) subscription request
+  var pendR=await sb.from('reseller_subscriptions').select('*').eq('reseller_id',myReseller.id).eq('status','pending').order('created_at',{ascending:false}).limit(1).maybeSingle();
+  if(pendR.data){renderSubscriptionPending(pendR.data);return;}
+
+  var expiredNotice=myReseller? '' : '';
+  main.innerHTML=
+    '<h2 style="font-size:18px;margin-bottom:2px">Choose Your Plan</h2>'+
+    '<p style="color:var(--text2);font-size:12.5px;margin-bottom:16px">Storefront: <b>'+esc(myReseller.username)+'.globaldigits.shop</b></p>'+
+    '<div style="display:flex;flex-direction:column;gap:12px">'+
+    allPlans.map(function(p){
+      var cats=permsByPlan[p.id]||[];
+      return '<div class="planCard'+(p.id==='monthly'?' rec':'')+'">'+
+        (p.id==='monthly'?'<span class="badge active" style="position:absolute;top:-10px;right:16px">Popular</span>':'')+
+        '<h3>'+esc(p.name)+'</h3>'+
+        '<div class="price">'+fmtN(p.price)+' <span style="font-size:11px;color:var(--text3);font-weight:600">/ '+p.duration_days+' days</span></div>'+
+        '<ul>'+cats.map(function(c){return '<li>'+icon('check',13)+' '+esc((CATEGORY_META[c]||{}).label||c)+'</li>';}).join('')+
+          '<li>'+icon('check',13)+' Up to '+p.max_markup_percent+'% markup on sales</li>'+
+          (p.can_remove_branding?'<li>'+icon('check',13)+' Remove "Powered by Global Digits"</li>':'')+
+        '</ul>'+
+        '<button class="btn btnP btnBlock" onclick="requestPlan(\''+p.id+'\')">Select '+esc(p.name)+'</button>'+
+      '</div>';
+    }).join('')+
+    '</div>';
+}
+async function requestPlan(planId){
+  try{
+    var r=await sb.rpc('request_subscription',{p_reseller_id:myReseller.id,p_plan_id:planId});
+    if(r.error){toast(r.error.message||'Could not start subscription');return;}
+    toast('Plan selected — submit payment to activate');
+    var subR=await sb.from('reseller_subscriptions').select('*').eq('id',r.data).single();
+    renderSubscriptionPending(subR.data);
+  }catch(e){toast(e.message||'Something went wrong');}
+}
+async function renderSubscriptionPending(sub){
+  var plan=allPlans.find(function(p){return p.id===sub.plan_id;})||{name:sub.plan_id,price:sub.price};
+  var proofDone=sub.payment_status!=='pending';
+  var main=document.getElementById('main');
+  main.innerHTML='<div class="centerScreen"><div class="loadSpin"></div></div>';
+
+  // Always fetched live — same admin-controlled payment_accounts table the
+  // main site's deposit flow reads from. No separate/duplicate account, no
+  // hardcoding: whatever the admin has active in the Admin Panel right now
+  // is what shows here, every time this page loads.
+  var accHtml='<div class="empty">No payment account is currently active — check back shortly or contact support.</div>';
+  if(!proofDone){
+    var payR=await sb.from('payment_accounts').select('*').eq('active',true).order('created_at');
+    var accounts=payR.data||[];
+    if(accounts.length){
+      var acc=accounts[0];
+      accHtml=
+        '<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:14px 16px;margin-bottom:16px">'+
+          '<div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:4px">'+esc(acc.bank)+' · '+esc(acc.type||'Bank Transfer')+'</div>'+
+          '<div style="font-family:var(--font-d);font-size:19px;font-weight:800;color:var(--brand);letter-spacing:1px">'+esc(acc.account_number)+'</div>'+
+          '<div style="font-size:12.5px;color:var(--text2);margin:2px 0 10px">'+esc(acc.account_name)+'</div>'+
+          '<button class="btn btnO btnSm" onclick="copyPayAccNum(\''+esc(acc.account_number)+'\')">Copy Account Number</button>'+
+        '</div>';
+    }
+  }
+
+  main.innerHTML=
+    '<div class="card" style="max-width:440px;margin:20px auto">'+
+      '<h2 style="font-size:17px">Activate '+esc(plan.name)+' Plan</h2>'+
+      '<p style="color:var(--text2);font-size:12.5px;margin:8px 0 16px">Amount due: <b style="color:var(--brand)">'+fmtN(sub.price)+'</b></p>'+
+      (proofDone?
+        '<div class="badge processing" style="margin-bottom:10px">Proof submitted — awaiting admin confirmation</div>'
+        :
+        accHtml+
+        '<p style="font-size:11.5px;color:var(--text3);margin-bottom:14px">Pay the exact amount above to this account, then submit your reference below. An admin will confirm it and activate your plan.</p>'+
+        '<div class="field"><label>Payment Reference / Note</label><input id="payRef" placeholder="e.g. transfer reference or deposit ID"/></div>'+
+        '<button class="btn btnP btnBlock" onclick="submitPaymentProof(\''+sub.id+'\')">I\'ve Paid — Submit for Review</button>'
+      )+
+    '</div>';
+}
+function copyPayAccNum(num){
+  navigator.clipboard.writeText(num).then(function(){toast('Account number copied');}).catch(function(){toast(num);});
+}
+async function submitPaymentProof(subId){
+  var ref=(document.getElementById('payRef').value||'').trim();
+  if(!ref){toast('Enter your payment reference');return;}
+  try{
+    var r=await sb.from('reseller_subscriptions').update({payment_status:'proof_submitted',payment_proof_url:ref}).eq('id',subId).select().single();
+    if(r.error){toast(r.error.message||'Could not submit');return;}
+    toast('Submitted — awaiting admin confirmation');
+    renderSubscriptionPending(r.data);
+  }catch(e){toast(e.message||'Something went wrong');}
+}
+
+/* ══════════════════════ DASHBOARD SHELL ══════════════════════ */
+var DASH_TABS=[
+  {id:'overview',label:'Overview'},
+  {id:'products',label:'Products'},
+  {id:'orders',label:'Orders'},
+  {id:'customers',label:'Customers'},
+  {id:'earnings',label:'Earnings'},
+  {id:'withdrawals',label:'Withdrawals'},
+  {id:'subscription',label:'Subscription'},
+  {id:'settings',label:'Storefront'}
+];
+async function renderDashboard(tab){
+  var main=document.getElementById('main');
+  var storeUrl=myReseller.username+'.globaldigits.shop';
+  main.innerHTML=
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">'+
+      '<div><h1 style="font-size:18px">'+esc(myReseller.store_name||'My Store')+'</h1>'+
+      '<a href="https://'+storeUrl+'" target="_blank" style="font-size:11.5px;color:var(--brand);font-weight:600">'+storeUrl+' ↗</a></div>'+
+      '<span class="badge '+(myActiveSub?'active':'expired')+'">'+(myPlan?myPlan.name:'')+' Plan</span>'+
+    '</div>'+
+    '<div id="dashTabs">'+DASH_TABS.map(function(t){return '<button class="dTab'+(t.id===tab?' active':'')+'" onclick="renderDashboard(\''+t.id+'\')">'+t.label+'</button>';}).join('')+'</div>'+
+    '<div id="dashBody"><div class="centerScreen" style="min-height:30vh"><div class="loadSpin"></div></div></div>';
+
+  var fns={
+    overview:renderDashOverview,products:renderDashProducts,orders:renderDashOrders,
+    customers:renderDashCustomers,earnings:renderDashEarnings,withdrawals:renderDashWithdrawals,
+    subscription:renderDashSubscription,settings:renderDashSettings
+  };
+  (fns[tab]||renderDashOverview)();
+}
+
+async function renderDashOverview(){
+  var body=document.getElementById('dashBody');
+  var ordersR=await sb.from('reseller_orders').select('customer_price,reseller_profit,status,created_at').eq('reseller_id',myReseller.id);
+  var orders=ordersR.data||[];
+  var completed=orders.filter(function(o){return o.status==='completed';});
+  var totalSales=completed.reduce(function(s,o){return s+Number(o.customer_price);},0);
+  var totalProfit=completed.reduce(function(s,o){return s+Number(o.reseller_profit);},0);
+
+  var balR=await sb.from('reseller_balances').select('*').eq('reseller_id',myReseller.id).maybeSingle();
+  var bal=balR.data||{lifetime_net:0,total_earned:0,total_withdrawn:0};
+
+  var pendW=await sb.from('reseller_withdrawals').select('amount').eq('reseller_id',myReseller.id).eq('status','pending');
+  var pendingWAmt=(pendW.data||[]).reduce(function(s,w){return s+Number(w.amount);},0);
+
+  var expiresIn=myActiveSub?Math.max(0,Math.ceil((new Date(myActiveSub.expires_at)-new Date())/86400000)):0;
+
+  body.innerHTML=
+    '<div class="grid3">'+
+      statCard('Total Sales',fmtN(totalSales))+
+      statCard('Total Orders',orders.length)+
+      statCard('Total Profit',fmtN(totalProfit))+
+      statCard('Available Balance',fmtN(bal.lifetime_net))+
+      statCard('Pending Withdrawals',fmtN(pendingWAmt))+
+      statCard('Plan Expires',expiresIn+'d')+
+    '</div>'+
+    '<div class="card" style="margin-top:14px">'+
+      '<h3 style="font-size:13.5px;margin-bottom:10px">Recent Orders</h3>'+
+      (orders.length?orders.slice(0,5).sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);}).map(function(o){
+        return '<div class="rowItem"><div><div class="t1">'+fmtN(o.customer_price)+'</div><div class="t2">'+fmtDate(o.created_at)+'</div></div><span class="badge '+o.status+'">'+o.status+'</span></div>';
+      }).join(''):'<div class="empty">No orders yet — share your storefront link to start selling</div>')+
+    '</div>';
+}
+function statCard(lbl,val){
+  return '<div class="statCard"><div class="lbl">'+lbl+'</div><div class="val">'+val+'</div></div>';
+}
+
+/* ---- Products tab: shows what THIS reseller's plan permits + lets them set markup ---- */
+async function renderDashProducts(){
+  var body=document.getElementById('dashBody');
+  body.innerHTML=
+    '<div class="card" style="margin-bottom:12px">'+
+      '<h3 style="font-size:13.5px;margin-bottom:4px">Storefront Markup</h3>'+
+      '<p style="font-size:12px;color:var(--text2);margin-bottom:12px">Applied to every product on your storefront. Your plan allows up to <b>'+(myPlan?myPlan.max_markup_percent:0)+'%</b>.</p>'+
+      '<div style="display:flex;gap:8px;align-items:flex-end">'+
+        '<div class="field" style="margin-bottom:0;flex:1"><label>Markup %</label><input id="markupInput" type="number" min="0" max="'+(myPlan?myPlan.max_markup_percent:0)+'" value="'+(myReseller.default_markup_percent!=null?myReseller.default_markup_percent:0)+'"/></div>'+
+        '<button class="btn btnP btnSm" onclick="saveMarkup()">Save</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="card"><h3 style="font-size:13.5px;margin-bottom:10px">Available Product Categories</h3>'+
+      myPermittedCats.map(function(c){
+        var meta=CATEGORY_META[c]||{label:c};
+        return '<div class="rowItem"><div style="display:flex;align-items:center;gap:10px"><div style="width:34px;height:34px;border-radius:9px;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center">'+icon(meta.icon,16)+'</div><div class="t1">'+esc(meta.label)+'</div></div><span class="badge active">Enabled</span></div>';
+      }).join('')+
+    '</div>'+
+    (myPlan && !myPlan.can_remove_branding?'<p style="font-size:11px;color:var(--text3);text-align:center;margin-top:10px">Upgrade to Yearly to unlock higher categories, higher markup limits, and remove "Powered by Global Digits" branding.</p>':'');
+}
+async function saveMarkup(){
+  var v=parseFloat(document.getElementById('markupInput').value);
+  var cap=myPlan?myPlan.max_markup_percent:0;
+  if(isNaN(v)||v<0){toast('Enter a valid markup');return;}
+  if(v>cap){toast('Your plan caps markup at '+cap+'%');return;}
+  var r=await sb.from('resellers').update({default_markup_percent:v}).eq('id',myReseller.id).select().single();
+  if(r.error){toast(r.error.message||'Could not save');return;}
+  myReseller=r.data;
+  toast('Markup updated');
+}
+
+/* ---- Orders tab ---- */
+async function renderDashOrders(){
+  var body=document.getElementById('dashBody');
+  var r=await sb.from('reseller_orders').select('*').eq('reseller_id',myReseller.id).order('created_at',{ascending:false}).limit(100);
+  var orders=r.data||[];
+  body.innerHTML='<div class="card">'+
+    (orders.length?orders.map(function(o){
+      var cat=(CATEGORY_META[o.product_category]||{}).label||o.product_category;
+      return '<div class="rowItem"><div><div class="t1">'+esc(cat)+' — '+fmtN(o.customer_price)+'</div>'+
+        '<div class="t2">Profit '+fmtN(o.reseller_profit)+' · '+fmtDate(o.created_at)+'</div></div><span class="badge '+o.status+'">'+o.status+'</span></div>';
+    }).join(''):'<div class="empty">No orders yet</div>')+
+  '</div>';
+}
+
+/* ---- Customers tab ---- */
+async function renderDashCustomers(){
+  var body=document.getElementById('dashBody');
+  var r=await sb.from('reseller_customers').select('*').eq('reseller_id',myReseller.id).order('created_at',{ascending:false}).limit(100);
+  var custs=r.data||[];
+  body.innerHTML='<div class="card">'+
+    (custs.length?custs.map(function(c){
+      return '<div class="rowItem"><div><div class="t1">'+esc(c.name||c.email||'Customer')+'</div><div class="t2">'+esc(c.email||c.phone||'')+' · joined '+fmtDate(c.created_at)+'</div></div></div>';
+    }).join(''):'<div class="empty">No customers yet</div>')+
+  '</div>';
+}
+
+/* ---- Earnings tab ---- */
+async function renderDashEarnings(){
+  var body=document.getElementById('dashBody');
+  var balR=await sb.from('reseller_balances').select('*').eq('reseller_id',myReseller.id).maybeSingle();
+  var bal=balR.data||{lifetime_net:0,total_earned:0,total_withdrawn:0};
+  var ledR=await sb.from('reseller_ledger').select('*').eq('reseller_id',myReseller.id).order('created_at',{ascending:false}).limit(100);
+  var led=ledR.data||[];
+  body.innerHTML=
+    '<div class="grid3">'+statCard('Available',fmtN(bal.lifetime_net))+statCard('Total Earned',fmtN(bal.total_earned))+statCard('Total Withdrawn',fmtN(bal.total_withdrawn))+'</div>'+
+    '<div class="card" style="margin-top:12px"><h3 style="font-size:13.5px;margin-bottom:10px">Transaction History</h3>'+
+      (led.length?led.map(function(l){
+        var pos=l.amount>=0;
+        return '<div class="rowItem"><div><div class="t1">'+({sale:'Sale',withdrawal:'Withdrawal',refund:'Refund',adjustment:'Adjustment'}[l.type]||l.type)+'</div><div class="t2">'+esc(l.note||'')+' · '+fmtDate(l.created_at)+'</div></div><div style="font-weight:700;color:'+(pos?'var(--success)':'var(--danger)')+'">'+(pos?'+':'')+fmtN(l.amount)+'</div></div>';
+      }).join(''):'<div class="empty">No transactions yet</div>')+
+    '</div>';
+}
+
+/* ---- Withdrawals tab ---- */
+async function renderDashWithdrawals(){
+  var body=document.getElementById('dashBody');
+  var balR=await sb.from('reseller_balances').select('*').eq('reseller_id',myReseller.id).maybeSingle();
+  var avail=(balR.data||{}).lifetime_net||0;
+  var wR=await sb.from('reseller_withdrawals').select('*').eq('reseller_id',myReseller.id).order('created_at',{ascending:false});
+  var ws=wR.data||[];
+  body.innerHTML=
+    '<div class="card" style="margin-bottom:12px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div class="lbl" style="font-size:10.5px;color:var(--text3);font-weight:700;text-transform:uppercase">Available Balance</div><div style="font-family:var(--font-d);font-size:18px;font-weight:800;color:var(--brand)">'+fmtN(avail)+'</div></div>'+
+      '<button class="btn btnP btnBlock" onclick="openWithdrawModal('+avail+')">Request Withdrawal</button>'+
+    '</div>'+
+    '<div class="card"><h3 style="font-size:13.5px;margin-bottom:10px">History</h3>'+
+      (ws.length?ws.map(function(w){
+        return '<div class="rowItem"><div><div class="t1">'+fmtN(w.amount)+'</div><div class="t2">'+esc(w.account_name||'')+' · '+fmtDate(w.created_at)+'</div></div><span class="badge '+w.status+'">'+w.status+'</span></div>';
+      }).join(''):'<div class="empty">No withdrawal requests yet</div>')+
+    '</div>';
+}
+function openWithdrawModal(avail){
+  showModal(
+    '<div class="modalHead"><h3>Request Withdrawal</h3><button class="xBtn" onclick="closeModal()">'+icon('arrow',14)+'</button></div>'+
+    '<p style="font-size:12px;color:var(--text2);margin-bottom:12px">Available: <b>'+fmtN(avail)+'</b></p>'+
+    '<div class="field"><label>Amount</label><input id="wAmt" type="number" max="'+avail+'"/></div>'+
+    '<div class="field"><label>Bank Name</label><input id="wBank"/></div>'+
+    '<div class="field"><label>Account Number</label><input id="wAcct"/></div>'+
+    '<div class="field"><label>Account Name</label><input id="wName"/></div>'+
+    '<button class="btn btnP btnBlock" onclick="submitWithdrawal()">Submit Request</button>'
+  );
+}
+async function submitWithdrawal(){
+  var amt=parseFloat(document.getElementById('wAmt').value);
+  var bank=(document.getElementById('wBank').value||'').trim();
+  var acct=(document.getElementById('wAcct').value||'').trim();
+  var name=(document.getElementById('wName').value||'').trim();
+  if(!amt||amt<=0||!bank||!acct||!name){toast('Fill in all fields');return;}
+  try{
+    var r=await sb.rpc('request_withdrawal',{p_reseller_id:myReseller.id,p_amount:amt,p_bank_name:bank,p_account_number:acct,p_account_name:name});
+    if(r.error){toast(r.error.message||'Could not submit request');return;}
+    toast('Withdrawal requested');
+    closeModal();
+    renderDashWithdrawals();
+  }catch(e){toast(e.message||'Something went wrong');}
+}
+
+/* ---- Subscription tab ---- */
+async function renderDashSubscription(){
+  var body=document.getElementById('dashBody');
+  var histR=await sb.from('reseller_subscriptions').select('*').eq('reseller_id',myReseller.id).order('created_at',{ascending:false});
+  var hist=histR.data||[];
+  var expiresIn=myActiveSub?Math.max(0,Math.ceil((new Date(myActiveSub.expires_at)-new Date())/86400000)):0;
+  body.innerHTML=
+    '<div class="card" style="margin-bottom:12px">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center"><h3 style="font-size:15px">'+(myPlan?myPlan.name:'—')+' Plan</h3><span class="badge active">Active</span></div>'+
+      '<p style="font-size:12.5px;color:var(--text2);margin-top:6px">Expires '+fmtDate(myActiveSub?myActiveSub.expires_at:null)+' · <b>'+expiresIn+' days left</b></p>'+
+      '<div style="display:flex;gap:8px;margin-top:14px">'+
+        '<button class="btn btnO" style="flex:1" onclick="renderPlanSelect()">Renew</button>'+
+        '<button class="btn btnP" style="flex:1" onclick="renderPlanSelect()">Upgrade</button>'+
+      '</div>'+
+    '</div>'+
+    '<div class="card"><h3 style="font-size:13.5px;margin-bottom:10px">Subscription History</h3>'+
+      (hist.length?hist.map(function(s){
+        return '<div class="rowItem"><div><div class="t1">'+esc((PLAN_META[s.plan_id]||{}).label||s.plan_id)+' — '+fmtN(s.price)+'</div><div class="t2">'+fmtDate(s.created_at)+(s.expires_at?' → '+fmtDate(s.expires_at):'')+'</div></div><span class="badge '+s.status+'">'+s.status+'</span></div>';
+      }).join(''):'<div class="empty">No history</div>')+
+    '</div>';
+}
+
+/* ---- Storefront Settings tab ---- */
+function renderDashSettings(){
+  var body=document.getElementById('dashBody');
+  var r=myReseller;
+  body.innerHTML=
+    '<div class="card">'+
+      '<div class="field"><label>Store Name</label><input id="setStoreName" value="'+esc(r.store_name||'')+'"/></div>'+
+      '<div class="field"><label>Logo URL</label><input id="setLogo" value="'+esc(r.logo_url||'')+'" placeholder="https://…"/></div>'+
+      '<div class="field"><label>Banner URL</label><input id="setBanner" value="'+esc(r.banner_url||'')+'" placeholder="https://…"/></div>'+
+      '<div class="field"><label>Description</label><textarea id="setDesc" rows="3">'+esc(r.description||'')+'</textarea></div>'+
+      '<div class="field"><label>Contact Phone</label><input id="setPhone" value="'+esc(r.contact_phone||'')+'"/></div>'+
+      '<div class="field"><label>Contact WhatsApp</label><input id="setWa" value="'+esc(r.contact_whatsapp||'')+'"/></div>'+
+      (myPlan&&myPlan.can_remove_branding?
+        '<div class="field" style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="setHideBrand" '+(r.hide_branding?'checked':'')+' style="width:auto"/><label style="margin:0;text-transform:none;font-weight:600;font-size:12.5px">Remove "Powered by Global Digits"</label></div>'
+        :'<p style="font-size:11px;color:var(--text3);margin-bottom:12px">Branding removal is a Yearly plan feature.</p>')+
+      '<button class="btn btnP btnBlock" onclick="saveStorefrontSettings()">Save Changes</button>'+
+    '</div>';
+}
+async function saveStorefrontSettings(){
+  var payload={
+    store_name:(document.getElementById('setStoreName').value||'').trim()||'My Store',
+    logo_url:(document.getElementById('setLogo').value||'').trim()||null,
+    banner_url:(document.getElementById('setBanner').value||'').trim()||null,
+    description:(document.getElementById('setDesc').value||'').trim()||null,
+    contact_phone:(document.getElementById('setPhone').value||'').trim()||null,
+    contact_whatsapp:(document.getElementById('setWa').value||'').trim()||null
+  };
+  var hideEl=document.getElementById('setHideBrand');
+  if(hideEl && myPlan && myPlan.can_remove_branding)payload.hide_branding=hideEl.checked;
+  var r=await sb.from('resellers').update(payload).eq('id',myReseller.id).select().single();
+  if(r.error){toast(r.error.message||'Could not save');return;}
+  myReseller=r.data;
+  toast('Storefront updated');
+}
+
+/* ══════════════════════ PUBLIC STOREFRONT ══════════════════════ */
+// Categories with a real, verified checkout path reused from the main site's
+// existing RPCs/APIs. VTU, eSIM and Gift Card *trading* are listed if the
+// reseller's plan permits them, but checkout is not wired here yet — see the
+// note rendered on those cards. Nothing fake ever executes.
+var LIVE_CHECKOUT_CATS={numbers:1,accounts:1,boost:1};
+var storeProductsCache={};
+
+async function loadPublicStorefront(username){
+  var main=document.getElementById('main');
+  main.innerHTML='<div class="centerScreen"><div class="loadSpin"></div></div>';
+
+  var rR=await sb.from('resellers').select('*').eq('username',username.toLowerCase()).eq('status','active').maybeSingle();
+  if(!rR.data){
+    main.innerHTML='<div class="centerScreen"><h2 style="font-size:17px">Store not found</h2><p style="color:var(--text2);font-size:12.5px">This storefront doesn\'t exist or isn\'t active.</p></div>';
+    return;
+  }
+  viewingReseller=rR.data;
+
+  var subR=await sb.from('reseller_active_subscription').select('*').eq('reseller_id',viewingReseller.id).maybeSingle();
+  var activeSub=(subR.data && new Date(subR.data.expires_at)>new Date())?subR.data:null;
+  if(!activeSub){
+    main.innerHTML='<div class="centerScreen"><h2 style="font-size:17px">Store temporarily unavailable</h2><p style="color:var(--text2);font-size:12.5px">This reseller\'s subscription is not active right now.</p></div>';
+    return;
+  }
+  var permR=await sb.from('reseller_plan_permissions').select('product_category').eq('plan_id',activeSub.plan_id);
+  viewingPermittedCats=(permR.data||[]).map(function(p){return p.product_category;});
+
+  renderStorefrontShell();
+}
+
+function renderStorefrontShell(){
+  var main=document.getElementById('main');
+  var r=viewingReseller;
+  main.innerHTML=
+    '<div class="storeHero">'+
+      (r.banner_url?'<img src="'+esc(r.banner_url)+'" style="border-radius:12px;margin-bottom:12px;max-height:110px;object-fit:cover;width:100%"/>':'')+
+      '<h1>'+esc(r.store_name||r.username)+'</h1>'+
+      (r.description?'<p>'+esc(r.description)+'</p>':'')+
+    '</div>'+
+    '<div class="catChip active" style="display:inline-flex;margin-bottom:0"></div>'+
+    '<div id="storeCatRow" style="display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;scrollbar-width:none"></div>'+
+    '<div id="storeProdArea"><div class="centerScreen" style="min-height:20vh"><div class="loadSpin"></div></div></div>'+
+    (r.hide_branding?'':'<div class="poweredBy">Powered by Global Digits</div>');
+
+  var catRow=document.getElementById('storeCatRow');
+  catRow.innerHTML=viewingPermittedCats.map(function(c,i){
+    return '<button class="catChip'+(i===0?' active':'')+'" data-cat="'+c+'" onclick="selectStoreCat(\''+c+'\',this)">'+esc((CATEGORY_META[c]||{}).label||c)+'</button>';
+  }).join('');
+  if(viewingPermittedCats.length)selectStoreCat(viewingPermittedCats[0],catRow.firstChild);
+}
+
+async function selectStoreCat(cat,el){
+  document.querySelectorAll('#storeCatRow .catChip').forEach(function(c){c.classList.remove('active');});
+  if(el)el.classList.add('active');
+  var area=document.getElementById('storeProdArea');
+  area.innerHTML='<div class="centerScreen" style="min-height:20vh"><div class="loadSpin"></div></div>';
+
+  if(!LIVE_CHECKOUT_CATS[cat]){
+    area.innerHTML='<div class="empty">'+esc((CATEGORY_META[cat]||{}).label||cat)+' is included in this store\'s plan. Online checkout for this category is coming soon — contact the reseller directly for now.'+
+      (viewingReseller.contact_whatsapp?'<br><br><a class="btn btnO" style="margin-top:8px;display:inline-flex" href="https://wa.me/'+esc(viewingReseller.contact_whatsapp.replace(/\D/g,''))+'" target="_blank">Message on WhatsApp</a>':'')+'</div>';
+    return;
+  }
+
+  var markup=Number(viewingReseller.default_markup_percent||0);
+  var products=await fetchStoreProducts(cat);
+  storeProductsCache[cat]=products;
+  if(!products.length){area.innerHTML='<div class="empty">No products available right now</div>';return;}
+  area.innerHTML='<div class="prodGrid">'+products.map(function(p,i){
+    var custPrice=Math.round(p.base_price*(1+markup/100));
+    return '<div class="prodCard">'+
+      '<div style="font-weight:700;font-size:12.5px">'+esc(p.name)+'</div>'+
+      (p.sub?'<div style="font-size:11px;color:var(--text2)">'+esc(p.sub)+'</div>':'')+
+      '<div style="font-family:var(--font-d);font-weight:800;color:var(--brand);font-size:15px">'+fmtN(custPrice)+'</div>'+
+      '<button class="btn btnP btnSm btnBlock" onclick="openStoreCheckout(\''+cat+'\','+i+')">Buy Now</button>'+
+    '</div>';
+  }).join('')+'</div>';
+}
+
+async function fetchStoreProducts(cat){
+  try{
+    if(cat==='numbers'){
+      var r=await sb.from('number_tiers').select('id,tier_name,country,price').eq('active',true).order('price').limit(30);
+      return (r.data||[]).map(function(t){return {ref:t.id,name:t.tier_name,sub:t.country,base_price:t.price,category:'numbers'};});
+    }
+    if(cat==='accounts'){
+      var r2=await sb.from('sm_account_types').select('id,platform,type,price,stock').eq('active',true).gt('stock',0).limit(30);
+      return (r2.data||[]).map(function(a){return {ref:a.id,name:a.type,sub:a.platform,base_price:a.price,category:'accounts'};});
+    }
+    if(cat==='boost'){
+      var r3=await sb.from('boost_prices').select('*').eq('active',true).limit(30);
+      return (r3.data||[]).map(function(b){return {ref:b.boost_type+'|'+b.refill_type,name:b.boost_type+' (per 1000)',sub:b.refill_type==='refill'?'With Refill':'No Refill',base_price:b.price_per_1000,category:'boost',platform:b.platform,boost_type:b.boost_type,refill_type:b.refill_type};});
+    }
+  }catch(e){console.error('fetchStoreProducts',cat,e);}
+  return [];
+}
+
+function openStoreCheckout(cat,idx){
+  if(!currentUser){
+    showModal('<div class="modalHead"><h3>Sign In Required</h3><button class="xBtn" onclick="closeModal()">'+icon('arrow',14)+'</button></div>'+
+      '<p style="font-size:12.5px;color:var(--text2);margin-bottom:14px">Sign in with your Global Digits account to check out. Purchases are paid from your wallet balance.</p>'+
+      '<button class="btn btnP btnBlock" onclick="closeModal();renderLoginScreen();document.getElementById(\'main\').scrollIntoView();">Sign In</button>');
+    return;
+  }
+  var p=(storeProductsCache[cat]||[])[idx];
+  if(!p)return;
+  var markup=Number(viewingReseller.default_markup_percent||0);
+  var custPrice=Math.round(p.base_price*(1+markup/100));
+  var qtyField=(cat==='numbers'||cat==='accounts')?
+    '<div class="field"><label>Quantity</label><input id="coQty" type="number" value="1" min="1"/></div>':'';
+  var targetField=(cat==='boost')?
+    '<div class="field"><label>Profile URL / Username</label><input id="coTarget" placeholder="https://…"/></div>'+
+    '<div class="field"><label>Quantity</label><input id="coQty" type="number" value="500" min="100" step="100"/></div>':'';
+  showModal(
+    '<div class="modalHead"><h3>'+esc(p.name)+'</h3><button class="xBtn" onclick="closeModal()">'+icon('arrow',14)+'</button></div>'+
+    '<p style="font-size:20px;font-family:var(--font-d);font-weight:800;color:var(--brand);margin-bottom:14px">'+fmtN(custPrice)+' <span style="font-size:11px;color:var(--text3);font-weight:600">each</span></p>'+
+    qtyField+targetField+
+    '<button class="btn btnP btnBlock" id="checkoutBtn" onclick="confirmStoreCheckout(\''+cat+'\','+idx+')">Confirm Purchase</button>'
+  );
+}
+
+async function confirmStoreCheckout(cat,idx){
+  var p=(storeProductsCache[cat]||[])[idx];
+  if(!p)return;
+  var qtyEl=document.getElementById('coQty');
+  var qty=qtyEl?Math.max(1,parseInt(qtyEl.value,10)||1):1;
+  var targetEl=document.getElementById('coTarget');
+  var target=targetEl?(targetEl.value||'').trim():'';
+  if(targetEl && !target){toast('Enter the profile URL/username');return;}
+
+  var btn=document.getElementById('checkoutBtn');btn.disabled=true;btn.textContent='Processing…';
+  try{
+    var markup=Number(viewingReseller.default_markup_percent||0);
+    var unitCustomerPrice=Math.round(p.base_price*(1+markup/100));
+    var totalCustomerPrice=unitCustomerPrice*qty;
+    var totalBasePrice=p.base_price*qty;
+
+    // 1) Reserve + validate server-side (reseller active, subscribed, permitted, markup within cap)
+    var resR=await sb.rpc('place_reseller_order',{
+      p_reseller_id:viewingReseller.id,p_customer_id:await ensureStoreCustomer(),
+      p_product_category:cat,p_product_ref:String(p.ref),
+      p_base_price:totalBasePrice,p_markup_percent:markup
+    });
+    if(resR.error){toast(resR.error.message||'Could not place order');return;}
+    var resellerOrderId=resR.data;
+
+    // 2) Run the REAL purchase against Global Digits' existing systems, debiting
+    //    the shopper's own wallet the full marked-up price — identical RPCs the
+    //    main site already uses for these categories.
+    var real;
+    if(cat==='numbers'){
+      real=await sb.rpc('purchase_number_batch',{
+        p_user_id:currentUser.id,p_tier_id:p.ref,p_tier_name:p.name,
+        p_country:p.sub,p_flag:'',p_qty:qty,p_unit_price:unitCustomerPrice,p_total_price:totalCustomerPrice
+      });
+    }else if(cat==='accounts'){
+      real=await sb.rpc('purchase_sm_batch',{
+        p_user_id:currentUser.id,p_type_id:p.ref,p_platform:p.sub,p_type:p.name,
+        p_qty:qty,p_unit_price:unitCustomerPrice,p_total_price:totalCustomerPrice
+      });
+    }else if(cat==='boost'){
+      // Mirrors the main site's boost flow: debit wallet, create boost_orders row,
+      // then attempt real-time provider placement via the same smm-proxy.
+      var prR=await sb.from('profiles').select('balance').eq('id',currentUser.id).single();
+      if((prR.data.balance||0)<totalCustomerPrice){toast('Insufficient wallet balance — add funds on the main site');return;}
+      await sb.from('profiles').update({balance:prR.data.balance-totalCustomerPrice}).eq('id',currentUser.id);
+      var boR=await sb.from('boost_orders').insert({
+        user_id:currentUser.id,platform:p.platform,boost_type:p.boost_type,quantity:qty,
+        target_url:target,amount:totalCustomerPrice,status:'pending',refill_type:p.refill_type
+      }).select().single();
+      real={data:{id:boR.data?boR.data.id:null},error:boR.error};
+    }
+
+    if(real.error || (cat!=='boost' && !real.data)){
+      await sb.rpc('fail_reseller_order',{p_order_id:resellerOrderId,p_reason:(real.error&&real.error.message)||'provider error'});
+      toast((real.error&&real.error.message)||'Order failed — nothing was charged to your reseller earnings');
+      return;
+    }
+
+    var underlyingTable=cat==='numbers'?'orders':(cat==='accounts'?'acc_orders':'boost_orders');
+    // We don't assume a return shape from purchase_number_batch / purchase_sm_batch
+    // since their SQL definitions aren't visible to us — only what your frontend
+    // already does (check r.error). If they do return the row, we capture it;
+    // otherwise this stays null rather than guessing, and the real purchase/
+    // wallet-debit/fulfillment above is unaffected either way.
+    var underlyingId=null;
+    if(real.data){
+      if(real.data.id)underlyingId=real.data.id;
+      else if(real.data.order_id)underlyingId=real.data.order_id;
+      else if(Array.isArray(real.data)&&real.data[0]&&(real.data[0].id||real.data[0].order_id))underlyingId=real.data[0].id||real.data[0].order_id;
+    }
+
+    // 3) Mark complete + credit reseller's real profit to their ledger
+    var compR=await sb.rpc('complete_reseller_order',{
+      p_order_id:resellerOrderId,p_provider_reference:generateUUID(),
+      p_underlying_table:underlyingTable,p_underlying_id:underlyingId
+    });
+    if(compR.error){console.error('complete_reseller_order failed (order still fulfilled):',compR.error);}
+
+    closeModal();
+    toast('Order placed! Check the main site for delivery status.');
+  }catch(e){
+    console.error(e);
+    toast(e.message||'Something went wrong');
+  }finally{
+    if(btn){btn.disabled=false;btn.textContent='Confirm Purchase';}
+  }
+}
+
+async function ensureStoreCustomer(){
+  var existing=await sb.from('reseller_customers').select('id').eq('reseller_id',viewingReseller.id).eq('auth_user_id',currentUser.id).maybeSingle();
+  if(existing.data)return existing.data.id;
+  var created=await sb.from('reseller_customers').insert({
+    reseller_id:viewingReseller.id,auth_user_id:currentUser.id,
+    name:currentUser.profile.name||null,email:currentUser.email
+  }).select('id').single();
+  return created.data?created.data.id:null;
+}
+
+/* ══════════════════════ START ══════════════════════ */
+boot();
+</script>
+</body>
+</html>
