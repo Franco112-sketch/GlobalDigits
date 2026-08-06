@@ -1,7 +1,0 @@
-{
-  "name": "globaldigits-reseller-routing",
-  "private": true,
-  "dependencies": {
-    "@vercel/functions": "^3.7.5"
-  }
-}
