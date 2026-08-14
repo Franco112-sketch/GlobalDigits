@@ -1,0 +1,23 @@
+# Global Digits — robots.txt
+# https://globaldigits.shop
+
+User-agent: *
+Allow: /
+Allow: /reseller.html
+
+# Authentication / account-recovery utility page — no SEO value, not meant
+# to be discovered via search.
+Disallow: /reset-password.html
+
+# Mavy is an embedded support tool loaded inside the dashboard, not a
+# standalone page meant for search discovery.
+Disallow: /mavy.html
+
+# The dashboard's internal deep-link mechanism (e.g. index.html?page=...)
+# opens a specific authenticated screen — these are private/user-specific
+# states of the same URL, not separate public content.
+Disallow: /*?page=*
+Disallow: /*?*token=*
+Disallow: /*type=recovery*
+
+Sitemap: https://globaldigits.shop/sitemap.xml

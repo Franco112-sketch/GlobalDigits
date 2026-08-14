@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Global Digits — sitemap.xml
+  Only lists genuinely public, indexable pages.
+
+  Global Digits is a single-page application: the dashboard, wallet,
+  orders, boosting, virtual numbers, SM accounts, settings, and admin
+  screens all live behind authentication under the same URL (no separate
+  server-side routes are generated for them), so there is nothing further
+  to list for those — they are correctly excluded here and in robots.txt
+  rather than invented as fake indexable URLs.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://globaldigits.shop/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://globaldigits.shop/reseller.html</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+</urlset>
