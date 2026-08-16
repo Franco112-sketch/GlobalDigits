@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<title>Policy — Global Digits</title>
+<meta name="description" content="Global Digits policy: account limits, refund policy, SM accounts, virtual numbers, and ownership information."/>
+<meta name="robots" content="noindex, follow"/>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;
+  --bg:#f6f9ff;--surface:#fff;--surface2:#eef5ff;--border:#dbe9fd;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --r:10px;--r-sm:7px;--r-lg:18px;
+  --shadow:0 2px 12px rgba(15,25,50,.06);
+  --shadow-md:0 6px 28px rgba(15,25,50,.1);
+  --font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;
+  --t:.18s ease;--ring:#bfdbfe;
+}
+[data-theme="dark"]{
+  --bg:#090d18;--surface:#111827;--surface2:#19223a;--border:#1e2a42;
+  --text:#e8edf8;--text2:#7a87a2;--text3:#3d4d66;--brand-lt:#0f1e3d;
+  --shadow:0 2px 16px rgba(0,0,0,.35);--shadow-md:0 6px 32px rgba(0,0,0,.45);--ring:#1e3a6b;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 40px}
+.head{
+  position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+}
+.backBtn{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface);
+  color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:var(--t);
+}
+.backBtn:hover{background:var(--surface2);color:var(--brand);}
+.headTitle{font-family:var(--font-d);font-size:16px;font-weight:700;}
+.hero{padding:26px 0 18px;text-align:center}
+.hero .badge{
+  display:inline-block;background:var(--brand-lt);color:var(--brand);font-size:10px;font-weight:800;
+  letter-spacing:.05em;padding:4px 12px;border-radius:100px;margin-bottom:12px;text-transform:uppercase;
+}
+.hero h1{font-family:var(--font-d);font-size:24px;font-weight:800;margin-bottom:8px;}
+.hero p{font-size:12.5px;color:var(--text2);max-width:480px;margin:0 auto;}
+.updated{font-size:10.5px;color:var(--text3);margin-top:10px;}
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:18px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.card .cardHead{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.cardIcon{
+  width:34px;height:34px;border-radius:10px;background:var(--brand-lt);color:var(--brand);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.card h2{font-family:var(--font-d);font-size:14.5px;font-weight:700;}
+.card p{font-size:12.5px;color:var(--text2);margin-top:2px;}
+.card p + p{margin-top:8px;}
+.card ul{margin:8px 0 0 18px;font-size:12.5px;color:var(--text2);}
+.card ul li{margin-bottom:5px;}
+.highlight{
+  background:var(--brand-lt);border:1px solid var(--ring);border-radius:var(--r);
+  padding:10px 12px;margin-top:10px;font-size:12px;color:var(--brand-dk);font-weight:600;
+}
+.ownerCard{
+  background:linear-gradient(135deg,#2f6feb 0%,#1a56db 100%);color:#fff;
+  border-radius:var(--r-lg);padding:20px;text-align:center;margin-bottom:14px;
+  box-shadow:0 10px 28px rgba(26,86,219,.28);
+}
+.ownerCard .ownerAvatar{
+  width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.32);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 10px;
+}
+.ownerCard h3{font-family:var(--font-d);font-size:16px;font-weight:800;}
+.ownerCard span{font-size:11px;color:rgba(255,255,255,.85);display:block;margin-top:3px;}
+.footNote{text-align:center;font-size:10.5px;color:var(--text3);margin-top:20px;line-height:1.7;}
+.footNote b{color:var(--text2);}
+@media(max-width:420px){
+  .hero h1{font-size:20px;}
+  .card{padding:15px;}
+}
+</style>
+</head>
+<body>
+<div class="head">
+  <button class="backBtn" onclick="if(window.history.length>1){window.history.back();}else{window.close();}" aria-label="Back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  </button>
+  <span class="headTitle">Global Digits Policy</span>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="badge">Terms &amp; Privacy Policy</span>
+    <h1>Global Digits Policy</h1>
+    <p>Please read this policy carefully. By creating an account and using Global Digits, you agree to the terms below.</p>
+    <div class="updated">Last updated: 2026</div>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4z"/></svg></div>
+      <h2>Account Limit</h2>
+    </div>
+    <p>Every Global Digits user account has a maximum balance/deposit limit of <b>₦50,000</b>. Your wallet balance and total deposits cannot exceed this amount at any time.</p>
+    <div class="highlight">Maximum account balance: ₦50,000</div>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg></div>
+      <h2>Refund Policy</h2>
+    </div>
+    <p>Refunds are only provided for <b>failed transactions</b>. Successful transactions are not eligible for refunds.</p>
+    <p>If a transaction completes successfully and the service is delivered as ordered, it is considered final and no refund will be issued.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+      <h2>SM Accounts</h2>
+    </div>
+    <p>If a delivered SM (social media) account's login details are invalid, Global Digits will <b>replace the login/account details</b>. Replacement is the primary resolution offered.</p>
+    <p>A refund is only provided when a replacement is not possible or not appropriate for the situation.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg></div>
+      <h2>Virtual Numbers</h2>
+    </div>
+    <p>Once a virtual number and its verification code have been <b>successfully delivered</b>, Global Digits is no longer responsible for the number or its subsequent use.</p>
+    <p>A replacement is only provided when the number or verification code was <b>not successfully delivered</b> in the first place.</p>
+  </div>
+
+  <div class="ownerCard">
+    <div class="ownerAvatar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+    </div>
+    <h3>CHIKEZIE CHISOM KINGSLEY</h3>
+    <span>Owner &amp; Web Developer, Global Digits</span>
+  </div>
+
+  <div class="footNote">
+    <b>Global Digits</b> · globaldigits.shop<br/>
+    This policy applies to all users of the Global Digits platform. Global Digits reserves the right to update this policy at any time.
+  </div>
+</div>
+</body>
+</html>
