@@ -1,7 +1,0 @@
-# Netlify rewrite rules (place this file at your publish root, alongside
-# index.html / landing.html). Status 200 = a REWRITE (serves the file's
-# content while keeping the requested URL in the address bar) — NOT a
-# redirect. Do not change 200 to 301/302 or the filename will reappear.
-
-/app    /index.html      200
-/       /landing.html    200
