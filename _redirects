@@ -3,5 +3,5 @@
 # content while keeping the requested URL in the address bar) — NOT a
 # redirect. Do not change 200 to 301/302 or the filename will reappear.
 
-/app    /index.html      200
+/index.html    /index.html      200
 /       /landing.html    200
