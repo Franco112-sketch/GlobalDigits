@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<meta name="robots" content="noindex"/>
+<title>Random-Mail — Global Digits</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="manifest" href="site.webmanifest"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;
+  --bg:#f6f9ff;--surface:#fff;--surface2:#eef5ff;--border:#dbe9fd;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --bnav-h:60px;--r:10px;--r-sm:7px;--r-lg:18px;
+  --shadow:0 2px 12px rgba(15,25,50,.06);
+  --shadow-md:0 10px 32px rgba(26,86,219,.22);
+  --font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;--t:.18s ease;
+  --grad-premium:linear-gradient(135deg,#2f6feb 0%,#1a56db 100%);
+  --ring-lt:#eaf2ff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font);font-size:11px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-weight:600!important}
+button{cursor:pointer;font-family:var(--font);border:none;background:none}
+a{color:inherit;text-decoration:none}
+.hidden{display:none!important}
+#appShell{max-width:520px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:calc(var(--bnav-h) + 26px)}
+#tb{position:sticky;top:0;z-index:20;height:52px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;padding:0 14px}
+#tbBack{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--text);transition:var(--t);flex-shrink:0}
+#tbBack:hover{background:var(--surface2)}
+#tbTitle{font-family:var(--font-d);font-size:15px;font-weight:600;flex:1}
+#tbHistBtn{font-size:10.5px;font-weight:700;color:var(--brand);white-space:nowrap}
+main{padding:14px}
+.pgHead{margin-bottom:14px}
+.pgHead h2{font-family:var(--font-d);font-size:19px;font-weight:700}
+.pgHead p{font-size:11.5px;color:var(--text2);margin-top:3px}
+/* service grid */
+.svcGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.svcCard{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:14px 12px;text-align:center;box-shadow:var(--shadow);transition:transform var(--t),border-color var(--t)}
+.svcCard:active{transform:scale(.96)}
+.svcIcon{width:42px;height:42px;border-radius:12px;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.svcName{font-size:12px;font-weight:700}
+.svcPrice{font-family:var(--font-d);font-size:13px;font-weight:700;color:var(--brand);margin-top:4px}
+.skel{background:linear-gradient(90deg,var(--surface2) 25%,var(--border) 37%,var(--surface2) 63%);background-size:400% 100%;animation:skel 1.4s ease infinite;border-radius:var(--r-lg)}
+@keyframes skel{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.emptyState{text-align:center;padding:60px 20px;color:var(--text2)}
+.errState{text-align:center;padding:40px 20px;color:var(--danger);font-size:12px}
+.errState button{margin-top:10px;color:var(--brand);font-weight:700;text-decoration:underline}
+/* confirm sheet */
+.confirmOverlay{position:fixed;inset:0;background:rgba(13,19,33,.5);z-index:400;display:flex;align-items:flex-end;justify-content:center}
+.confirmSheet{width:100%;max-width:520px;background:var(--surface);border-radius:20px 20px 0 0;padding:22px 18px calc(env(safe-area-inset-bottom,0px) + 18px);box-shadow:0 -10px 30px rgba(0,0,0,.15)}
+.confirmSheet h3{font-family:var(--font-d);font-size:16px;font-weight:700;margin-bottom:4px}
+.confirmSheet p{font-size:11.5px;color:var(--text2)}
+.confirmPriceRow{display:flex;align-items:center;justify-content:space-between;background:var(--brand-lt);border-radius:var(--r);padding:14px;margin:16px 0}
+.confirmPriceRow span:first-child{font-size:11.5px;color:var(--brand);font-weight:600}
+.confirmPriceRow span:last-child{font-family:var(--font-d);font-size:18px;font-weight:700;color:var(--brand)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:700;width:100%;transition:all var(--t)}
+.btn:active{transform:scale(.97)}
+.btnP{background:var(--grad-premium);color:#fff;box-shadow:0 6px 18px rgba(26,86,219,.3)}
+.btnP:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+.btnG{background:var(--surface2);color:var(--text2);margin-top:8px}
+/* waiting / delivered card */
+.mailCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:20px 18px;text-align:center;margin-bottom:16px}
+.mailSvcName{font-size:11.5px;color:var(--text2);font-weight:600}
+.mailEmailBox{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--brand-lt);border-radius:var(--r);padding:13px 14px;margin:14px 0 10px}
+.mailEmailVal{font-family:monospace;font-size:12.5px;color:var(--brand);font-weight:700;word-break:break-all;text-align:left}
+.copyBtn{flex-shrink:0;width:30px;height:30px;border-radius:8px;background:#fff;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--brand)}
+.copyBtn:active{transform:scale(.9)}
+.statusRow{display:flex;align-items:center;justify-content:center;gap:8px;margin:14px 0;color:var(--text2);font-size:12px;font-weight:600}
+.spinner{width:18px;height:18px;border:2.5px solid var(--brand-lt);border-top-color:var(--brand);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.countdown{font-family:var(--font-d);font-size:12px;font-weight:700;color:var(--text3)}
+.otpBox{background:#dcfce7;border-radius:var(--r);padding:16px;margin:14px 0}
+.otpVal{font-family:var(--font-d);font-size:26px;font-weight:700;color:#15803d;letter-spacing:3px}
+.otpLbl{font-size:10px;color:#15803d;font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin-bottom:6px}
+.msgBox{background:var(--surface2);border-radius:var(--r);padding:12px;margin-top:10px;font-size:11px;color:var(--text2);text-align:left;white-space:pre-wrap;word-break:break-word;max-height:120px;overflow-y:auto}
+.expiredBadge{display:inline-flex;align-items:center;gap:6px;background:#fee2e2;color:var(--danger);font-size:11px;font-weight:700;padding:7px 14px;border-radius:100px;margin:10px 0}
+#bnav{
+  position:fixed;left:14px;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);
+  max-width:492px;margin:0 auto;height:60px;background:var(--surface);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-radius:22px;border:1px solid var(--border);
+  display:flex;align-items:stretch;
+  z-index:200;box-shadow:0 10px 32px rgba(15,25,50,.14);
+}
+.bnItem{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--text3);font-size:10px;font-weight:500;transition:color var(--t);border:none;background:none;cursor:pointer;position:relative}
+.bnItem.active,.bnItem:hover{color:var(--brand)}
+.bnItem svg{width:20px;height:20px;transition:transform var(--t)}
+.bnItem.active svg{transform:translateY(-2px)}
+.bnItem.active::after{content:'';position:absolute;top:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--grad-premium)}
+.bnavFab{position:absolute;top:-24px;left:50%;transform:translateX(-50%);width:54px;height:54px;border-radius:50%;background:var(--grad-premium);border:3px solid var(--surface);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(26,86,219,.4),0 0 0 4px rgba(26,86,219,.12);cursor:pointer;z-index:5;transition:transform var(--t)}
+.bnavFab:active{transform:translateX(-50%) scale(.93)}
+#toast{position:fixed;left:50%;bottom:calc(var(--bnav-h) + 30px);transform:translateX(-50%) translateY(10px);
+  background:#0d1321;color:#fff;padding:10px 16px;border-radius:100px;font-size:11.5px;font-weight:500;
+  opacity:0;pointer-events:none;transition:all .25s ease;z-index:999;white-space:nowrap;max-width:calc(100vw - 28px);text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div id="appShell">
+  <header id="tb">
+    <button id="tbBack" onclick="goBack()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <span id="tbTitle">Random-Mail</span>
+    <a id="tbHistBtn" href="order-history.html?type=mail">History</a>
+  </header>
+
+  <main>
+    <!-- ══ SERVICE SELECTION ══ -->
+    <div id="view-select" class="view hidden">
+      <div class="pgHead"><h2>Random-Mail</h2><p>Get a temporary inbox to receive OTP &amp; verification codes for any service</p></div>
+      <div id="svcGridBody">
+        <div class="svcGrid">
+          <div class="skel" style="height:110px"></div>
+          <div class="skel" style="height:110px"></div>
+          <div class="skel" style="height:110px"></div>
+          <div class="skel" style="height:110px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ WAITING / DELIVERED ══ -->
+    <div id="view-order" class="view hidden">
+      <div class="mailCard">
+        <div class="mailSvcName" id="ordSvcName">—</div>
+        <div class="mailEmailBox">
+          <span class="mailEmailVal" id="ordEmail">—</span>
+          <button class="copyBtn" onclick="copyVal('ordEmail')" aria-label="Copy email">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+        </div>
+        <div id="statusArea">
+          <div class="statusRow"><div class="spinner"></div><span>Waiting for code…</span></div>
+          <div class="countdown" id="countdownVal">15:00</div>
+        </div>
+      </div>
+      <button class="btn btnG" onclick="goToSelect()">Order Another</button>
+    </div>
+  </main>
+
+  <nav id="bnav">
+    <a class="bnItem" href="index.html?page=dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Home
+    </a>
+    <a class="bnItem" href="index.html?page=vtu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>VTU
+    </a>
+    <a class="bnavFab" href="index.html?page=addfunds" aria-label="Add Funds">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </a>
+    <a class="bnItem" href="index.html?page=boost">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>Boost
+    </a>
+    <a class="bnItem active" href="index.html?page=myorders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><polyline points="22 6 12 13 2 6"/></svg>Mail
+    </a>
+  </nav>
+</div>
+<div id="toast"></div>
+
+<!-- ══ CONFIRM ORDER SHEET ══ -->
+<div id="confirmOverlay" class="confirmOverlay hidden" onclick="if(event.target===this)closeConfirm()">
+  <div class="confirmSheet">
+    <h3 id="confirmSvcName">Service</h3>
+    <p>A temporary inbox will be created instantly and monitored automatically for your verification code.</p>
+    <div class="confirmPriceRow"><span>Total</span><span id="confirmPrice">₦0</span></div>
+    <button class="btn btnP" id="confirmBtn" onclick="submitOrder()">Order Now</button>
+    <button class="btn btnG" onclick="closeConfirm()">Cancel</button>
+  </div>
+</div>
+
+<script>
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+var currentUser=null;
+var allServices=[];
+var selectedService=null;
+var currentOrder=null;
+var pollTimer=null,countdownTimer=null,rt=null;
+var toastTimer;
+
+function toast(msg){
+  clearTimeout(toastTimer);
+  var el=document.getElementById('toast');if(!el)return;
+  el.textContent=msg;el.classList.add('show');
+  toastTimer=setTimeout(function(){el.classList.remove('show');},3000);
+}
+function escapeHtml(s){var d=document.createElement('div');d.textContent=s==null?'':String(s);return d.innerHTML;}
+function copyVal(id){
+  var el=document.getElementById(id);
+  if(!el)return;
+  try{navigator.clipboard.writeText(el.textContent);toast('Copied');}catch(e){}
+}
+function goBack(){
+  if(window.history.length>1&&document.referrer.indexOf(window.location.origin)===0){
+    window.history.back();
+  }else{
+    window.location.href='index.html?page=dashboard';
+  }
+}
+
+(async function init(){
+  try{
+    var res=await sb.auth.getSession();
+    var session=res.data&&res.data.session;
+    if(!session||!session.user){window.location.href='index.html';return;}
+    currentUser={id:session.user.id};
+    await loadServices();
+    document.getElementById('view-select').classList.remove('hidden');
+  }catch(e){
+    console.error('init error:',e);
+    window.location.href='index.html';
+  }
+})();
+
+async function loadServices(){
+  var body=document.getElementById('svcGridBody');
+  try{
+    var r=await sb.from('mail_services').select('*').eq('active',true).order('sort_order').order('name');
+    if(r.error)throw r.error;
+    allServices=r.data||[];
+    if(!allServices.length){
+      body.innerHTML='<div class="emptyState">No Random-Mail services are available right now. Please check back soon.</div>';
+      return;
+    }
+    body.innerHTML='<div class="svcGrid">'+allServices.map(svcCardHtml).join('')+'</div>';
+  }catch(e){
+    console.error('loadServices error:',e);
+    body.innerHTML='<div class="errState">Couldn\'t load services right now.<br/><button onclick="loadServices()">Tap to retry</button></div>';
+  }
+}
+function svcIcon(name){
+  var n=(name||'').toLowerCase();
+  if(n.indexOf('whatsapp')!==-1)return'<path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>';
+  if(n.indexOf('telegram')!==-1)return'<line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>';
+  if(n.indexOf('facebook')!==-1)return'<path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/>';
+  if(n.indexOf('instagram')!==-1)return'<rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/>';
+  if(n.indexOf('tiktok')!==-1)return'<path d="M9 12a4 4 0 104 4V4a5 5 0 005 5"/>';
+  return'<path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><polyline points="22 6 12 13 2 6"/>';
+}
+function svcCardHtml(s){
+  return '<div class="svcCard" onclick="openConfirm(\''+s.id+'\')">'+
+    '<div class="svcIcon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+svcIcon(s.name)+'</svg></div>'+
+    '<div class="svcName">'+escapeHtml(s.name)+'</div>'+
+    '<div class="svcPrice">\u20a6'+Number(s.price).toLocaleString()+'</div></div>';
+}
+
+function openConfirm(serviceId){
+  selectedService=allServices.find(function(s){return s.id===serviceId;});
+  if(!selectedService)return;
+  document.getElementById('confirmSvcName').textContent=selectedService.name;
+  document.getElementById('confirmPrice').textContent='\u20a6'+Number(selectedService.price).toLocaleString();
+  document.getElementById('confirmOverlay').classList.remove('hidden');
+}
+function closeConfirm(){
+  document.getElementById('confirmOverlay').classList.add('hidden');
+}
+
+async function submitOrder(){
+  if(!selectedService)return;
+  var btn=document.getElementById('confirmBtn');
+  btn.disabled=true;btn.innerHTML='Creating your inbox…';
+  try{
+    var sess=await sb.auth.getSession();
+    var jwt=sess.data.session.access_token;
+    var res=await fetch(SUPA_URL+'/functions/v1/create-mail-order',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'apikey':SUPA_KEY},
+      body:JSON.stringify({service_id:selectedService.id})
+    });
+    var data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Could not place your order.');
+    closeConfirm();
+    currentOrder=data.order;
+    showOrderView(currentOrder);
+    startPolling();
+    subscribeRealtime();
+    toast('Inbox ready — watching for your code');
+  }catch(e){
+    console.error(e);
+    toast(e.message||'Could not place your order.');
+  }finally{
+    btn.disabled=false;btn.textContent='Order Now';
+  }
+}
+
+function goToSelect(){
+  stopPolling();
+  document.getElementById('view-order').classList.add('hidden');
+  document.getElementById('view-select').classList.remove('hidden');
+  document.getElementById('tbTitle').textContent='Random-Mail';
+  loadServices();
+}
+
+function showOrderView(order){
+  document.getElementById('view-select').classList.add('hidden');
+  document.getElementById('view-order').classList.remove('hidden');
+  document.getElementById('tbTitle').textContent=order.service_name;
+  document.getElementById('ordSvcName').textContent=order.service_name+' Verification';
+  document.getElementById('ordEmail').textContent=order.email;
+  renderOrderStatus(order);
+}
+
+function renderOrderStatus(order){
+  var area=document.getElementById('statusArea');
+  if(order.status==='waiting'){
+    area.innerHTML='<div class="statusRow"><div class="spinner"></div><span>Waiting for code…</span></div>'+
+      '<div class="countdown" id="countdownVal">15:00</div>';
+    startCountdown(order.expires_at);
+  }else if(order.status==='delivered'){
+    clearInterval(countdownTimer);
+    area.innerHTML='<div class="otpBox"><div class="otpLbl">Verification Code</div>'+
+      '<div style="display:flex;align-items:center;justify-content:center;gap:10px"><span class="otpVal" id="ordOtp">'+escapeHtml(order.otp||'—')+'</span>'+
+      '<button class="copyBtn" onclick="copyVal(\'ordOtp\')" aria-label="Copy code"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></button></div></div>'+
+      (order.message?'<div class="msgBox">'+escapeHtml(order.message)+'</div>':'');
+    stopPolling();
+  }else if(order.status==='expired'){
+    clearInterval(countdownTimer);
+    area.innerHTML='<div class="expiredBadge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Expired — you have been refunded</div>';
+    stopPolling();
+  }else{
+    clearInterval(countdownTimer);
+    area.innerHTML='<div class="expiredBadge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>Something went wrong — you have been refunded</div>';
+    stopPolling();
+  }
+}
+
+function startCountdown(expiresAt){
+  clearInterval(countdownTimer);
+  var el=document.getElementById('countdownVal');
+  function tick(){
+    var remain=new Date(expiresAt).getTime()-Date.now();
+    if(remain<=0){if(el)el.textContent='00:00';return;}
+    var m=Math.floor(remain/60000),s=Math.floor((remain%60000)/1000);
+    if(el)el.textContent=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  }
+  tick();
+  countdownTimer=setInterval(tick,1000);
+}
+
+// Polling is what actually causes the server to check the real inbox —
+// Realtime (below) is what makes the result appear instantly once it
+// writes. Both together give the "automatic, realtime" feel without ever
+// exposing the TempMail.lol token to this page.
+function startPolling(){
+  stopPolling();
+  pollOnce();
+  pollTimer=setInterval(pollOnce,4000);
+}
+function stopPolling(){
+  clearInterval(pollTimer);pollTimer=null;
+  clearInterval(countdownTimer);
+  if(rt){sb.removeChannel(rt);rt=null;}
+}
+async function pollOnce(){
+  if(!currentOrder||currentOrder.status!=='waiting')return;
+  try{
+    var sess=await sb.auth.getSession();
+    var jwt=sess.data.session.access_token;
+    var res=await fetch(SUPA_URL+'/functions/v1/poll-mail-inbox',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'apikey':SUPA_KEY},
+      body:JSON.stringify({order_id:currentOrder.id})
+    });
+    var data=await res.json();
+    if(res.ok&&data.status&&data.status!==currentOrder.status){
+      // Realtime will also deliver this, but updating immediately from
+      // the poll response avoids waiting an extra round trip.
+      refreshOrderFromDb();
+    }
+  }catch(e){console.error('poll error:',e);}
+}
+function subscribeRealtime(){
+  if(!currentOrder)return;
+  if(rt)sb.removeChannel(rt);
+  rt=sb.channel('mail_order_'+currentOrder.id).on('postgres_changes',
+    {event:'UPDATE',schema:'public',table:'mail_orders',filter:'id=eq.'+currentOrder.id},
+    function(){refreshOrderFromDb();}
+  ).subscribe();
+}
+async function refreshOrderFromDb(){
+  if(!currentOrder)return;
+  try{
+    var r=await sb.from('mail_orders').select('id,service_name,price,email,message,otp,status,created_at,expires_at').eq('id',currentOrder.id).single();
+    if(r.data){currentOrder=r.data;renderOrderStatus(currentOrder);}
+  }catch(e){console.error('refreshOrderFromDb error:',e);}
+}
+</script>
+</body>
+</html>
