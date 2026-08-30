@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<meta name="robots" content="noindex"/>
+<title>Verify Your Email — Global Digits</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="manifest" href="site.webmanifest"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;
+  --bg:#f6f9ff;--surface:#fff;--surface2:#eef5ff;--border:#dbe9fd;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --r:10px;--r-sm:7px;--r-lg:18px;
+  --shadow:0 2px 12px rgba(15,25,50,.06);
+  --shadow-md:0 10px 32px rgba(26,86,219,.28);
+  --font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;--t:.18s ease;
+  --grad-premium:linear-gradient(135deg,#2f6feb 0%,#1a56db 100%);
+  --ring-lt:#eaf2ff;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:var(--font);font-size:11px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-weight:600!important}
+button{cursor:pointer;font-family:var(--font);border:none;background:none}
+a{color:inherit;text-decoration:none}
+input{font-family:var(--font)}
+.hidden{display:none!important}
+#shell{max-width:420px;margin:0 auto;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:28px 20px}
+.card{background:var(--surface);border-radius:var(--r-lg);padding:30px 22px;box-shadow:0 12px 40px rgba(15,25,50,.09);text-align:center}
+.iconWrap{width:64px;height:64px;border-radius:50%;background:var(--grad-premium);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;box-shadow:var(--shadow-md)}
+.iconWrap.success{background:linear-gradient(135deg,#22c55e,#16a34a)}
+.iconWrap.error{background:linear-gradient(135deg,#f87171,#ef4444)}
+h2{font-family:var(--font-d);font-size:19px;font-weight:700}
+.sub{font-size:12px;color:var(--text2);margin-top:7px;line-height:1.5}
+.emailChip{display:inline-block;margin-top:10px;background:var(--brand-lt);color:var(--brand);font-size:11.5px;font-weight:700;padding:6px 14px;border-radius:100px;word-break:break-all}
+.otpInputs{display:flex;gap:8px;justify-content:center;margin:22px 0 6px}
+.otpInputs input{width:42px;height:52px;text-align:center;font-size:20px;font-weight:700;border:1.5px solid var(--border);border-radius:var(--r-sm);background:var(--surface);color:var(--text)}
+.otpInputs input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--ring-lt)}
+.otpInputs input.errShake{border-color:var(--danger);animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+#expiryLabel{font-size:10.5px;color:var(--text3);margin-bottom:16px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:13px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:700;width:100%;transition:all var(--t)}
+.btn:active{transform:scale(.97)}
+.btnP{background:var(--grad-premium);color:#fff;box-shadow:0 6px 18px rgba(26,86,219,.3)}
+.btnP:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+.linkBtn{background:none;color:var(--brand);font-size:11.5px;font-weight:700;padding:6px;margin-top:12px}
+.linkBtn:disabled{color:var(--text3);cursor:not-allowed}
+.editDetailsBtn{display:flex;align-items:center;justify-content:center;gap:6px;background:none;color:var(--text2);font-size:11px;font-weight:600;padding:8px;margin-top:2px;width:100%;border-top:1px solid var(--border);padding-top:14px}
+.editDetailsBtn:active{color:var(--brand)}
+.formErr{font-size:11px;color:var(--danger);margin-top:12px;min-height:14px;font-weight:500}
+.formOk{font-size:11px;color:var(--success);margin-top:12px;min-height:14px;font-weight:500}
+.spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.backLink{display:block;text-align:center;margin-top:18px;font-size:11.5px;color:var(--text3)}
+.backLink a{color:var(--brand);font-weight:600}
+.logoRow{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:22px}
+.logoRow span{font-family:var(--font-d);font-size:16px;font-weight:800;color:var(--brand)}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div class="logoRow">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <span>Global Digits</span>
+  </div>
+
+  <!-- ══ VERIFY STATE ══ -->
+  <div id="verifyState" class="card">
+    <div class="iconWrap"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+    <h2>Verify Your Email</h2>
+    <p class="sub">We've sent a 6-digit verification code to</p>
+    <div class="emailChip" id="emailChip">—</div>
+
+    <div class="otpInputs" id="otpInputs">
+      <input maxlength="1" inputmode="numeric"/><input maxlength="1" inputmode="numeric"/><input maxlength="1" inputmode="numeric"/>
+      <input maxlength="1" inputmode="numeric"/><input maxlength="1" inputmode="numeric"/><input maxlength="1" inputmode="numeric"/>
+    </div>
+    <div id="expiryLabel">Sending code…</div>
+
+    <button class="btn btnP" id="verifyBtn" onclick="verifyCode()">Verify Account</button>
+    <div class="formErr" id="verifyErr"></div>
+    <div class="formOk" id="verifyOk"></div>
+
+    <button class="linkBtn" id="resendBtn" onclick="resendCode()" disabled>Resend Code</button>
+    <button class="editDetailsBtn" id="editDetailsBtn" onclick="editDetails()">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Edit Details
+    </button>
+  </div>
+
+  <!-- ══ SUCCESS STATE ══ -->
+  <div id="successState" class="card hidden">
+    <div class="iconWrap success"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>Email Verified!</h2>
+    <p class="sub">Your account is ready. Redirecting you to sign in…</p>
+  </div>
+
+  <!-- ══ FATAL / NO SESSION STATE ══ -->
+  <div id="fatalState" class="card hidden">
+    <div class="iconWrap error"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+    <h2>Session Expired</h2>
+    <p class="sub">We couldn't find a pending registration to verify. Please sign up again or sign in if you already have an account.</p>
+    <a class="btn btnP" style="margin-top:18px;display:flex" href="index.html">Back to Global Digits</a>
+  </div>
+
+  <div class="backLink" id="backLink">Wrong email? <a href="#" onclick="startOver();return false;">Start over</a></div>
+</div>
+
+<script>
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+var resendTimer=null;
+var expiryTimer=null;
+var currentJwt=null;
+var currentEmail='';
+
+function showState(key){
+  ['verifyState','successState','fatalState'].forEach(function(id){
+    document.getElementById(id).classList.toggle('hidden',id!==key);
+  });
+  document.getElementById('backLink').classList.toggle('hidden',key!=='verifyState');
+}
+
+function wireOtpInputs(){
+  var inputs=document.querySelectorAll('#otpInputs input');
+  inputs.forEach(function(inp,i){
+    inp.addEventListener('input',function(){
+      inp.value=inp.value.replace(/\D/g,'').slice(0,1);
+      inp.classList.remove('errShake');
+      if(inp.value&&i<inputs.length-1)inputs[i+1].focus();
+      if(i===inputs.length-1&&inp.value)maybeAutoVerify();
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'&&!inp.value&&i>0)inputs[i-1].focus();
+    });
+    inp.addEventListener('paste',function(e){
+      e.preventDefault();
+      var text=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+      text.split('').forEach(function(ch,idx){if(inputs[idx])inputs[idx].value=ch;});
+      if(text.length===6){inputs[5].focus();maybeAutoVerify();}
+    });
+  });
+}
+function getOtpValue(){
+  return Array.prototype.map.call(document.querySelectorAll('#otpInputs input'),function(i){return i.value;}).join('');
+}
+function clearOtpInputs(){
+  var inputs=document.querySelectorAll('#otpInputs input');
+  inputs.forEach(function(inp){inp.value='';inp.classList.remove('errShake');});
+  if(inputs[0])inputs[0].focus();
+}
+function shakeOtpInputs(){
+  document.querySelectorAll('#otpInputs input').forEach(function(inp){inp.classList.add('errShake');});
+}
+var autoVerifyArmed=true;
+function maybeAutoVerify(){
+  if(!autoVerifyArmed)return;
+  if(getOtpValue().length===6)verifyCode();
+}
+// Takes the user back to the registration page with their pending
+// account's current details pre-filled, so they can fix a typo (in
+// name, phone, email, or password) without losing their place. The
+// account stays fully unverified throughout — index.html's own
+// server-side check (profiles.status) still requires a real OTP to be
+// entered before any access is granted, whether they edit anything or not.
+function editDetails(){
+  window.location.href='index.html?editRegistration=1';
+}
+// Abandons the current pending, unverified registration entirely and
+// returns to a clean slate. Unlike Edit Details, this signs out first —
+// simply linking back to index.html without signing out would just
+// bounce the user straight back to this same confirmation page, since
+// the account would still have an active (unverified) session.
+async function startOver(){
+  try{await sb.auth.signOut();}catch(e){}
+  window.location.href='index.html';
+}
+
+(async function init(){
+  var qp=new URLSearchParams(window.location.search);
+  var emailParam=(qp.get('email')||'').trim();
+  currentEmail=emailParam;
+  document.getElementById('emailChip').textContent=emailParam||'your email';
+
+  try{
+    var res=await sb.auth.getSession();
+    var session=res.data&&res.data.session;
+    if(!session||!session.user){showState('fatalState');return;}
+    // If this account is already verified — e.g. the user completed
+    // verification already and hit the browser Back button, or reopened
+    // a stale tab of this page — there's nothing left to do here.
+    // Checked against profiles.status (our own, fully self-controlled
+    // column), never session.user.email_confirmed_at — that flag is
+    // governed by a Supabase project setting this page can't see or
+    // control, and if it happens to be off, it would falsely read as
+    // "already verified" the instant the account was created, skipping
+    // this whole page before the user ever sees the code input.
+    var statusR;
+    try{
+      statusR=await sb.from('profiles').select('status').eq('id',session.user.id).single();
+    }catch(statusErr){
+      console.error('Status check failed:',statusErr);
+      statusR=null;
+    }
+    if(statusR&&!statusR.error&&statusR.data&&statusR.data.status==='active'){
+      window.location.href='index.html';
+      return;
+    }
+    // Any other case — pending, deactivated, or the status check itself
+    // failing — keeps the user right here on the verification step.
+    // index.html's own checkSession()/doLogin() apply the same
+    // profiles.status gate independently, so this page never has to be
+    // the sole line of defense.
+    currentJwt=session.access_token;
+    wireOtpInputs();
+    await sendCode(false);
+  }catch(e){
+    console.error(e);
+    showState('fatalState');
+  }
+})();
+
+async function callFn(action,extra){
+  var body=Object.assign({action:action},extra||{});
+  console.log('[registration-otp] request:',{action:action,hasJwt:!!currentJwt,jwtPrefix:currentJwt?currentJwt.substring(0,12)+'…':null});
+  var res;
+  try{
+    res=await fetch(SUPA_URL+'/functions/v1/registration-otp',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+currentJwt,'apikey':SUPA_KEY},
+      body:JSON.stringify(body)
+    });
+  }catch(networkErr){
+    // The fetch itself failed (DNS, CORS, offline, function not
+    // deployed under this name, etc.) — this never even reached the
+    // point of getting an HTTP status back.
+    console.error('[registration-otp] network-level failure (no HTTP response at all):',networkErr);
+    var netErr=new Error('Network error contacting verification service: '+(networkErr.message||networkErr));
+    netErr.httpStatus=null;netErr.rawResponse=null;
+    throw netErr;
+  }
+  var rawText=await res.text();
+  var data={};
+  try{data=JSON.parse(rawText);}catch(parseErr){
+    console.error('[registration-otp] response was not valid JSON. Raw body:',rawText);
+  }
+  // TEMPORARY, explicit diagnostic logging — exactly what actually came
+  // back from the Edge Function, not a paraphrase of it.
+  console.log('[registration-otp] response:',{httpStatus:res.status,ok:res.ok,json:data,rawText:rawText});
+  if(!res.ok){
+    var err=new Error(data.error||('Verification service returned HTTP '+res.status+' with no error message.'));
+    err.httpStatus=res.status;err.rawResponse=data;err.rawText=rawText;
+    throw err;
+  }
+  return data;
+}
+
+async function sendCode(isResend){
+  var expiryLabel=document.getElementById('expiryLabel');
+  var errEl=document.getElementById('verifyErr');
+  var okEl=document.getElementById('verifyOk');
+  errEl.textContent='';
+  expiryLabel.textContent=isResend?'Sending a new code…':'Sending code…';
+  try{
+    var data=await callFn('send');
+    if(data.email)currentEmail=data.email;
+    document.getElementById('emailChip').textContent=currentEmail;
+    clearOtpInputs();
+    startExpiryCountdown(data.expires_in_seconds||600);
+    startResendCooldown(60);
+    if(isResend){okEl.textContent='A new code has been sent.';}
+  }catch(e){
+    console.error(e);
+    expiryLabel.textContent='';
+    errEl.textContent=e.message||'Could not send the code. Tap Resend to try again.';
+    startResendCooldown(10); // short cooldown so they can retry quickly on a genuine send failure
+  }
+}
+async function resendCode(){
+  var btn=document.getElementById('resendBtn');
+  if(btn.disabled)return;
+  document.getElementById('verifyOk').textContent='';
+  document.getElementById('verifyErr').textContent='';
+  await sendCode(true);
+}
+function startResendCooldown(seconds){
+  var btn=document.getElementById('resendBtn');
+  clearInterval(resendTimer);
+  var remaining=seconds;
+  btn.disabled=true;
+  btn.textContent='Resend Code ('+remaining+'s)';
+  resendTimer=setInterval(function(){
+    remaining--;
+    if(remaining<=0){clearInterval(resendTimer);btn.disabled=false;btn.textContent='Resend Code';return;}
+    btn.textContent='Resend Code ('+remaining+'s)';
+  },1000);
+}
+function startExpiryCountdown(seconds){
+  var label=document.getElementById('expiryLabel');
+  clearInterval(expiryTimer);
+  var remaining=seconds;
+  function render(){
+    var m=Math.floor(remaining/60),s=remaining%60;
+    label.textContent='Code expires in '+m+':'+String(s).padStart(2,'0');
+  }
+  render();
+  expiryTimer=setInterval(function(){
+    remaining--;
+    if(remaining<=0){clearInterval(expiryTimer);label.textContent='Code expired — tap Resend for a new one.';return;}
+    render();
+  },1000);
+}
+
+async function verifyCode(){
+  var code=getOtpValue();
+  var btn=document.getElementById('verifyBtn');
+  var errEl=document.getElementById('verifyErr');
+  var okEl=document.getElementById('verifyOk');
+  errEl.textContent='';okEl.textContent='';
+  if(!/^\d{6}$/.test(code)){errEl.textContent='Enter all 6 digits.';shakeOtpInputs();return;}
+  if(!currentJwt){
+    // Should never happen (currentJwt is set before the OTP inputs are
+    // even wired up in init()) — but if it ever does, say so plainly
+    // instead of silently sending a broken "Bearer undefined" header.
+    errEl.textContent='No active session found for verification. Please reload this page.';
+    return;
+  }
+  autoVerifyArmed=false;
+  btn.disabled=true;
+  btn.innerHTML='<span class="spin"></span> Verifying…';
+  try{
+    var result=await callFn('verify',{code:code});
+    console.log('[verifyCode] verification succeeded:',result);
+    clearInterval(expiryTimer);clearInterval(resendTimer);
+    // Issue the first-order welcome coupon now that the email is
+    // genuinely confirmed, and hand it off to index.html via
+    // localStorage so the existing welcome-modal feature still fires
+    // the next time they land on the dashboard after logging in.
+    try{
+      var couponR=await sb.rpc('issue_first_order_coupon',{p_user_id:(await sb.auth.getUser()).data.user.id});
+      if(!couponR.error&&couponR.data){
+        localStorage.setItem('gd_pending_welcome_coupon',JSON.stringify(couponR.data));
+      }
+    }catch(couponErr){console.error('Coupon issuance failed (non-fatal):',couponErr);}
+
+    showState('successState');
+    await sb.auth.signOut();
+    setTimeout(function(){window.location.href='index.html';},1800);
+  }catch(e){
+    console.error('[verifyCode] verification failed:',{
+      message:e.message,httpStatus:e.httpStatus,rawResponse:e.rawResponse,rawText:e.rawText
+    });
+    // TEMPORARY — show the real detail on screen instead of a generic
+    // message, exactly as requested for this diagnosis pass. Revert to
+    // just e.message once the root cause is confirmed fixed.
+    var detail=e.message||'Verification failed.';
+    if(e.httpStatus!==undefined&&e.httpStatus!==null){
+      detail+=' [HTTP '+e.httpStatus+']';
+    }
+    if(e.rawResponse&&Object.keys(e.rawResponse).length){
+      detail+=' — '+JSON.stringify(e.rawResponse);
+    }
+    errEl.textContent=detail;
+    shakeOtpInputs();
+    btn.disabled=false;
+    btn.textContent='Verify Account';
+    autoVerifyArmed=true;
+  }
+}
+</script>
+</body>
+</html>
