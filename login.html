@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<title>Sign In — Global Digits</title>
+<meta name="description" content="Sign in to your Global Digits account — your trusted digital services platform."/>
+<meta name="robots" content="noindex"/>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════════════════════════
+   Global Digits — shared auth pages design system
+   Used by BOTH login.html and register.html so the two pages stay
+   visually identical without duplicating every rule twice. Color
+   tokens match the existing main-site brand (--brand:#1a56db etc.,
+   see index.html's :root) so this doesn't introduce a second,
+   drifting color palette.
+   ══════════════════════════════════════════════════════════════ */
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --ink:#0f1b33;--ink2:#5b6a86;--ink3:#93a0b8;
+  --bg:#eef3ff;--surface:#fff;--border:#e2eafc;
+  --danger:#e0293e;--radius:22px;--radius-sm:13px;
+  font-synthesis:none;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 8% 6%, rgba(120,150,235,.28) 0%, rgba(120,150,235,0) 40%),
+    radial-gradient(circle at 92% 4%, rgba(120,150,235,.22) 0%, rgba(120,150,235,0) 36%),
+    linear-gradient(180deg,#f3f7ff 0%, var(--bg) 100%);
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+/* dotted decoration, top right — matches reference image's dot grid */
+body::before{
+  content:'';
+  position:absolute;top:28px;right:22px;width:120px;height:70px;
+  background-image:radial-gradient(circle, rgba(90,120,220,.35) 1.6px, transparent 1.6px);
+  background-size:16px 16px;
+  pointer-events:none;z-index:0;
+}
+.authWrap{
+  position:relative;z-index:1;
+  max-width:460px;margin:0 auto;
+  padding:38px 20px 0;
+  display:flex;flex-direction:column;align-items:center;
+}
+/* logo block */
+.authLogo{display:flex;flex-direction:column;align-items:center;margin-bottom:26px;text-align:center;}
+.authLogoIcon{
+  width:56px;height:56px;border-radius:16px;margin-bottom:12px;
+  display:block;object-fit:contain;
+  filter:drop-shadow(0 10px 20px rgba(26,86,219,.45));
+}
+.authLogoText{font-size:24px;font-weight:800;letter-spacing:-.02em;color:var(--ink);}
+.authLogoText span{color:var(--brand);}
+.authLogoSub{font-size:13px;color:var(--ink2);margin-top:4px;}
+/* card */
+.authCard{
+  width:100%;background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:26px 22px;
+  box-shadow:0 18px 46px -22px rgba(30,60,140,.28), 0 2px 8px -2px rgba(30,60,140,.06);
+}
+.authCardHead{display:flex;align-items:flex-start;gap:13px;margin-bottom:22px;}
+.authCardIcon{
+  width:44px;height:44px;min-width:44px;border-radius:13px;background:var(--brand-lt);
+  display:flex;align-items:center;justify-content:center;color:var(--brand);
+}
+.authCardIcon svg{width:22px;height:22px;}
+.authCardHead h1{font-size:19px;font-weight:800;margin:0 0 3px;letter-spacing:-.01em;}
+.authCardHead p{font-size:12.5px;color:var(--ink2);margin:0;line-height:1.4;}
+/* field grid + groups */
+.authGrid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.authField{margin-bottom:16px;}
+.authField label{
+  display:block;font-size:11px;font-weight:700;letter-spacing:.05em;
+  color:var(--ink2);text-transform:uppercase;margin-bottom:7px;
+}
+.authField label .opt{text-transform:none;font-weight:500;color:var(--ink3);letter-spacing:0;}
+.authInputWrap{position:relative;display:flex;align-items:center;}
+.authInputWrap svg.aiw-icon{
+  position:absolute;left:14px;width:17px;height:17px;color:var(--ink3);pointer-events:none;
+}
+.authInputWrap input{
+  width:100%;height:48px;border-radius:var(--radius-sm);border:1.5px solid var(--border);
+  background:#fbfcff;padding:0 14px 0 40px;font-size:14.5px;color:var(--ink);
+  font-family:inherit;outline:none;transition:border-color .15s,background .15s;
+}
+.authInputWrap input::placeholder{color:var(--ink3);}
+.authInputWrap input:focus{border-color:var(--brand);background:#fff;}
+.authInputWrap.hasToggle input{padding-right:42px;}
+.eyeToggle{
+  position:absolute;right:12px;background:none;border:none;padding:4px;cursor:pointer;
+  color:var(--ink3);display:flex;align-items:center;justify-content:center;
+}
+.eyeToggle svg{width:18px;height:18px;}
+.eyeToggle:hover{color:var(--ink2);}
+.authForgot{text-align:right;margin:-8px 0 18px;}
+.authForgot a{font-size:12.5px;color:var(--brand);font-weight:700;text-decoration:none;cursor:pointer;}
+.authForgot a:hover{text-decoration:underline;}
+/* terms checkbox */
+.authTerms{display:flex;align-items:flex-start;gap:10px;margin:2px 0 20px;}
+.authTerms input{
+  appearance:none;-webkit-appearance:none;width:19px;height:19px;min-width:19px;
+  border:1.5px solid var(--border);border-radius:6px;margin-top:1px;cursor:pointer;
+  background:#fbfcff;position:relative;transition:background .15s,border-color .15s;
+}
+.authTerms input:checked{background:var(--brand);border-color:var(--brand);}
+.authTerms input:checked::after{
+  content:'';position:absolute;left:5px;top:1px;width:5px;height:10px;
+  border:solid #fff;border-width:0 2px 2px 0;transform:rotate(40deg);
+}
+.authTerms label{font-size:12.5px;color:var(--ink2);line-height:1.5;cursor:pointer;}
+.authTerms a{color:var(--brand);font-weight:600;text-decoration:none;}
+.authTerms a:hover{text-decoration:underline;}
+/* primary button */
+.authBtn{
+  width:100%;height:50px;border:none;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,var(--brand) 0%,var(--brand-dk) 100%);
+  color:#fff;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 12px 24px -10px rgba(26,86,219,.55);
+  transition:transform .12s,opacity .12s;
+}
+.authBtn svg{width:18px;height:18px;}
+.authBtn:active{transform:scale(.98);}
+.authBtn:disabled{opacity:.65;cursor:not-allowed;transform:none;}
+.authSpin{
+  width:17px;height:17px;border-radius:50%;
+  border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;
+  animation:authSpin .7s linear infinite;
+}
+@keyframes authSpin{to{transform:rotate(360deg);}}
+/* divider */
+.authDivider{display:flex;align-items:center;gap:12px;margin:20px 0 16px;}
+.authDivider::before,.authDivider::after{content:'';flex:1;height:1px;background:var(--border);}
+.authDivider span{font-size:12px;color:var(--ink3);white-space:nowrap;}
+/* google button */
+.authGoogleBtn{
+  width:100%;height:48px;border-radius:var(--radius-sm);border:1.5px solid var(--border);
+  background:#fff;font-family:inherit;font-size:14px;font-weight:700;color:var(--ink);
+  display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+  transition:background .15s,border-color .15s;
+}
+.authGoogleBtn:hover{background:#f8faff;border-color:#c9d9f7;}
+.authGoogleBtn svg{width:19px;height:19px;}
+/* feature row (login page only) */
+.authFeatures{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:22px;padding-top:20px;border-top:1px solid var(--border);}
+.authFeature{text-align:center;}
+.authFeatureIcon{
+  width:38px;height:38px;border-radius:50%;background:var(--brand-lt);color:var(--brand);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 8px;
+}
+.authFeatureIcon svg{width:18px;height:18px;}
+.authFeature b{display:block;font-size:11.5px;font-weight:800;margin-bottom:2px;}
+.authFeature p{font-size:10.5px;color:var(--ink2);margin:0;line-height:1.35;}
+/* bottom switch link */
+.authSwitchOuter{text-align:center;font-size:13.5px;color:var(--ink2);margin:22px 0 40px;}
+.authSwitchOuter a{color:var(--brand);font-weight:700;text-decoration:none;}
+.authSwitchOuter a:hover{text-decoration:underline;}
+/* bottom decorative wave */
+.authWave{
+  position:relative;z-index:0;margin-top:-6px;width:100%;
+  height:150px;overflow:hidden;pointer-events:none;
+}
+.authWave svg{width:100%;height:100%;display:block;}
+/* toast (created dynamically by auth-shared.js) */
+#toast{
+  position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);
+  background:#1a2333;color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;
+  font-weight:600;max-width:88vw;text-align:center;box-shadow:0 12px 30px -10px rgba(0,0,0,.4);
+  opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:999;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
+/* forgot-password inline panel */
+.authForgotPanel{display:none;}
+.authForgotPanel.show{display:block;}
+.authFormPanel.hide{display:none;}
+@media (min-width:640px){
+  .authWrap{padding-top:56px;}
+  .authCard{padding:34px 30px;}
+}
+
+</style>
+</head>
+<body>
+
+<div class="authWrap">
+
+  <!-- Logo -->
+  <div class="authLogo">
+    <img class="authLogoIcon" src="android-chrome-192x192.png" alt="Global Digits logo" width="56" height="56"/>
+    <div class="authLogoText">Global<span>Digits</span></div>
+    <div class="authLogoSub">Your trusted digital services platform</div>
+  </div>
+
+  <!-- Card -->
+  <div class="authCard">
+
+    <!-- Sign-in panel -->
+    <div id="panelLogin" class="authFormPanel">
+      <div class="authCardHead">
+        <div class="authCardIcon" data-icon="shield"></div>
+        <div>
+          <h1>Welcome back</h1>
+          <p>Sign in to your account to continue</p>
+        </div>
+      </div>
+
+      <div class="authField">
+        <label>Email Address</label>
+        <div class="authInputWrap">
+          <span class="aiw-icon" data-icon="mail"></span>
+          <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"/>
+        </div>
+      </div>
+
+      <div class="authField" style="margin-bottom:6px">
+        <label>Password</label>
+        <div class="authInputWrap hasToggle">
+          <span class="aiw-icon" data-icon="lock"></span>
+          <input type="password" id="loginPass" placeholder="Enter your password" autocomplete="current-password"/>
+          <button type="button" class="eyeToggle" data-toggle-for="loginPass" data-icon="eye" onclick="gdTogglePassword(this)"></button>
+        </div>
+      </div>
+
+      <div class="authForgot"><a onclick="showForgotPanel()">Forgot password?</a></div>
+
+      <button class="authBtn" id="loginBtn" onclick="doLogin()">
+        <span data-icon="login"></span><span>Sign In</span>
+      </button>
+
+      <div class="authDivider"><span>or continue with</span></div>
+      <button class="authGoogleBtn" onclick="signInWithGoogle()">
+        <span data-icon="google"></span><span>Continue with Google</span>
+      </button>
+
+      <div class="authFeatures">
+        <div class="authFeature">
+          <div class="authFeatureIcon" data-icon="lock"></div>
+          <b>Secure &amp; Safe</b>
+          <p>Your data is always protected</p>
+        </div>
+        <div class="authFeature">
+          <div class="authFeatureIcon" data-icon="lightning"></div>
+          <b>Fast &amp; Reliable</b>
+          <p>Instant access always</p>
+        </div>
+        <div class="authFeature">
+          <div class="authFeatureIcon" data-icon="headset"></div>
+          <b>24/7 Support</b>
+          <p>We're here to help</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Forgot-password panel (same card, toggled — keeps this a single
+         Login page/file per the two-file requirement, rather than a
+         third file/route just for password reset) -->
+    <div id="panelForgot" class="authFormPanel" style="display:none">
+      <div class="authCardHead">
+        <div class="authCardIcon" data-icon="lock"></div>
+        <div>
+          <h1>Reset your password</h1>
+          <p>We'll email you a secure link to set a new one</p>
+        </div>
+      </div>
+      <div class="authField">
+        <label>Email Address</label>
+        <div class="authInputWrap">
+          <span class="aiw-icon" data-icon="mail"></span>
+          <input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email"/>
+        </div>
+      </div>
+      <button class="authBtn" id="forgotBtn" onclick="doForgot()">
+        <span data-icon="mail"></span><span>Send Reset Link</span>
+      </button>
+      <div class="authSwitchOuter" style="margin-top:18px;margin-bottom:2px">
+        <a onclick="showLoginPanel()">Back to Sign In</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="authSwitchOuter">Don't have an account? <a href="register.html">Create one</a></div>
+</div>
+
+<div class="authWave" aria-hidden="true">
+  <svg viewBox="0 0 500 150" preserveAspectRatio="none">
+    <path d="M0,80 C150,140 350,20 500,90 L500,150 L0,150 Z" fill="#c9d9fb" opacity=".7"/>
+    <path d="M0,100 C150,50 350,150 500,70 L500,150 L0,150 Z" fill="#1a56db" opacity=".85"/>
+  </svg>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ══════════════════════════════════════════════════════════════
+   Global Digits — shared auth-page logic
+   Loaded by BOTH login.html and register.html (via <script src>),
+   AFTER the Supabase JS CDN script and BEFORE each page's own inline
+   script. This is the single place that:
+     - configures the Supabase client (same project/keys as the main
+       site — never a second/duplicate client or auth system)
+     - renders the shared inline-SVG icon set
+     - implements the small handful of behaviors both pages need:
+       Google OAuth, password-field show/hide, toast, and the
+       "already signed in? skip me, go to the dashboard" redirect.
+   Anything specific to ONLY login or ONLY registration (the actual
+   sign-in / sign-up submit handlers) lives in that page's own file,
+   not here.
+   ══════════════════════════════════════════════════════════════ */
+
+/* Same project URL/anon key as index.html/security.html/refer-earn.js
+   — intentionally the exact same values, so this is the SAME Supabase
+   auth session/storage as the rest of the site, not a second one. */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+/* ── Toast ──
+   Creates its own #toast element on first use so neither HTML file
+   needs to hand-author that markup — matches the same show/hide
+   timing pattern as the main site's toast() in index.html. */
+var gdToastTimer=null;
+function toast(msg){
+  var el=document.getElementById('toast');
+  if(!el){
+    el=document.createElement('div');
+    el.id='toast';
+    document.body.appendChild(el);
+  }
+  clearTimeout(gdToastTimer);
+  el.textContent=msg;
+  el.classList.add('show');
+  gdToastTimer=setTimeout(function(){el.classList.remove('show');},3200);
+}
+
+/* ── Icon system ──
+   One definition per icon, reused everywhere via <span data-icon="name">
+   placeholders in the HTML — keeps every page visually consistent and
+   means a stroke-width/style tweak only ever needs to happen here. */
+const GD_ICONS={
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9.5 12l1.8 1.8L14.7 10"/></svg>',
+  mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>',
+  lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>',
+  eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  eyeOff:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a15.6 15.6 0 0 1-3.4 4.2M6.6 6.6C4 8.3 2.5 12 2.5 12s3.5 6.5 9.5 6.5c1.3 0 2.5-.3 3.6-.8"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg>',
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6.6 10.8c1.3 2.6 3.4 4.7 6 6l2-2c.3-.3.7-.4 1-.3 1.1.4 2.3.6 3.5.6.6 0 1 .4 1 1V19c0 .6-.4 1-1 1C10.6 20 4 13.4 4 5c0-.6.4-1 1-1h2.9c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.5.1.3 0 .7-.3 1l-2 2Z"/></svg>',
+  user:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c1-3.6 4-5.5 7.2-5.5S18.2 16.4 19.2 20"/></svg>',
+  userPlus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.6"/><path d="M3.3 20c.9-3.4 3.6-5.5 6.7-5.5s5.8 2.1 6.7 5.5"/><path d="M18.5 8v5M16 10.5h5"/></svg>',
+  gift:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="9.5" width="17" height="4" rx="1"/><rect x="4.5" y="13.5" width="15" height="7" rx="1.5"/><path d="M12 9.5V21M12 9.5C10.5 7 8.5 6 7.3 6.9c-1.2.9-.6 2.6 1 2.6H12Zm0 0C13.5 7 15.5 6 16.7 6.9c1.2.9.6 2.6-1 2.6H12Z"/></svg>',
+  login:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 4h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5"/><path d="M3 12h13M12 7l5 5-5 5"/></svg>',
+  lightning:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>',
+  headset:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4.2" height="6" rx="1.6"/><rect x="16.8" y="13" width="4.2" height="6" rx="1.6"/><path d="M19 19.5c0 1.9-1.8 2.5-4.5 2.5"/></svg>',
+  google:'<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.27c0-.79-.07-1.54-.2-2.27H12v4.3h6.47c-.28 1.5-1.13 2.77-2.4 3.62v3h3.87c2.27-2.09 3.56-5.17 3.56-8.65Z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.94-2.92l-3.87-3c-1.07.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.09C3.25 21.3 7.31 24 12 24Z"/><path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54v-3.1H1.27a12 12 0 0 0 0 10.73l4-3.09Z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.94 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.27 6.63l4 3.1C6.22 6.86 8.87 4.75 12 4.75Z"/></svg>'
+};
+function gdRenderIcons(root){
+  (root||document).querySelectorAll('[data-icon]').forEach(function(el){
+    var name=el.getAttribute('data-icon');
+    if(GD_ICONS[name])el.innerHTML=GD_ICONS[name];
+  });
+}
+
+/* ── Password show/hide ──
+   Works on any input via a data-toggle-for="<inputId>" button next to
+   it; swaps the eye / eye-off icon and input type together. */
+function gdTogglePassword(btn){
+  var id=btn.getAttribute('data-toggle-for');
+  var input=document.getElementById(id);
+  if(!input)return;
+  var showing=input.type==='text';
+  input.type=showing?'password':'text';
+  btn.innerHTML=GD_ICONS[showing?'eye':'eyeOff'];
+}
+
+/* ── Google OAuth ──
+   Identical call to the one already working in index.html — same
+   provider, same pattern. redirectTo is pinned to index.html
+   (not window.location.pathname) so that after Google hands control
+   back, it lands directly on the page that already owns the full,
+   battle-tested session/profile-status verification (checkSession())
+   instead of needing that same logic duplicated here and in
+   register.html too. */
+async function signInWithGoogle(){
+  try{
+    var r=await sb.auth.signInWithOAuth({
+      provider:'google',
+      options:{redirectTo:window.location.origin+'/index.html'}
+    });
+    if(r.error)toast('Google sign-in failed: '+r.error.message);
+  }catch(e){toast('Google sign-in failed: '+(e.message||'please try again'));}
+}
+
+/* ── Already signed in? ──
+   If this page loads with a live Supabase session already present
+   (e.g. a logged-in user lands on /login.html directly, or a Google
+   redirect briefly touches this page before its own effect runs),
+   skip straight to the dashboard rather than showing the auth form.
+   Deliberately does NOT re-check profiles.status here — index.html's
+   checkSession() is the one place that owns that check (see the
+   comment above getVerifiedProfileStatus() there); if the account
+   turns out to be deactivated it signs out and sends them right back
+   to this page, which is a perfectly fine, simple round trip and
+   avoids a second, easily-drifting copy of that logic living here. */
+async function gdRedirectIfAlreadyLoggedIn(){
+  try{
+    var s=await sb.auth.getSession();
+    if(s.data&&s.data.session)window.location.replace('index.html');
+  }catch(e){/* fail open — just show the form */}
+}
+
+/* ── Referral code capture ──
+   Same localStorage key and behavior as refer-earn.js's
+   captureReferralCodeFromUrl() on the main site — a ?ref=CODE landing
+   directly on register.html (or login.html, defensively, in case a
+   link ever points there instead) is captured immediately so it
+   survives through to whichever page the person actually registers
+   from, exactly the same "capture as early as possible" fix already
+   applied to index.html's own gate script. */
+function gdCaptureReferralCode(){
+  try{
+    var code=new URLSearchParams(window.location.search).get('ref');
+    if(code&&code.trim())localStorage.setItem('gd_pending_ref_code',code.trim().toUpperCase());
+  }catch(e){}
+}
+function gdPrefillReferralField(inputId){
+  try{
+    var pending=localStorage.getItem('gd_pending_ref_code');
+    var input=document.getElementById(inputId);
+    if(pending&&input&&!input.value)input.value=pending;
+  }catch(e){}
+}
+
+/* ── Button loading state ──
+   Small shared helper so both pages show the same spinner+label
+   pattern instead of hand-rolling it twice. */
+function gdSetBtnLoading(btn,loading,idleHTML,loadingText){
+  if(!btn)return;
+  btn.disabled=loading;
+  btn.innerHTML=loading
+    ?'<span class="authSpin"></span><span>'+loadingText+'</span>'
+    :idleHTML;
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  gdRenderIcons();
+  gdCaptureReferralCode();
+  gdRedirectIfAlreadyLoggedIn();
+});
+
+</script>
+<script>
+function showForgotPanel(){
+  document.getElementById('panelLogin').style.display='none';
+  document.getElementById('panelForgot').style.display='';
+}
+function showLoginPanel(){
+  document.getElementById('panelForgot').style.display='none';
+  document.getElementById('panelLogin').style.display='';
+}
+
+/* Same logic as index.html's doLogin(), minus the profiles.status
+   check — index.html's checkSession() re-validates that (including
+   the deactivated-account block) the moment this redirects there, so
+   duplicating that check here would just be a second copy that can
+   drift out of sync with the original. On a deactivated account the
+   round trip is: here -> index.html detects it, signs out, bounces
+   back here with a toast -- one extra redirect, but a single source
+   of truth for that rule. */
+async function doLogin(){
+  var email=document.getElementById('loginEmail').value||'';
+  var pass=document.getElementById('loginPass').value||'';
+  if(!email.trim()||!pass){toast('Enter your email and password');return;}
+  var btn=document.getElementById('loginBtn');
+  var idleHTML=btn.innerHTML;
+  gdSetBtnLoading(btn,true,idleHTML,'Signing in...');
+  try{
+    var r=await sb.auth.signInWithPassword({email:email.trim(),password:pass});
+    if(r.error)throw r.error;
+    window.location.href='index.html';
+  }catch(e){
+    toast(e.message||'Sign in failed. Please try again.');
+    gdSetBtnLoading(btn,false,idleHTML,'');
+  }
+}
+
+/* Same logic/endpoint as index.html's doForgot(). */
+async function doForgot(){
+  var email=document.getElementById('forgotEmail').value||'';
+  if(!email.trim()){toast('Enter your email address');return;}
+  var btn=document.getElementById('forgotBtn');
+  var idleHTML=btn.innerHTML;
+  gdSetBtnLoading(btn,true,idleHTML,'Sending...');
+  try{
+    var r=await sb.auth.resetPasswordForEmail(email.trim(),{redirectTo:'https://globaldigits.shop/reset-password.html'});
+    if(r.error)throw r.error;
+    toast('Reset link sent! Check your inbox.');
+    showLoginPanel();
+  }catch(e){
+    toast(e.message||'Failed to send reset link.');
+  }
+  gdSetBtnLoading(btn,false,idleHTML,'');
+}
+
+/* Pre-fill the email field if this page was reached from register.html
+   with "This email is already registered. Please log in." */
+(function(){
+  try{
+    var qp=new URLSearchParams(window.location.search);
+    var pre=qp.get('email');
+    if(pre)document.getElementById('loginEmail').value=pre;
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
