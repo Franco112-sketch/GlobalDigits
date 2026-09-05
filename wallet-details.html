@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<meta name="robots" content="noindex"/>
+<title>Wallet Details — Global Digits</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;--success-lt:#e7f9f1;
+  --bg:#f6f9ff;--surface:#fff;--surface2:#eef5ff;--border:#dbe9fd;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --r:14px;--r-sm:10px;--r-lg:20px;--r-xl:26px;--r-pill:999px;
+  --shadow:0 2px 12px rgba(15,25,50,.06);
+  --shadow-md:0 10px 32px rgba(26,86,219,.12);
+  --font:'Plus Jakarta Sans',sans-serif;
+  --font-d:'Syne',sans-serif;
+  --t:.2s cubic-bezier(.4,0,.2,1);
+  --grad-premium:linear-gradient(135deg,#2f6feb 0%,#1a56db 100%);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--bg);color:var(--text);font-family:var(--font);height:100%}
+body{-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+button,input{font-family:inherit}
+button{cursor:pointer;border:none;background:none;color:inherit}
+.hidden{display:none!important}
+#appWrap{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;padding-bottom:32px}
+
+/* ── HEADER (same component pattern as add-funds.html, for visual
+   consistency across every standalone flow page) ── */
+.wdHead{display:flex;align-items:center;gap:10px;padding:18px 18px 6px}
+.wdBack{width:38px;height:38px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);transition:transform var(--t),background var(--t);flex-shrink:0}
+.wdBack:active{transform:scale(.92);background:var(--surface2)}
+.wdHeadIcon{width:30px;height:30px;border-radius:9px;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wdTitle{font-family:var(--font-d);font-size:15px;font-weight:700;letter-spacing:-.01em;flex:1}
+.wdSecure{display:flex;align-items:center;gap:4px;font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-lt);border:1px solid var(--border);border-radius:var(--r-pill);padding:4px 9px 4px 7px;flex-shrink:0}
+
+.wdScreen{padding:10px 18px 4px;animation:wdFadeIn .28s var(--t)}
+@keyframes wdFadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── BALANCE CARD (same premium gradient treatment as the dashboard's
+   wallet card) ── */
+.wdCard{
+  background:var(--grad-premium);position:relative;overflow:hidden;
+  border-radius:var(--r-xl);padding:20px;margin-top:6px;
+  box-shadow:0 16px 40px rgba(26,86,219,.34),0 1px 0 rgba(255,255,255,.4) inset,0 0 0 1px rgba(255,255,255,.08) inset;
+}
+.wdCard::before{content:'';position:absolute;top:-40%;right:-15%;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.2) 0%,transparent 70%);pointer-events:none}
+.wdCard::after{content:'';position:absolute;bottom:-55%;left:-10%;width:170px;height:170px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.12) 0%,transparent 70%);pointer-events:none}
+.wdCardTop{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
+.wdCardLbl{display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.85);font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.wdCardLbl svg{width:15px;height:15px}
+.wdEyeBtn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;color:#fff}
+.wdEyeBtn svg{width:15px;height:15px}
+.wdBalNum{font-size:30px;font-weight:800;letter-spacing:-.02em;color:#fff;position:relative;z-index:1;margin-top:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wdBalNum.loading{color:rgba(255,255,255,.5)}
+.wdTopUpBtn{
+  width:100%;margin-top:18px;background:#fff;color:var(--brand-dk);border-radius:13px;
+  padding:13px;font-size:13.5px;font-weight:800;display:flex;align-items:center;justify-content:center;
+  gap:7px;box-shadow:0 4px 14px rgba(0,0,0,.16);position:relative;z-index:1;transition:transform var(--t)
+}
+.wdTopUpBtn:active{transform:scale(.98)}
+
+/* ── SPENDING OVERVIEW ── */
+.wdSecTitle{font-family:var(--font-d);font-size:13.5px;font-weight:800;margin-top:22px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.wdSpendGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wdSpendCard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px;box-shadow:var(--shadow)}
+.wdSpendIco{width:26px;height:26px;border-radius:8px;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.wdSpendVal{font-family:var(--font-d);font-size:17px;font-weight:800}
+.wdSpendLbl{font-size:10px;color:var(--text2);font-weight:600;margin-top:1px}
+
+/* ── WHAT YOU BOUGHT list ── */
+.wdViewAllBtn{font-size:10.5px;font-weight:700;color:var(--brand);background:var(--brand-lt);padding:5px 11px;border-radius:100px}
+.wdBoughtList{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.wdBoughtRow{display:flex;align-items:center;gap:11px;padding:12px 13px;cursor:pointer;transition:background var(--t);border-bottom:1px solid var(--border)}
+.wdBoughtRow:last-child{border-bottom:none}
+.wdBoughtRow:active{background:var(--surface2)}
+.wdBoughtIco{width:32px;height:32px;border-radius:10px;background:var(--surface2);color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.wdBoughtBody{flex:1;min-width:0}
+.wdBoughtName{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wdBoughtMeta{font-size:10px;color:var(--text3);margin-top:1px}
+.wdBoughtAmt{font-family:var(--font-d);font-size:12px;font-weight:700;text-align:right;flex-shrink:0}
+.wdEmpty{padding:30px 16px;text-align:center;color:var(--text2);font-size:12px;line-height:1.6}
+.wdEmpty svg{color:var(--text3);margin-bottom:10px}
+
+/* Full-page loading gate while checking the session */
+#authGate{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:200}
+.gateSpinner{width:34px;height:34px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--brand);animation:wdSpin .8s linear infinite}
+@keyframes wdSpin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div id="authGate"><div class="gateSpinner"></div></div>
+
+<div id="appWrap" class="hidden">
+  <div class="wdHead">
+    <button class="wdBack" onclick="location.href='index.html'" aria-label="Back">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="wdHeadIcon" id="wdHeadIcon"></div>
+    <div class="wdTitle" id="wdTitle">Wallet</div>
+    <div class="wdSecure">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      Secure
+    </div>
+  </div>
+
+  <div class="wdScreen">
+    <div class="wdCard">
+      <div class="wdCardTop">
+        <div class="wdCardLbl">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4z"/></svg>
+          <span id="wdCardLblText">NGN WALLET</span>
+        </div>
+        <button class="wdEyeBtn" onclick="wdToggleBalance()" aria-label="Show/hide balance">
+          <svg id="wdEyeIcon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </button>
+      </div>
+      <div class="wdBalNum loading" id="wdBalNum">····</div>
+      <button class="wdTopUpBtn" id="wdTopUpBtn" onclick="wdGoTopUp()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        <span id="wdTopUpLbl">Top Up NGN Wallet</span>
+      </button>
+    </div>
+
+    <div class="wdSecTitle">Spending Overview</div>
+    <div class="wdSpendGrid">
+      <div class="wdSpendCard">
+        <div class="wdSpendIco"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <div class="wdSpendVal" id="wdTotalSpent">····</div>
+        <div class="wdSpendLbl">Total Spent</div>
+      </div>
+      <div class="wdSpendCard">
+        <div class="wdSpendIco"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="wdSpendVal" id="wdLastWeek">····</div>
+        <div class="wdSpendLbl">Last 7 Days</div>
+      </div>
+    </div>
+
+    <div class="wdSecTitle"><span id="wdBoughtTitle">What You Bought in NGN</span>
+      <button class="wdViewAllBtn" onclick="location.href='transaction-history.html'">View All</button>
+    </div>
+    <div class="wdBoughtList" id="wdBoughtList">
+      <div class="wdEmpty">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+var currentUser=null;
+// 'ngn' | 'usd' — which wallet this page is showing, from ?currency=
+var wCurrency=(new URLSearchParams(window.location.search).get('currency')||'ngn').toLowerCase();
+if(wCurrency!=='usd')wCurrency='ngn'; // anything unrecognized safely falls back to NGN
+
+// Same localStorage key index.html's dashboard already uses for
+// show/hide balance, so the hidden/shown state stays in sync between
+// this page and the dashboard rather than tracking its own separate
+// state.
+var balanceHidden=localStorage.getItem('gd_balance_hidden')==='1';
+
+function fmt2(n){return (+n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+(async function initPage(){
+  try{
+    var userRes=await sb.auth.getUser();
+    var user=userRes.data&&userRes.data.user;
+    if(!user){window.location.replace('index.html');return;}
+    currentUser={id:user.id,email:user.email};
+    applyCurrencyChrome();
+    document.getElementById('authGate').classList.add('hidden');
+    document.getElementById('appWrap').classList.remove('hidden');
+    await loadBalance();
+    await loadSpendingAndPurchases();
+  }catch(e){
+    console.error('Session check failed:',e);
+    window.location.replace('index.html');
+  }
+})();
+
+function applyCurrencyChrome(){
+  var isUsd=wCurrency==='usd';
+  document.getElementById('wdTitle').textContent=isUsd?'USD Wallet':'NGN Wallet';
+  document.title=(isUsd?'USD':'NGN')+' Wallet — Global Digits';
+  document.getElementById('wdCardLblText').textContent=isUsd?'USD WALLET':'NGN WALLET';
+  document.getElementById('wdTopUpLbl').textContent='Top Up '+(isUsd?'USD':'NGN')+' Wallet';
+  document.getElementById('wdBoughtTitle').textContent='What You Bought in '+(isUsd?'USD':'NGN');
+  document.getElementById('wdHeadIcon').innerHTML=isUsd
+    ?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="6" x2="12" y2="18"/><path d="M15 9.5c0-1.4-1.6-2.5-3-2.5s-3 .8-3 2c0 3 6 1.5 6 4.5 0 1.2-1.6 2-3 2s-3-1.1-3-2.5"/></svg>'
+    :'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 8h8M8 12h8M10 16h6"/><path d="M9 8v9"/></svg>';
+}
+
+function wdToggleBalance(){
+  balanceHidden=!balanceHidden;
+  localStorage.setItem('gd_balance_hidden',balanceHidden?'1':'0');
+  renderBalance();
+  var icon=document.getElementById('wdEyeIcon');
+  icon.innerHTML=balanceHidden
+    ?'<path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    :'<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+}
+
+function wdGoTopUp(){
+  window.location.href='add-funds.html?currency='+wCurrency;
+}
+
+// ── Balance — never fabricated: NGN reads profiles.balance, USD reads
+// profiles.balance_usd, exactly the same columns the dashboard itself
+// reads (see index.html's updateWalletDisplay()/updateUsdWalletDisplay()).
+var realBalance=null;
+async function loadBalance(){
+  try{
+    var col=wCurrency==='usd'?'balance_usd':'balance';
+    var r=await sb.from('profiles').select(col).eq('id',currentUser.id).single();
+    if(r.error||!r.data){renderBalance(true);return;}
+    realBalance=+r.data[col]||0;
+    renderBalance();
+  }catch(e){console.error('loadBalance failed:',e.message);renderBalance(true);}
+}
+function renderBalance(errored){
+  var el=document.getElementById('wdBalNum');
+  if(errored||realBalance===null){el.textContent='—';el.classList.add('loading');return;}
+  el.classList.remove('loading');
+  var sym=wCurrency==='usd'?'$':'\u20a6';
+  el.textContent=balanceHidden?(sym+'\u2022\u2022\u2022\u2022\u2022\u2022'):(sym+fmt2(realBalance));
+}
+
+// ── Spending Overview + What You Bought ──
+// IMPORTANT, disclosed limitation: the only purchase/spend ledger this
+// app has that I can see is the `transactions` table used by the
+// dashboard's own "Recent Transactions" widget (index.html) — and
+// every row there is rendered with a hardcoded ₦ symbol with no
+// currency column at all, meaning it only ever represents NGN
+// activity. There is no USD-denominated purchase table visible
+// anywhere in the existing codebase to query instead. So: the NGN
+// wallet page below shows real, live totals from that table. The USD
+// wallet page intentionally shows an honest "not available" state
+// instead of a fabricated $0.00 that would look like a verified real
+// number — showing a confident zero here would be indistinguishable
+// from "you've genuinely spent nothing," which isn't something this
+// page can actually verify for USD today.
+async function loadSpendingAndPurchases(){
+  if(wCurrency==='usd'){
+    document.getElementById('wdTotalSpent').textContent='—';
+    document.getElementById('wdLastWeek').textContent='—';
+    document.getElementById('wdBoughtList').innerHTML=
+      '<div class="wdEmpty">'+
+        '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><br/>'+
+        'USD purchase history isn\u2019t tracked separately yet — check Recent Transactions for your full activity.'+
+      '</div>';
+    return;
+  }
+  try{
+    var r=await sb.from('transactions').select('*').eq('user_id',currentUser.id)
+      .order('created_at',{ascending:false}).limit(200);
+    var txs=r.data||[];
+    // "Purchases" = debit rows (direction !== 'cr'), same convention
+    // renderTxList() in index.html already uses to tell a deposit
+    // (credit) apart from money going out.
+    var purchases=txs.filter(function(t){return t.direction!=='cr';});
+    var totalSpent=purchases.reduce(function(sum,t){return sum+Math.abs(t.amount||0);},0);
+    var weekAgo=Date.now()-7*24*60*60*1000;
+    var lastWeek=purchases.filter(function(t){return new Date(t.created_at).getTime()>=weekAgo;})
+      .reduce(function(sum,t){return sum+Math.abs(t.amount||0);},0);
+    document.getElementById('wdTotalSpent').textContent='\u20a6'+Math.round(totalSpent).toLocaleString();
+    document.getElementById('wdLastWeek').textContent='\u20a6'+Math.round(lastWeek).toLocaleString();
+    renderBoughtList(purchases.slice(0,20));
+  }catch(e){
+    console.error('loadSpendingAndPurchases failed:',e.message);
+    document.getElementById('wdTotalSpent').textContent='—';
+    document.getElementById('wdLastWeek').textContent='—';
+    document.getElementById('wdBoughtList').innerHTML='<div class="wdEmpty">Could not load purchase history. Pull down to retry.</div>';
+  }
+}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+function fmtDate(d){try{return new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d||'';}}
+function renderBoughtList(items){
+  var el=document.getElementById('wdBoughtList');
+  if(!items.length){
+    el.innerHTML='<div class="wdEmpty">No purchases yet in your NGN wallet.</div>';
+    return;
+  }
+  el.innerHTML=items.map(function(tx){
+    return '<div class="wdBoughtRow" onclick="wdOpenReceipt(\''+encodeURIComponent(JSON.stringify(tx))+'\')">'+
+      '<div class="wdBoughtIco"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg></div>'+
+      '<div class="wdBoughtBody"><div class="wdBoughtName">'+(tx.title||cap(tx.category||'Purchase'))+'</div>'+
+      '<div class="wdBoughtMeta">'+fmtDate(tx.created_at)+'</div></div>'+
+      '<div class="wdBoughtAmt">\u2212\u20a6'+Math.abs(tx.amount||0).toLocaleString()+'</div></div>';
+  }).join('');
+}
+// Reuses the EXACT existing receipt view (transaction-history.html)
+// that index.html's own dashboard already opens for a transaction row
+// (see openReceiptFromDashboard() there) — not a new/duplicate detail
+// page.
+function wdOpenReceipt(encoded){
+  window.location.href='transaction-history.html?receipt='+encoded+'&source=transactions';
+}
+</script>
+</body>
+</html>
