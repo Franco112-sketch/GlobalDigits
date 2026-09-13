@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Global Digits Pet — Voice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* Same brand tokens as the main site (index.html's :root) — kept in sync
+   manually since this is intentionally a separate, standalone file (see
+   spec item 4). Nothing here redesigns the palette, it just reuses it. */
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;
+  --bg:#f6f9ff;--surface:#fff;--surface2:#eef5ff;--border:#dbe9fd;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;
+  --t:.18s ease;--grad-premium:linear-gradient(135deg,#2f6feb 0%,#1a56db 100%);
+  --r:10px;--r-lg:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font);background:var(--bg);color:var(--text);
+  display:flex;flex-direction:column;min-height:100vh;
+  min-height:100dvh;overflow:hidden;
+}
+.plHead{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:calc(env(safe-area-inset-top,0) + 14px) 18px 10px;
+}
+.plCloseBtn{
+  width:34px;height:34px;border-radius:50%;background:var(--surface2);
+  border:none;display:flex;align-items:center;justify-content:center;
+  color:var(--text2);cursor:pointer;
+}
+.plTitle{font-family:var(--font-d);font-size:14px;font-weight:800;color:var(--text);}
+.plBody{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:20px 24px 10px;text-align:center;gap:18px;
+  overflow-y:auto;
+}
+.plPetWrap{position:relative;width:104px;height:104px;display:flex;align-items:center;justify-content:center;}
+.plPetRing{
+  position:absolute;inset:0;border-radius:50%;background:var(--brand-lt);
+  transform:scale(1);opacity:.6;
+}
+.plPetWrap.listening .plPetRing{animation:plRingPulse 1.6s ease-out infinite;}
+@keyframes plRingPulse{0%{transform:scale(.9);opacity:.55}100%{transform:scale(1.5);opacity:0}}
+.plPetAvatar{
+  position:relative;width:80px;height:80px;border-radius:50%;
+  background:var(--grad-premium);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 26px rgba(26,86,219,.3);
+}
+.plPetAvatar svg{width:46px;height:46px;}
+.plPetWrap.listening .plPetAvatar{animation:plBob 1.1s ease-in-out infinite;}
+@keyframes plBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.plStateText{font-size:14px;font-weight:700;color:var(--text);}
+.plSubText{font-size:12px;color:var(--text3);max-width:280px;}
+.plWave{display:flex;align-items:flex-end;gap:4px;height:36px;}
+.plWave span{
+  width:4px;border-radius:3px;background:var(--brand);
+  height:6px;transition:height .08s ease;
+}
+.plTranscript{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:14px 16px;font-size:13.5px;color:var(--text);min-height:24px;
+  max-width:340px;width:100%;box-shadow:0 4px 18px rgba(15,25,50,.05);
+}
+.plTranscript:empty::before{content:'…';color:var(--text3);}
+.plReply{
+  background:var(--brand-lt);border-radius:var(--r-lg);padding:12px 16px;
+  font-size:13.5px;color:var(--text);max-width:340px;width:100%;
+}
+.plMicBtn{
+  width:76px;height:76px;border-radius:50%;border:none;
+  background:var(--grad-premium);color:#fff;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 10px 26px rgba(26,86,219,.35);
+  transition:transform .12s ease;
+}
+.plMicBtn:active{transform:scale(.94);}
+.plMicBtn.rec{background:var(--danger);}
+.plMicBtn svg{width:30px;height:30px;}
+.plFallback{display:flex;gap:8px;width:100%;max-width:340px;}
+.plFallback input{
+  flex:1;border:1px solid var(--border);border-radius:24px;padding:11px 16px;
+  font-size:13px;outline:none;background:var(--surface);
+}
+.plFallback button{
+  background:var(--grad-premium);color:#fff;border:none;border-radius:24px;
+  padding:0 18px;font-size:13px;font-weight:700;cursor:pointer;
+}
+.plErrorBox{
+  background:#fff4f4;border:1px solid #fbd5d5;color:var(--danger);
+  border-radius:var(--r);padding:12px 14px;font-size:12.5px;max-width:320px;
+}
+.plFoot{padding:16px 24px calc(env(safe-area-inset-bottom,0) + 18px);text-align:center;}
+.plFoot a{color:var(--text3);font-size:11.5px;text-decoration:underline;cursor:pointer;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+  <div class="plHead">
+    <button class="plCloseBtn" onclick="goBack()" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="plTitle" id="plTitle">Global Digits Pet</div>
+    <div style="width:34px"></div>
+  </div>
+
+  <div class="plBody">
+    <div class="plPetWrap" id="plPetWrap">
+      <div class="plPetRing"></div>
+      <div class="plPetAvatar">
+        <svg viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="27" rx="14" ry="12" fill="#fff"/><circle cx="24" cy="13" r="4.2" fill="#fff"/><circle cx="19" cy="26" r="2.2" fill="var(--brand)"/><circle cx="29" cy="26" r="2.2" fill="var(--brand)"/><path d="M20 31q4 3 8 0" stroke="var(--brand)" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
+      </div>
+    </div>
+
+    <div class="plStateText" id="plStateText">Tap the mic and tell me what you need</div>
+    <div class="plSubText" id="plSubText">e.g. "Buy me a TikTok account" or "Boost my Instagram"</div>
+
+    <div class="plWave hidden" id="plWave"></div>
+
+    <div class="plTranscript hidden" id="plTranscript"></div>
+    <div class="plReply hidden" id="plReply"></div>
+
+    <button class="plMicBtn" id="plMicBtn" onclick="toggleListening()" aria-label="Tap to talk">
+      <svg id="plMicIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
+
+    <div class="plFallback hidden" id="plFallback">
+      <input type="text" id="plFallbackInput" placeholder="Type what you'd like…" onkeydown="if(event.key==='Enter')submitFallbackText();"/>
+      <button onclick="submitFallbackText()">Send</button>
+    </div>
+
+    <div class="plErrorBox hidden" id="plErrorBox"></div>
+  </div>
+
+  <div class="plFoot">
+    <a onclick="goBack()">Back to Global Digits</a>
+  </div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   GLOBAL DIGITS PET — VOICE LISTENER (standalone page, spec item 4)
+
+   What this file does, and does NOT do:
+   - Requests the microphone, shows a live level meter, and (where the
+     browser supports it) transcribes speech to text entirely client-side.
+   - Runs the SAME lightweight local intent parser used in index.html
+     (duplicated here on purpose — see the comment on parsePetIntentLocal
+     below — this is the one small, deliberate exception to "don't
+     duplicate logic", because this genuinely is a separate page per the
+     spec and a ~20-line pure function is a very different thing from
+     duplicating purchase/wallet logic, which this file never touches).
+   - Once an intent is recognized, it does NOT execute anything itself.
+     It hands the parsed intent back to index.html (via sessionStorage,
+     not a URL param, so the transcript never sits in browser history)
+     and redirects there. ALL actual routing/actions/purchases still
+     happen through index.html's handlePetIntent() and, from there,
+     through the exact same existing pages/functions every other part of
+     the site already uses.
+   - Never uploads or stores audio anywhere. The MediaStream is used only
+     to draw the local waveform and is stopped/discarded the moment
+     listening ends; only the final TEXT transcript is used.
+   ══════════════════════════════════════════════════════════════════════ */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+var recognition=null;
+var mediaStream=null;
+var audioCtx=null,analyser=null,waveRaf=null;
+var listening=false;
+var finalTranscript='';
+
+/* ── Auth guard — same session check pattern as index.html. This page
+   never does anything with the account beyond reading who's signed in
+   (needed only so the handed-off intent lands for the right user back on
+   index.html); no purchase/wallet action ever happens here. ── */
+async function guardAuth(){
+  try{
+    var res=await sb.auth.getUser();
+    if(!res.data||!res.data.user){
+      window.location.href='login.html';
+      return false;
+    }
+    var name=(res.data.user.user_metadata&&res.data.user.user_metadata.name)||'';
+    var petName=localStorage.getItem('gd_pet_name');
+    var titleEl=document.getElementById('plTitle');
+    if(titleEl&&petName)titleEl.textContent=petName;
+    return true;
+  }catch(e){
+    console.error('pet-listener auth check failed:',e);
+    window.location.href='login.html';
+    return false;
+  }
+}
+
+function goBack(){
+  stopEverything();
+  window.location.href='index.html';
+}
+// Stop leaves nothing running behind — called on close, on page
+// hide/unload, and right after we get a final transcript.
+function stopEverything(){
+  try{if(recognition){recognition.onresult=null;recognition.onend=null;recognition.onerror=null;recognition.stop();}}catch(e){}
+  try{if(mediaStream){mediaStream.getTracks().forEach(function(t){t.stop();});}}catch(e){}
+  try{if(audioCtx){audioCtx.close();}}catch(e){}
+  if(waveRaf){cancelAnimationFrame(waveRaf);waveRaf=null;}
+  mediaStream=null;audioCtx=null;analyser=null;
+  listening=false;
+  setMicState('idle');
+}
+document.addEventListener('visibilitychange',function(){if(document.hidden)stopEverything();});
+window.addEventListener('pagehide',stopEverything);
+window.addEventListener('beforeunload',stopEverything);
+
+function setMicState(state){
+  var wrap=document.getElementById('plPetWrap');
+  var micBtn=document.getElementById('plMicBtn');
+  var stateText=document.getElementById('plStateText');
+  var subText=document.getElementById('plSubText');
+  var wave=document.getElementById('plWave');
+  if(state==='listening'){
+    wrap.classList.add('listening');
+    micBtn.classList.add('rec');
+    stateText.textContent='Listening…';
+    subText.textContent='Tap again to stop';
+    wave.classList.remove('hidden');
+  }else{
+    wrap.classList.remove('listening');
+    micBtn.classList.remove('rec');
+    wave.classList.add('hidden');
+    if(state==='idle'){
+      stateText.textContent='Tap the mic and tell me what you need';
+      subText.textContent='e.g. "Buy me a TikTok account" or "Boost my Instagram"';
+    }
+  }
+}
+
+function showError(msg){
+  var box=document.getElementById('plErrorBox');
+  box.textContent=msg;
+  box.classList.remove('hidden');
+}
+function hideError(){document.getElementById('plErrorBox').classList.add('hidden');}
+
+async function toggleListening(){
+  if(listening){stopEverything();return;}
+  hideError();
+  document.getElementById('plTranscript').classList.add('hidden');
+  document.getElementById('plTranscript').textContent='';
+  document.getElementById('plReply').classList.add('hidden');
+  finalTranscript='';
+
+  if(!window.isSecureContext){
+    showError('Voice needs a secure (HTTPS) connection. Please open Global Digits over HTTPS to use the microphone.');
+    return;
+  }
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+    showError('This browser doesn\'t support microphone access. You can still type your request below.');
+    showFallback();
+    return;
+  }
+
+  try{
+    mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  }catch(e){
+    // Covers both an outright permission denial and no mic being
+    // available at all — either way, the tap-to-talk mic is unusable,
+    // so fall back to typing immediately rather than leaving a dead end.
+    console.error('getUserMedia failed:',e);
+    if(e && e.name==='NotAllowedError'){
+      showError('Microphone access was denied. You can allow it in your browser settings, or just type your request below.');
+    }else{
+      showError('Couldn\'t access your microphone. You can still type your request below.');
+    }
+    showFallback();
+    return;
+  }
+
+  listening=true;
+  setMicState('listening');
+  startWaveform(mediaStream);
+  startSpeechRecognition();
+}
+
+/* ── Live waveform — purely visual, reacts to real mic input via Web
+   Audio's AnalyserNode. No audio is recorded, stored, or sent anywhere;
+   this just reads instantaneous volume levels to animate bars. ── */
+function startWaveform(stream){
+  var wave=document.getElementById('plWave');
+  var barCount=24;
+  wave.innerHTML='';
+  for(var i=0;i<barCount;i++){var b=document.createElement('span');wave.appendChild(b);}
+  var bars=wave.querySelectorAll('span');
+
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext;
+    audioCtx=new AC();
+    var source=audioCtx.createMediaStreamSource(stream);
+    analyser=audioCtx.createAnalyser();
+    analyser.fftSize=64;
+    source.connect(analyser);
+    var data=new Uint8Array(analyser.frequencyBinCount);
+    (function draw(){
+      if(!listening){return;}
+      analyser.getByteFrequencyData(data);
+      for(var i=0;i<bars.length;i++){
+        var v=data[i%data.length]/255;
+        bars[i].style.height=(6+v*30)+'px';
+      }
+      waveRaf=requestAnimationFrame(draw);
+    })();
+  }catch(e){
+    console.error('waveform init failed (non-fatal):',e);
+    // Waveform is cosmetic only — recognition still works without it.
+  }
+}
+
+/* ── Speech-to-text via the Web Speech API. Not supported in every
+   browser (notably older Firefox/Safari) — when it isn't, the mic still
+   shows the live waveform so the tap-to-talk gesture feels real, but we
+   also surface the typed fallback immediately since there's no way to
+   get a transcript otherwise. ── */
+function startSpeechRecognition(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    showError('Speech-to-text isn\'t supported in this browser — please type your request instead.');
+    showFallback();
+    return;
+  }
+  recognition=new SR();
+  recognition.lang='en-US';
+  recognition.interimResults=true;
+  recognition.continuous=false;
+  recognition.maxAlternatives=1;
+
+  var transcriptEl=document.getElementById('plTranscript');
+  transcriptEl.classList.remove('hidden');
+
+  recognition.onresult=function(ev){
+    var interim='',final='';
+    for(var i=ev.resultIndex;i<ev.results.length;i++){
+      var t=ev.results[i][0].transcript;
+      if(ev.results[i].isFinal)final+=t;else interim+=t;
+    }
+    transcriptEl.textContent=(final||interim)||'…';
+    if(final){
+      finalTranscript=final.trim();
+      recognition.stop();
+    }
+  };
+  recognition.onerror=function(ev){
+    console.error('SpeechRecognition error:',ev.error);
+    if(ev.error==='not-allowed'||ev.error==='service-not-allowed'){
+      showError('Microphone permission was blocked. You can type your request below instead.');
+      showFallback();
+    }else if(ev.error==='no-speech'){
+      // Not a real error — just nothing heard yet; let onend handle it.
+    }else{
+      showError('Voice recognition hit a snag — please try again or type your request.');
+      showFallback();
+    }
+  };
+  recognition.onend=function(){
+    stopEverything();
+    if(finalTranscript){
+      handleTranscript(finalTranscript);
+    }
+  };
+  try{
+    recognition.start();
+  }catch(e){
+    console.error('recognition.start failed:',e);
+    showError('Couldn\'t start voice recognition — please type your request below.');
+    showFallback();
+  }
+}
+
+function showFallback(){
+  document.getElementById('plFallback').classList.remove('hidden');
+  setTimeout(function(){var i=document.getElementById('plFallbackInput');if(i)i.focus();},100);
+}
+function submitFallbackText(){
+  var input=document.getElementById('plFallbackInput');
+  var text=(input.value||'').trim();
+  if(!text)return;
+  input.value='';
+  document.getElementById('plTranscript').classList.remove('hidden');
+  document.getElementById('plTranscript').textContent=text;
+  handleTranscript(text);
+}
+
+/* ── Small local intent parser — intentionally duplicated from
+   index.html's parsePetIntentLocal (see the file-level comment at the
+   top of this script for why). Keep the two in sync if either changes;
+   nothing here spends money or touches the database, it only decides
+   which existing page/flow to hand the user off to. ── */
+var PET_KNOWN_PLATFORMS=['tiktok','instagram','facebook','twitter','x','whatsapp','telegram','gmail','youtube','snapchat','linkedin','pinterest','discord'];
+function petExtractPlatform(text){
+  for(var i=0;i<PET_KNOWN_PLATFORMS.length;i++){
+    if(text.indexOf(PET_KNOWN_PLATFORMS[i])>-1)return PET_KNOWN_PLATFORMS[i];
+  }
+  return null;
+}
+function parsePetIntentLocal(textRaw){
+  var text=(textRaw||'').toLowerCase().trim();
+  if(!text)return null;
+  var amountMatch=text.match(/(?:₦|ngn|naira)?\s?([\d,]{3,})(?:\s?(?:naira|ngn))?/);
+  var amount=amountMatch?parseInt(amountMatch[1].replace(/,/g,''),10):null;
+  if(/fund|deposit|top ?up|recharge my wallet|add.*wallet/.test(text))
+    return{intent:'addfunds',amount:amount};
+  if(/order|where is my|track/.test(text))
+    return{intent:'myorders'};
+  if(/boost/.test(text)){
+    return{intent:'boost',query:petExtractPlatform(text)};
+  }
+  if(/airtime|data|\bvtu\b|recharge card|\d+\s?(mb|gb|tb)\b/.test(text))
+    return{intent:'vtu'};
+  if(/(virtual )?number|otp|verification code/.test(text)&&!/verify(ing)? account/.test(text))
+    return{intent:'numbers'};
+  if(/account|page|profile/.test(text)){
+    return{intent:'accounts',query:petExtractPlatform(text)};
+  }
+  if(/^(hi|hey|hello|yo)\b/.test(text))
+    return{intent:'greeting'};
+  return null;
+}
+
+function handleTranscript(text){
+  var intent=parsePetIntentLocal(text);
+  var replyEl=document.getElementById('plReply');
+  replyEl.classList.remove('hidden');
+  if(!intent){
+    replyEl.textContent="I didn't quite catch that — you can try again or open the app to browse Services.";
+    document.getElementById('plStateText').textContent='Hmm, not sure about that one';
+    return;
+  }
+  replyEl.textContent=petReplyPreview(intent)+" Taking you there now…";
+  document.getElementById('plStateText').textContent='Got it! 🐾';
+  intent.raw=text;
+  try{
+    sessionStorage.setItem('gd_pet_pending_intent',JSON.stringify(intent));
+  }catch(e){console.error('could not stash pending intent:',e);}
+  setTimeout(function(){window.location.href='index.html';},1100);
+}
+function petReplyPreview(intent){
+  switch(intent.intent){
+    case'greeting':return 'Hey there!';
+    case'addfunds':return intent.amount?('Let\'s add \u20a6'+intent.amount.toLocaleString()+' to your wallet.'):'Let\'s add funds to your wallet.';
+    case'myorders':return 'Pulling up your recent orders.';
+    case'vtu':return 'Let\'s get you airtime or data.';
+    case'numbers':return 'Let\'s find you a virtual number.';
+    case'boost':return intent.query?('Let\'s boost your '+cap(intent.query)+'.'):'Let\'s set up a boost.';
+    case'accounts':return intent.query?('Looking for '+cap(intent.query)+' accounts.'):'Let\'s find you an account.';
+    default:return 'Got it.';
+  }
+}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+
+guardAuth();
+</script>
+</body>
+</html>
