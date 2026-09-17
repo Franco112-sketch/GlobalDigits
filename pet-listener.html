@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Global Digits Pet — Voice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* Same brand tokens as the main site (index.html's :root) — kept in sync
+   manually since this is intentionally a separate, standalone file. */
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;
+  --bg:#f6f9ff;--surface:#fff;--surface2:#eef5ff;--border:#dbe9fd;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;
+  --t:.18s ease;--grad-premium:linear-gradient(135deg,#2f6feb 0%,#1a56db 100%);
+  --r:10px;--r-lg:18px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--font);background:var(--bg);color:var(--text);
+  display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;
+  overflow:hidden;-webkit-user-select:none;user-select:none;
+}
+.plHead{display:flex;align-items:center;justify-content:space-between;padding:calc(env(safe-area-inset-top,0) + 14px) 18px 10px;}
+.plCloseBtn{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:none;display:flex;align-items:center;justify-content:center;color:var(--text2);cursor:pointer;}
+.plTitle{font-family:var(--font-d);font-size:14px;font-weight:800;color:var(--text);}
+.plBody{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 24px 10px;text-align:center;gap:16px;overflow-y:auto;}
+
+.plPetAvatar{
+  width:64px;height:64px;border-radius:50%;background:var(--grad-premium);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 20px rgba(26,86,219,.28);
+  transition:box-shadow .25s ease;
+}
+.plPetAvatar svg{width:36px;height:36px;}
+.plStateText{font-size:14px;font-weight:700;color:var(--text);min-height:19px;}
+.plSubText{font-size:12px;color:var(--text3);max-width:280px;min-height:15px;}
+.plTimer{font-family:var(--font-d);font-size:15px;font-weight:700;color:var(--brand);min-height:19px;letter-spacing:.02em;}
+
+.plReply{background:var(--brand-lt);border-radius:var(--r-lg);padding:12px 16px;font-size:13.5px;color:var(--text);max-width:340px;width:100%;}
+.plErrorBox{background:#fff4f4;border:1px solid #fbd5d5;color:var(--danger);border-radius:var(--r);padding:12px 14px;font-size:12.5px;max-width:320px;}
+
+.plMicZone{position:relative;width:180px;height:180px;display:flex;align-items:center;justify-content:center;touch-action:none;}
+.plMicRipple{
+  position:absolute;border-radius:50%;border:1.5px solid var(--brand);
+  opacity:0;pointer-events:none;
+}
+.plMicGlow{
+  position:absolute;inset:18px;border-radius:50%;
+  background:radial-gradient(circle,rgba(26,86,219,.28) 0%,rgba(26,86,219,0) 70%);
+  opacity:0;transform:scale(.8);transition:opacity .25s ease,transform .25s ease;
+}
+.plMicBtn{
+  position:relative;width:84px;height:84px;border-radius:50%;border:none;
+  background:var(--grad-premium);color:#fff;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;box-shadow:0 10px 26px rgba(26,86,219,.35);
+  transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .18s ease;
+  z-index:2;
+}
+.plMicBtn svg{width:32px;height:32px;}
+.plMicZone.idle .plMicBtn{animation:plBreathe 3.2s ease-in-out infinite;}
+@keyframes plBreathe{0%,100%{transform:scale(1);box-shadow:0 10px 26px rgba(26,86,219,.35)}50%{transform:scale(1.035);box-shadow:0 12px 30px rgba(26,86,219,.42)}}
+.plMicZone.recording .plMicBtn{transform:scale(1.12);background:var(--danger);box-shadow:0 14px 32px rgba(239,68,68,.4);animation:none;}
+.plMicZone.recording .plMicGlow{opacity:1;transform:scale(1);}
+.plMicZone.recording .plMicRipple{animation:plRippleOut 1.8s ease-out infinite;}
+.plMicZone.recording .plMicRipple:nth-child(2){animation-delay:.5s;}
+.plMicZone.recording .plMicRipple:nth-child(3){animation-delay:1s;}
+@keyframes plRippleOut{
+  0%{width:84px;height:84px;opacity:.5;border-color:var(--danger);}
+  100%{width:170px;height:170px;opacity:0;border-color:var(--danger);}
+}
+.plMicBtn:active{transform:scale(.96);}
+
+.plWave{display:flex;align-items:center;justify-content:center;gap:3px;height:28px;}
+.plWave span{width:3px;border-radius:2px;background:var(--danger);height:5px;transition:height .07s ease;}
+
+.plOrbit{position:relative;width:64px;height:64px;display:none;}
+.plMicZone.processing .plMicBtn,.plMicZone.processing .plMicGlow,.plMicZone.processing .plMicRipple{display:none;}
+.plMicZone.processing .plOrbit{display:block;}
+.plOrbitDot{
+  position:absolute;top:50%;left:50%;width:9px;height:9px;border-radius:50%;
+  background:var(--brand);margin:-4.5px;
+  animation:plOrbitSpin 1.4s cubic-bezier(.5,0,.5,1) infinite;
+  transform-origin:4.5px 4.5px;
+}
+.plOrbitDot:nth-child(1){animation-delay:0s;opacity:1;}
+.plOrbitDot:nth-child(2){animation-delay:.15s;opacity:.7;}
+.plOrbitDot:nth-child(3){animation-delay:.3s;opacity:.4;}
+@keyframes plOrbitSpin{
+  0%{transform:rotate(0deg) translateX(26px) rotate(0deg) scale(1);}
+  50%{transform:rotate(180deg) translateX(26px) rotate(-180deg) scale(.6);}
+  100%{transform:rotate(360deg) translateX(26px) rotate(-360deg) scale(1);}
+}
+.plMicZone{display:flex;}
+.plMicZone.hidden-mic .plMicBtn,.plMicZone.hidden-mic .plMicGlow,.plMicZone.hidden-mic .plMicRipple{visibility:hidden;}
+
+.plFallback{display:flex;gap:8px;width:100%;max-width:340px;}
+.plFallback input{flex:1;border:1px solid var(--border);border-radius:24px;padding:11px 16px;font-size:13px;outline:none;background:var(--surface);}
+.plFallback button{background:var(--grad-premium);color:#fff;border:none;border-radius:24px;padding:0 18px;font-size:13px;font-weight:700;cursor:pointer;}
+.plFallbackToggle{font-size:11.5px;color:var(--text3);text-decoration:underline;cursor:pointer;background:none;border:none;}
+
+.plFoot{padding:14px 24px calc(env(safe-area-inset-bottom,0) + 18px);text-align:center;}
+.plFoot a{color:var(--text3);font-size:11.5px;text-decoration:underline;cursor:pointer;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+  <div class="plHead">
+    <button class="plCloseBtn" onclick="goBack()" aria-label="Close">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="plTitle" id="plTitle">Global Digits Pet</div>
+    <div style="width:34px"></div>
+  </div>
+
+  <div class="plBody">
+    <div class="plPetAvatar" id="plPetAvatar">
+      <svg viewBox="0 0 48 48" fill="none"><ellipse cx="24" cy="27" rx="14" ry="12" fill="#fff"/><circle cx="24" cy="13" r="4.2" fill="#fff"/><circle cx="19" cy="26" r="2.2" fill="var(--brand)"/><circle cx="29" cy="26" r="2.2" fill="var(--brand)"/><path d="M20 31q4 3 8 0" stroke="var(--brand)" stroke-width="1.6" stroke-linecap="round" fill="none"/></svg>
+    </div>
+
+    <div class="plStateText" id="plStateText">Hold the mic to talk</div>
+    <div class="plSubText" id="plSubText">e.g. "buy me a TikTok account" or "how much data can I get for 2k"</div>
+    <div class="plTimer hidden" id="plTimer">0:00</div>
+
+    <div class="plMicZone idle" id="plMicZone">
+      <span class="plMicRipple"></span>
+      <span class="plMicRipple"></span>
+      <span class="plMicRipple"></span>
+      <div class="plMicGlow"></div>
+      <button class="plMicBtn" id="plMicBtn" aria-label="Hold to talk">
+        <svg id="plMicIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+      </button>
+      <div class="plOrbit"><span class="plOrbitDot"></span><span class="plOrbitDot"></span><span class="plOrbitDot"></span></div>
+    </div>
+
+    <div class="plWave hidden" id="plWave"></div>
+
+    <div class="plReply hidden" id="plReply"></div>
+    <div class="plErrorBox hidden" id="plErrorBox"></div>
+
+    <button class="plFallbackToggle hidden" id="plFallbackToggleBtn" onclick="showFallback()">Type instead</button>
+    <div class="plFallback hidden" id="plFallback">
+      <input type="text" id="plFallbackInput" placeholder="Type what you'd like…" onkeydown="if(event.key==='Enter')submitFallbackText();"/>
+      <button onclick="submitFallbackText()">Send</button>
+    </div>
+  </div>
+
+  <div class="plFoot">
+    <a onclick="goBack()">Back to Global Digits</a>
+  </div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════════
+   GLOBAL DIGITS PET — VOICE LISTENER (press-and-hold, audio -> AI)
+
+   Interaction model: Hold mic -> record -> release -> send audio ->
+   existing Gemini reasoning engine (pet-intent) transcribes AND
+   understands it in one call -> Pet asks a follow-up (hold again to
+   answer) or hands off a ready action, exactly like the text-based flow
+   in index.html.
+
+   This REPLACES the previous continuous SpeechRecognition-based
+   implementation. Reasons, from actually testing that approach: (1) it
+   depends on the browser's own (often unreliable, especially on mobile)
+   guess about when you've stopped talking, which is what caused
+   "speaking sometimes just stopped with nothing happening"; (2) it only
+   worked in browsers with SpeechRecognition support (poor on Safari);
+   (3) it required transcribing entirely client-side rather than using
+   the existing reasoning engine's own understanding of raw speech.
+   Press-and-hold + MediaRecorder + sending audio directly to the
+   existing Gemini call removes all three problems: recording start/stop
+   is 100% under the user's explicit control (no guessing), MediaRecorder
+   has much broader browser support, and Gemini both transcribes and
+   understands the same audio in the one call the app already makes.
+
+   Nothing about the actual actions changes: this still only ever
+   produces either "ask the user this" or a structured {tool,input}
+   handed off to index.html's existing preparePetAction — see that file
+   for the (unmodified) confirmation-then-execute flow. This file never
+   touches a wallet or places an order itself, and never uploads/stores
+   audio anywhere beyond the one request to the existing reasoning
+   engine for this one utterance.
+   ══════════════════════════════════════════════════════════════════════ */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const PET_INTENT_URL='https://pzronmbvusjwrcizxwef.supabase.co/functions/v1/pet-intent';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+var mediaStream=null;
+var mediaRecorder=null;
+var recordedChunks=[];
+var audioCtx=null,analyser=null,waveRaf=null;
+var recordStartTime=0;
+var timerInterval=null;
+var busy=false;
+var petMessages=[];
+
+async function guardAuth(){
+  try{
+    var res=await sb.auth.getUser();
+    if(!res.data||!res.data.user){window.location.href='login.html';return false;}
+    var petNameStored=localStorage.getItem('gd_pet_name');
+    var titleEl=document.getElementById('plTitle');
+    if(titleEl&&petNameStored)titleEl.textContent=petNameStored;
+    return true;
+  }catch(e){
+    console.error('pet-listener auth check failed:',e);
+    window.location.href='login.html';
+    return false;
+  }
+}
+
+function goBack(){
+  stopEverything();
+  window.location.href='index.html';
+}
+function stopEverything(){
+  clearInterval(timerInterval);timerInterval=null;
+  if(waveRaf){cancelAnimationFrame(waveRaf);waveRaf=null;}
+  try{if(mediaRecorder&&mediaRecorder.state!=='inactive')mediaRecorder.stop();}catch(e){}
+  try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop();});}catch(e){}
+  try{if(audioCtx)audioCtx.close();}catch(e){}
+  mediaStream=null;mediaRecorder=null;audioCtx=null;analyser=null;
+  setState('idle');
+}
+document.addEventListener('visibilitychange',function(){if(document.hidden)stopEverything();});
+window.addEventListener('pagehide',stopEverything);
+window.addEventListener('beforeunload',stopEverything);
+
+function setState(state){
+  var zone=document.getElementById('plMicZone');
+  var stateText=document.getElementById('plStateText');
+  var subText=document.getElementById('plSubText');
+  var timer=document.getElementById('plTimer');
+  var wave=document.getElementById('plWave');
+  zone.className='plMicZone '+state;
+  if(state==='idle'){
+    stateText.textContent='Hold the mic to talk';
+    subText.textContent='e.g. "buy me a TikTok account" or "how much data can I get for 2k"';
+    timer.classList.add('hidden');
+    wave.classList.add('hidden');
+  }else if(state==='recording'){
+    stateText.textContent='Listening…';
+    subText.textContent="Release when you're done";
+    timer.classList.remove('hidden');
+    wave.classList.remove('hidden');
+  }else if(state==='processing'){
+    stateText.textContent='Understanding…';
+    subText.textContent='';
+    timer.classList.add('hidden');
+    wave.classList.add('hidden');
+  }
+}
+
+function showError(msg){
+  var box=document.getElementById('plErrorBox');
+  box.textContent=msg;
+  box.classList.remove('hidden');
+}
+function hideError(){document.getElementById('plErrorBox').classList.add('hidden');}
+
+var pointerActive=false;
+function wireMic(){
+  var btn=document.getElementById('plMicBtn');
+  btn.addEventListener('pointerdown',function(e){
+    e.preventDefault();
+    if(busy||pointerActive)return; // already recording, or a previous request still processing
+    pointerActive=true;
+    try{btn.setPointerCapture(e.pointerId);}catch(err){}
+    beginRecording();
+  });
+  btn.addEventListener('pointerup',function(e){
+    if(!pointerActive)return;
+    pointerActive=false;
+    endRecording();
+  });
+  btn.addEventListener('pointercancel',function(){
+    if(!pointerActive)return;
+    pointerActive=false;
+    endRecording();
+  });
+  window.addEventListener('pointerup',function(){
+    if(pointerActive){pointerActive=false;endRecording();}
+  });
+}
+
+async function beginRecording(){
+  hideError();
+  document.getElementById('plReply').classList.add('hidden');
+
+  if(!window.isSecureContext){
+    showError('Voice needs a secure (HTTPS) connection. Please open Global Digits over HTTPS to use the microphone.');
+    offerFallback();
+    return;
+  }
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||typeof MediaRecorder==='undefined'){
+    showError("This browser doesn't support voice recording. You can still type your request below.");
+    offerFallback();
+    return;
+  }
+
+  try{
+    mediaStream=await navigator.mediaDevices.getUserMedia({audio:true});
+  }catch(e){
+    console.error('getUserMedia failed:',e);
+    if(e&&e.name==='NotAllowedError'){
+      showError('Microphone access was denied. You can allow it in your browser settings, or just type your request below.');
+    }else{
+      showError("Couldn't access your microphone. You can still type your request below.");
+    }
+    offerFallback();
+    return;
+  }
+
+  var mimeType=pickSupportedMimeType();
+  try{
+    mediaRecorder=mimeType?new MediaRecorder(mediaStream,{mimeType:mimeType}):new MediaRecorder(mediaStream);
+  }catch(e){
+    console.error('MediaRecorder init failed:',e);
+    showError("Couldn't start recording. You can still type your request below.");
+    offerFallback();
+    stopEverything();
+    return;
+  }
+  recordedChunks=[];
+  mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size>0)recordedChunks.push(e.data);};
+  mediaRecorder.start();
+  recordStartTime=Date.now();
+  setState('recording');
+  startWaveform(mediaStream);
+  startTimer();
+}
+function startTimer(){
+  var timerEl=document.getElementById('plTimer');
+  timerEl.textContent='0:00';
+  timerInterval=setInterval(function(){
+    var secs=Math.floor((Date.now()-recordStartTime)/1000);
+    var m=Math.floor(secs/60),s=secs%60;
+    timerEl.textContent=m+':'+(s<10?'0':'')+s;
+    if(secs>=60)endRecording();
+  },250);
+}
+function pickSupportedMimeType(){
+  var candidates=['audio/webm;codecs=opus','audio/webm','audio/mp4','audio/ogg;codecs=opus'];
+  for(var i=0;i<candidates.length;i++){
+    try{if(MediaRecorder.isTypeSupported(candidates[i]))return candidates[i];}catch(e){}
+  }
+  return '';
+}
+
+function endRecording(){
+  if(!mediaRecorder||mediaRecorder.state==='inactive'){stopEverything();return;}
+  var durationMs=Date.now()-recordStartTime;
+  clearInterval(timerInterval);timerInterval=null;
+  if(waveRaf){cancelAnimationFrame(waveRaf);waveRaf=null;}
+  setState('processing');
+
+  mediaRecorder.onstop=async function(){
+    try{if(mediaStream)mediaStream.getTracks().forEach(function(t){t.stop();});}catch(e){}
+    try{if(audioCtx)audioCtx.close();}catch(e){}
+    mediaStream=null;audioCtx=null;analyser=null;
+
+    if(durationMs<400||!recordedChunks.length){
+      setState('idle');
+      return;
+    }
+    var blob=new Blob(recordedChunks,{type:mediaRecorder.mimeType||'audio/webm'});
+    recordedChunks=[];
+    await sendRecording(blob,mediaRecorder.mimeType||'audio/webm');
+  };
+  try{mediaRecorder.stop();}catch(e){setState('idle');}
+}
+
+function startWaveform(stream){
+  var wave=document.getElementById('plWave');
+  var barCount=20;
+  wave.innerHTML='';
+  for(var i=0;i<barCount;i++){var b=document.createElement('span');wave.appendChild(b);}
+  var bars=wave.querySelectorAll('span');
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext;
+    audioCtx=new AC();
+    var source=audioCtx.createMediaStreamSource(stream);
+    analyser=audioCtx.createAnalyser();
+    analyser.fftSize=64;
+    source.connect(analyser);
+    var data=new Uint8Array(analyser.frequencyBinCount);
+    (function draw(){
+      if(!audioCtx||audioCtx.state==='closed')return;
+      analyser.getByteFrequencyData(data);
+      for(var i=0;i<bars.length;i++){
+        var v=data[i%data.length]/255;
+        bars[i].style.height=(5+v*26)+'px';
+      }
+      waveRaf=requestAnimationFrame(draw);
+    })();
+  }catch(e){console.error('waveform init failed (non-fatal):',e);}
+}
+
+async function sendRecording(blob,mimeType){
+  if(busy)return;
+  busy=true;
+  try{
+    var base64=await blobToBase64(blob);
+    var ctrl=new AbortController();
+    var timer=setTimeout(function(){ctrl.abort();},20000);
+    var res=await fetch(PET_INTENT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify({messages:petMessages,audio:{data:base64,mimeType:mimeType}}),
+      signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    if(!res.ok){handleAiFailure();return;}
+    var data=await res.json();
+    // We never transcribe audio client-side (Gemini hears the raw
+    // audio itself), so there's no real text to log for this turn —
+    // just a placeholder so the next turn's conversation history still
+    // reads correctly to Gemini.
+    handleAiResult(data,'[voice message]');
+  }catch(e){
+    console.error('sendRecording failed:',e);
+    handleAiFailure();
+  }finally{
+    busy=false;
+  }
+}
+function blobToBase64(blob){
+  return new Promise(function(resolve,reject){
+    var reader=new FileReader();
+    reader.onloadend=function(){
+      var result=reader.result||'';
+      var comma=result.indexOf(',');
+      resolve(comma>-1?result.slice(comma+1):result);
+    };
+    reader.onerror=reject;
+    reader.readAsDataURL(blob);
+  });
+}
+function handleAiFailure(){
+  setState('idle');
+  showError("Couldn't reach the Pet right now — please try again.");
+}
+function handleAiResult(data,userTurnForHistory){
+  if(!data||data.type==='unavailable'){
+    setState('idle');
+    showError("Voice understanding isn't available right now — you can type your request below instead.");
+    offerFallback();
+    return;
+  }
+  if(data.type==='unclear'){
+    setState('idle');
+    petSay("I didn't quite catch that. Try again.");
+    return;
+  }
+  if(data.type==='ask'){
+    // For voice, sendRecording passes a placeholder since there's no
+    // client-side transcript. For the typed fallback, the real text was
+    // already pushed onto petMessages before this was called, so no
+    // extra push is needed there.
+    if(userTurnForHistory)petMessages.push({role:'user',content:userTurnForHistory});
+    petMessages.push({role:'assistant',content:data.text});
+    setState('idle');
+    petSay(data.text);
+    return;
+  }
+  if(data.type==='ready'){
+    handOffReadyAction(data.tool,data.input||{},petSummaryFor(data.tool,data.input||{}));
+    return;
+  }
+  setState('idle');
+  petSay("I didn't quite catch that. Try again.");
+}
+function petSay(text){
+  var replyEl=document.getElementById('plReply');
+  replyEl.classList.remove('hidden');
+  replyEl.textContent=text;
+  try{
+    if('speechSynthesis' in window){
+      window.speechSynthesis.cancel();
+      var u=new SpeechSynthesisUtterance(text.replace(/[\u{1F43E}\u{1F44B}]/gu,''));
+      u.rate=1.04;u.pitch=1.05;
+      window.speechSynthesis.speak(u);
+    }
+  }catch(e){}
+}
+function petSummaryFor(tool,input){
+  if(tool==='buy_sm_account')return 'Looking for '+(input.platform?cap(input.platform):'that')+' accounts.';
+  if(tool==='add_funds')return 'Adding '+(input.amount?('\u20a6'+Number(input.amount).toLocaleString()):'funds')+' to your '+(input.wallet||'ngn').toUpperCase()+' wallet.';
+  if(tool==='boost')return 'Boosting '+(input.platform||'your account')+'.';
+  if(tool==='buy_airtime')return 'Getting '+(input.network||'')+' airtime sorted.';
+  if(tool==='show_orders')return 'Pulling up your orders.';
+  return 'Got it.';
+}
+function handOffReadyAction(tool,input,summaryText){
+  stopEverything();
+  petSay(summaryText+' Taking you there now…');
+  document.getElementById('plStateText').textContent='Got it!';
+  try{sessionStorage.setItem('gd_pet_ready_action',JSON.stringify({tool:tool,input:input}));}
+  catch(e){console.error('could not stash ready action:',e);}
+  setTimeout(function(){window.location.href='index.html';},1100);
+}
+function cap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+
+function offerFallback(){
+  document.getElementById('plFallbackToggleBtn').classList.remove('hidden');
+  showFallback();
+}
+function showFallback(){
+  document.getElementById('plFallback').classList.remove('hidden');
+  document.getElementById('plFallbackToggleBtn').classList.add('hidden');
+  setTimeout(function(){var i=document.getElementById('plFallbackInput');if(i)i.focus();},100);
+}
+function submitFallbackText(){
+  var input=document.getElementById('plFallbackInput');
+  var text=(input.value||'').trim();
+  if(!text||busy)return;
+  input.value='';
+  busy=true;
+  setState('processing');
+  sendTypedFallback(text).finally(function(){busy=false;});
+}
+async function sendTypedFallback(text){
+  petMessages.push({role:'user',content:text});
+  try{
+    var ctrl=new AbortController();
+    var timer=setTimeout(function(){ctrl.abort();},12000);
+    var res=await fetch(PET_INTENT_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY},
+      body:JSON.stringify({messages:petMessages}),
+      signal:ctrl.signal
+    });
+    clearTimeout(timer);
+    if(!res.ok){handleAiFailure();return;}
+    var data=await res.json();
+    // This is the SAME AI intent-understanding pipeline the voice path
+    // and index.html's typed chat both use — no separate keyword
+    // matching here. If the request genuinely can't reach the AI, say
+    // so honestly (handleAiFailure) rather than guessing at intent
+    // from a hardcoded phrase list.
+    handleAiResult(data);
+  }catch(e){
+    console.error('typed fallback failed:',e);
+    handleAiFailure();
+  }
+}
+
+wireMic();
+guardAuth();
+</script>
+</body>
+</html>
