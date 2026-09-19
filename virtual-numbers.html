@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1a56db">
+<title>Virtual Numbers — GlobalDigits</title>
+<link rel="icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Syne:wght@700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+/* ─────────────────────────────  Tokens  ───────────────────────────── */
+:root{
+  color-scheme:light;
+  --brand:#1a56db; --brand-dk:#1342b0; --brand-lt:#e8f0ff; --ring:rgba(26,86,219,.22);
+  --bg:#f6f9ff; --surface:#fff; --sunken:#f1f6ff;
+  --line:#dbe9fd; --line-strong:#c4d8f8;
+  --ink:#0d1321; --ink2:#5a6580; --ink3:#8590a6;
+  --danger:#b42318; --danger-bg:#fef3f2; --danger-line:#fecdca;
+  --warn:#93370d;   --warn-bg:#fffaeb;   --warn-line:#fedf89;
+  --info:#1342b0;   --info-bg:#eef4ff;   --info-line:#c7d9fb;
+  --ok:#067647;     --ok-bg:#ecfdf3;     --ok-line:#abefc6;
+  --font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --font-d:'Syne','Plus Jakarta Sans',system-ui,sans-serif;
+  --shadow-panel:0 1px 2px rgba(19,52,120,.05),0 10px 28px -14px rgba(19,52,120,.16);
+  --shadow-pop:0 14px 34px -10px rgba(19,52,120,.28),0 2px 6px rgba(19,52,120,.08);
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+html.pk-lock,html.pk-lock body{overflow:hidden}
+body{margin:0;min-height:100vh;min-height:100dvh;background:var(--bg);color:var(--ink);
+  font:400 14px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit}
+.sr-only{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ─────────────────────────────  Page  ───────────────────────────── */
+.page{max-width:480px;margin:0 auto;padding:max(10px,env(safe-area-inset-top)) 16px calc(36px + env(safe-area-inset-bottom))}
+@media (min-width:640px){.page{padding-top:40px}}
+
+.bar{display:flex;align-items:center;gap:6px;min-height:44px}
+.back{display:grid;place-items:center;width:36px;height:36px;margin-left:-8px;border-radius:9px;color:var(--ink);background:none;border:0;cursor:pointer;text-decoration:none}
+.back:hover{background:var(--brand-lt)}
+.brand{display:flex;align-items:center;gap:8px;margin-right:auto;font:700 15px/1 var(--font-d);color:var(--brand);text-decoration:none}
+.brand img{width:26px;height:26px;border-radius:7px;background:var(--brand-lt);padding:2px}
+.wallet{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px;border:1px solid var(--line);background:var(--surface);
+  border-radius:8px;font-weight:600;font-size:13px;color:var(--ink);text-decoration:none;font-variant-numeric:tabular-nums}
+.wallet svg{color:var(--brand);flex:none}
+.wallet:hover{border-color:var(--line-strong)}
+.wallet .sk{width:52px;height:11px}
+
+h1{margin:26px 0 6px;font:700 27px/1.12 var(--font-d);letter-spacing:-.01em}
+.lede{margin:0 0 20px;max-width:36ch;color:var(--ink2)}
+
+/* ─────────────────────────────  Panel  ───────────────────────────── */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-panel);padding:18px}
+@media (max-width:389px){.panel{padding:14px}}
+.field{display:block}
+.field + .field{margin-top:14px}
+.field > .lbl{display:block;margin:0 0 6px;font-size:12.5px;font-weight:600;color:var(--ink2)}
+
+/* ─────────────────────────────  Summary  ───────────────────────────── */
+.sum{margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+.sum-row{display:flex;align-items:flex-end;justify-content:space-between;gap:16px}
+.sum-what{min-width:0}
+.sum-name{font-weight:600;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sum-name.is-empty{font-weight:500;color:var(--ink2);font-size:14px;white-space:normal}
+.sum-sub{display:flex;align-items:center;gap:7px;margin-top:3px;color:var(--ink2);font-size:13px;min-height:19px}
+.sum-price{font:700 30px/1 var(--font-d);letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sum-price.is-empty{color:var(--line-strong)}
+.sum-bal{margin-top:14px;padding-top:12px;border-top:1px dashed var(--line);align-items:center;font-size:13px;color:var(--ink2)}
+.sum-bal b{font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.sum-bal.is-low b{color:var(--danger)}
+
+/* ─────────────────────────────  Notice + CTA  ───────────────────────────── */
+.notice{display:flex;gap:10px;align-items:flex-start;margin-top:16px;padding:10px 12px;border:1px solid;border-radius:10px;font-size:13px;line-height:1.45}
+.notice svg{flex:none;margin-top:1px}
+.notice-body{flex:1;min-width:0}
+.notice a,.notice button{color:inherit;font-weight:600;text-decoration:underline;text-underline-offset:2px;background:none;border:0;padding:0;cursor:pointer}
+.notice-action{display:inline-block;margin-top:4px}
+.notice[data-tone="error"]{background:var(--danger-bg);border-color:var(--danger-line);color:var(--danger)}
+.notice[data-tone="warn"] {background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn)}
+.notice[data-tone="info"] {background:var(--info-bg);border-color:var(--info-line);color:var(--info)}
+
+.cta{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:48px;margin-top:16px;border:0;border-radius:10px;
+  background:var(--brand);color:#fff;font-weight:600;font-size:15px;cursor:pointer;text-decoration:none;
+  transition:background .12s,box-shadow .12s,transform .06s}
+.cta:hover:not(:disabled){background:var(--brand-dk)}
+.cta:active:not(:disabled){transform:scale(.995)}
+.cta:focus-visible{outline:none;box-shadow:0 0 0 3px var(--surface),0 0 0 5px var(--brand)}
+.cta:disabled{background:#e3ecfb;color:#7686a6;cursor:not-allowed}
+.cta.is-busy:disabled{background:var(--brand);color:#fff;cursor:progress;opacity:.92}
+.cta-ghost{background:var(--surface);color:var(--brand);border:1px solid var(--line-strong)}
+.cta-ghost:hover:not(:disabled){background:var(--brand-lt)}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ─────────────────────────────  Success  ───────────────────────────── */
+.done{text-align:left}
+.done:focus{outline:none}
+.done-ico{display:grid;place-items:center;width:40px;height:40px;border-radius:10px;background:var(--ok-bg);color:var(--ok);border:1px solid var(--ok-line)}
+.done h2{margin:14px 0 4px;font:700 21px/1.2 var(--font-d)}
+.done p{margin:0;color:var(--ink2);max-width:40ch}
+.done dl{margin:18px 0 0;padding:12px 0 0;border-top:1px solid var(--line);display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:13.5px}
+.done dt{color:var(--ink2)}
+.done dd{margin:0;text-align:right;font-weight:600;display:flex;align-items:center;justify-content:flex-end;gap:7px;min-width:0}
+.done dd span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.done .cta + .cta{margin-top:10px}
+
+/* ─────────────────────────────  Skeleton  ───────────────────────────── */
+.sk{display:inline-block;height:12px;border-radius:6px;background:linear-gradient(90deg,#e8f0fc 25%,#f5f9ff 45%,#e8f0fc 65%);background-size:200% 100%;animation:shimmer 1.2s linear infinite}
+@keyframes shimmer{to{background-position:-200% 0}}
+
+/* ─────────────────────────────  Flags / icons  ───────────────────────────── */
+.flag{display:block;flex:none;border-radius:3px;object-fit:cover;box-shadow:0 0 0 1px rgba(13,19,33,.1)}
+.flag-globe{display:grid;place-items:center;flex:none;width:22px;height:16px;border-radius:3px;background:var(--brand-lt);color:var(--brand)}
+.svc-ico{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:8px;background:var(--brand-lt);color:var(--brand);
+  font:700 13px/1 var(--font-d);overflow:hidden}
+.svc-ico img{width:100%;height:100%;object-fit:cover}
+.svc-ico.emoji{font:400 16px/1 var(--font);background:var(--sunken)}
+
+/* ─────────────────────────────  Custom picker  ───────────────────────────── */
+.pk{position:relative}
+.pk-trigger{display:flex;align-items:center;gap:10px;width:100%;height:46px;padding:0 12px;text-align:left;
+  background:var(--surface);border:1px solid var(--line-strong);border-radius:10px;cursor:pointer;
+  font-size:14.5px;font-weight:500;color:var(--ink);transition:border-color .12s,box-shadow .12s}
+.pk-trigger:hover:not(:disabled){border-color:#9fbcf0}
+.pk-trigger:focus-visible{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--ring)}
+.pk[data-open="true"] .pk-trigger{border-color:var(--brand);box-shadow:0 0 0 3px var(--ring)}
+.pk-trigger:disabled{background:var(--sunken);cursor:not-allowed}
+.pk-val{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.pk-val .txt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-ph{color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-trigger:disabled .pk-ph{color:var(--ink3)}
+.pk[data-status="error"] .pk-ph{color:var(--danger)}
+.pk-chev{flex:none;color:var(--ink2);transition:transform .16s}
+.pk[data-open="true"] .pk-chev{transform:rotate(180deg)}
+.pk-val .sk{width:42%;height:12px}
+
+.pk-pop{position:absolute;z-index:40;left:0;right:0;top:calc(100% + 6px);display:flex;flex-direction:column;
+  max-height:min(348px,62vh);background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-pop);
+  opacity:0;visibility:hidden;transform:translateY(-4px);transform-origin:top;
+  transition:opacity .12s ease,transform .12s ease,visibility 0s linear .12s}
+.pk[data-side="top"] .pk-pop{top:auto;bottom:calc(100% + 6px);transform:translateY(4px);transform-origin:bottom}
+.pk[data-open="true"] .pk-pop{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.pk-pop:focus{outline:none}
+.pk-scrim,.pk-head{display:none}
+
+.pk-search{position:relative;padding:8px;border-bottom:1px solid var(--line)}
+.pk-search-ico{position:absolute;left:19px;top:50%;transform:translateY(-50%);color:var(--ink3);pointer-events:none}
+.pk-input{width:100%;height:38px;padding:0 10px 0 34px;border:1px solid var(--line);border-radius:8px;background:var(--bg);
+  font:500 14px var(--font);color:var(--ink);-webkit-appearance:none;appearance:none}
+.pk-input::placeholder{color:var(--ink3)}
+.pk-input:focus{outline:none;background:var(--surface);border-color:var(--brand);box-shadow:0 0 0 3px var(--ring)}
+.pk-input::-webkit-search-cancel-button{cursor:pointer}
+
+.pk-list{flex:1;min-height:0;margin:0;padding:4px;list-style:none;overflow-y:auto;overscroll-behavior:contain}
+.pk-opt{display:flex;align-items:center;gap:10px;min-height:46px;padding:7px 10px;border-radius:8px;cursor:pointer;scroll-margin:4px}
+.pk-opt[data-active="true"]{background:var(--sunken)}
+.pk-opt[aria-selected="true"]{background:var(--brand-lt)}
+.pk-opt[aria-disabled="true"]{cursor:not-allowed}
+.pk-opt[aria-disabled="true"] .pk-main,.pk-opt[aria-disabled="true"] .pk-end{opacity:.55}
+.pk-opt[aria-disabled="true"] .flag,.pk-opt[aria-disabled="true"] .svc-ico{opacity:.5}
+.pk-main{flex:1;min-width:0}
+.pk-title{font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pk-sub{font-size:12px;color:var(--ink2);line-height:1.3}
+.pk-end{flex:none;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.pk-check{flex:none;color:var(--brand)}
+
+.pk-state{padding:22px 16px;text-align:center;color:var(--ink2);font-size:13.5px}
+.pk-state strong{display:block;margin-bottom:2px;color:var(--ink);font-weight:600}
+.pk-state button{margin-top:10px;height:34px;padding:0 14px;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--brand);font-weight:600;cursor:pointer}
+.pk-state button:hover{background:var(--brand-lt)}
+.pk-skel{display:flex;align-items:center;gap:10px;padding:10px 14px}
+.pk-skel .sk:first-child{width:28px;height:28px;border-radius:8px}
+.pk-skel .sk:last-child{width:46%}
+
+/* Phones: the same popover becomes a bottom sheet */
+@media (max-width:639px){
+  .pk-scrim{display:block;position:fixed;inset:0;z-index:50;background:rgba(13,19,33,.42);opacity:0;visibility:hidden;
+    transition:opacity .2s ease,visibility 0s linear .2s}
+  .pk[data-open="true"] .pk-scrim{opacity:1;visibility:visible;transition-delay:0s}
+  .pk-pop,.pk[data-side="top"] .pk-pop{position:fixed;z-index:60;left:0;right:0;top:auto;bottom:0;
+    max-height:78vh;max-height:78dvh;min-height:240px;border:0;border-radius:16px 16px 0 0;
+    padding-bottom:env(safe-area-inset-bottom);opacity:1;transform:translateY(100%);
+    transition:transform .24s cubic-bezier(.2,.8,.2,1),visibility 0s linear .24s}
+  .pk[data-open="true"] .pk-pop{transform:none}
+  .pk-head{display:flex;align-items:center;justify-content:space-between;position:relative;padding:16px 8px 6px 16px}
+  .pk-grab{position:absolute;top:6px;left:50%;width:36px;height:4px;margin-left:-18px;border-radius:2px;background:var(--line-strong)}
+  .pk-title-sheet{font:700 16px var(--font-d)}
+  .pk-close{display:grid;place-items:center;width:40px;height:40px;border:0;background:none;border-radius:10px;color:var(--ink2);cursor:pointer}
+  .pk-close:hover{background:var(--sunken)}
+  .pk-search{padding:6px 12px 10px}
+  .pk-search-ico{left:23px}
+  .pk-input{height:42px;font-size:16px}   /* 16px stops iOS zooming on focus */
+  .pk-opt{min-height:52px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;transition-delay:0s!important}
+}
+</style>
+</head>
+
+<body>
+<main class="page">
+  <div class="bar">
+    <a class="back" id="backLink" href="index.html" aria-label="Back to dashboard"></a>
+    <a class="brand" href="index.html"><img src="logo.png" alt="" onerror="this.style.display='none'">GlobalDigits</a>
+    <a class="wallet" id="wallet" href="add-funds.html" aria-label="Wallet balance. Add funds"></a>
+  </div>
+
+  <h1>Virtual Numbers</h1>
+  <p class="lede">Get a temporary phone number to receive a verification code.</p>
+
+  <section class="panel" id="panel" aria-label="Get a virtual number">
+    <!-- Purchase form -->
+    <div id="formView">
+      <div class="field">
+        <div class="lbl" id="serviceLabel">Service</div>
+        <div id="servicePicker"></div>
+      </div>
+      <div class="field">
+        <div class="lbl" id="countryLabel">Country</div>
+        <div id="countryPicker"></div>
+      </div>
+
+      <div class="sum" aria-live="polite">
+        <div class="sum-row">
+          <div class="sum-what">
+            <div class="sum-name is-empty" id="sumName"></div>
+            <div class="sum-sub" id="sumSub"></div>
+          </div>
+          <div class="sum-price is-empty" id="sumPrice" aria-label="Price"></div>
+        </div>
+        <div class="sum-row sum-bal" id="sumBal"></div>
+      </div>
+
+      <div id="noticeSlot" role="status" aria-live="polite"></div>
+      <button class="cta" id="cta" type="button" disabled>Get number</button>
+    </div>
+
+    <!-- Result of a real purchase (no order history lives on this page) -->
+    <div id="doneView" class="done" hidden tabindex="-1"></div>
+  </section>
+
+  <pre id="debugBox" hidden style="margin:16px 0 0;padding:10px;border:1px dashed #c4d8f8;border-radius:8px;background:#fff;color:#0d1321;font:11px/1.45 ui-monospace,Menlo,monospace;white-space:pre-wrap;word-break:break-word"></pre>
+  <noscript><p class="lede" style="margin-top:16px">JavaScript is required to buy a virtual number.</p></noscript>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  if (!window.supabase) {   // supabase-js CDN blocked or offline
+    document.getElementById('panel').textContent = 'We couldn’t start this page. Refresh to try again.';
+    return;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════
+     CONFIG — wiring only. Services, countries, prices, stock and Tiger IDs
+     are never defined here; they are read from the existing backend.
+     The anon key is the same public key the main app already ships to
+     every browser. No Tiger SMS credential exists in this file: Tiger is
+     reached only by the existing Edge Function / database trigger.
+     ══════════════════════════════════════════════════════════════════════ */
+  const CONFIG = Object.freeze({
+    SUPABASE_URL: 'https://pzronmbvusjwrcizxwef.supabase.co',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA',
+
+    CATALOG_TABLE: 'verification_services',   // admin: "App Verification Prices"
+    PURCHASE_RPC: 'purchase_verify_batch',    // same RPC the current App Verification flow uses
+    TIGER_PROXY_PATH: '/functions/v1/tiger-sms-proxy',
+
+    // Only offer rows the admin has mapped to Tiger (service code + country ID + auto-delivery on).
+    REQUIRE_TIGER_MAPPING: true,
+    // Also cross-check those mapped IDs against Tiger's live catalog when the proxy allows it.
+    TIGER_LIVE_CHECK: true,
+    TIGER_CACHE_MS: 10 * 60 * 1000,
+    TIGER_TIMEOUT_MS: 4000,
+
+    CURRENCY: 'NGN',
+    LOCALE: 'en-NG',
+    REFRESH_ON_FOCUS_MS: 15000,
+
+    URLS: {
+      home: 'index.html',
+      login: 'login.html',
+      addFunds: 'add-funds.html',
+      orders: 'order-history.html?type=numbers'
+    }
+  });
+
+  /* ══════════════════════════  Utilities  ══════════════════════════ */
+  const $ = (id) => document.getElementById(id);
+
+  /** Tiny element builder. Text is always inserted as text, never as HTML. */
+  function h(tag, props, ...kids) {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(props || {})) {
+      if (v == null || v === false) continue;
+      if (k === 'class') n.className = v;
+      else if (k === 'text') n.textContent = v;
+      else if (k === 'dataset') Object.assign(n.dataset, v);
+      else if (k.startsWith('on')) n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v === true ? '' : v);
+    }
+    for (const kid of kids.flat(Infinity)) {
+      if (kid == null || kid === false) continue;
+      n.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+    return n;
+  }
+
+  const norm = (s) => String(s == null ? '' : s).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase().trim().replace(/\s+/g, ' ');
+
+  const moneyFmt = new Intl.NumberFormat(CONFIG.LOCALE, {
+    style: 'currency', currency: CONFIG.CURRENCY, minimumFractionDigits: 0, maximumFractionDigits: 2
+  });
+  const money = (n) => (Number.isFinite(n) ? moneyFmt.format(n) : '—');
+
+  /* Diagnostics. Always logs to the console; add ?debug=1 to the URL to also see
+     the real error and row counts on screen (useful on a phone with no dev tools). */
+  const DEBUG = /[?&]debug=1\b/.test(location.search);
+  const debugLines = [];
+  function describeError(e) {
+    if (!e) return 'unknown';
+    const o = { name: e.name, message: e.message, code: e.code, status: e.status, details: e.details, hint: e.hint };
+    return JSON.stringify(o, (k, v) => (v === undefined || v === '' || v === null ? undefined : v));
+  }
+  function dbg(label, data) {
+    const line = label + (data === undefined ? '' : ': ' + (typeof data === 'string' ? data : JSON.stringify(data)));
+    console.info('[virtual-numbers]', line);
+    debugLines.push(line);
+    if (debugLines.length > 40) debugLines.shift();
+    const box = document.getElementById('debugBox');
+    if (box) box.textContent = debugLines.join('\n');
+  }
+  window.addEventListener('error', (e) => dbg('window error', (e.message || '') + ' @line ' + (e.lineno || '?')));
+  window.addEventListener('unhandledrejection', (e) => dbg('unhandled rejection', describeError(e.reason)));
+
+  const debounce = (fn, ms) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; };
+
+  const ICONS = {
+    chevron: '<path d="m6 9 6 6 6-6"/>',
+    search: '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>',
+    check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+    x: '<path d="M6 6l12 12M18 6 6 18"/>',
+    back: '<path d="m15 18-6-6 6-6"/>',
+    wallet: '<path d="M3 7a2 2 0 0 1 2-2h12v3"/><path d="M3 7v10a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1H5a2 2 0 0 1-2-2Z"/><circle cx="16.5" cy="13.5" r="1"/>',
+    globe: '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3Z"/>',
+    alert: '<circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/>',
+    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/>',
+    ok: '<path d="m5 12.5 4.5 4.5L19 7.5"/>'
+  };
+  function icon(name, cls, size) {
+    const s = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    s.setAttribute('viewBox', '0 0 24 24'); s.setAttribute('width', size || 18); s.setAttribute('height', size || 18);
+    s.setAttribute('fill', 'none'); s.setAttribute('stroke', 'currentColor'); s.setAttribute('stroke-width', '1.9');
+    s.setAttribute('stroke-linecap', 'round'); s.setAttribute('stroke-linejoin', 'round'); s.setAttribute('aria-hidden', 'true');
+    if (cls) s.setAttribute('class', cls);
+    s.innerHTML = ICONS[name];   // static strings only
+    return s;
+  }
+
+  /* ══════════════════  Flags & service icons (display only)  ══════════════════
+     Flags come from data the admin already saves on each row: the emoji in
+     `flag` is converted to a country code; if that is missing, the browser's own
+     region-name data (Intl.DisplayNames) maps the country name to a code.
+     Nothing here lists countries. */
+  const Visuals = (() => {
+    let byName = null;
+    const RI_A = 0x1F1E6, RI_Z = 0x1F1FF;
+
+    function codeFromEmoji(str) {
+      const cp = [...String(str || '')].map((c) => c.codePointAt(0));
+      if (cp.length >= 2 && cp[0] >= RI_A && cp[0] <= RI_Z && cp[1] >= RI_A && cp[1] <= RI_Z) {
+        return String.fromCharCode(97 + cp[0] - RI_A, 97 + cp[1] - RI_A);
+      }
+      return null;
+    }
+    function codeFromName(name) {
+      if (!byName) {
+        byName = new Map();
+        try {
+          const dn = new Intl.DisplayNames(['en'], { type: 'region' });
+          for (let a = 65; a <= 90; a++) for (let b = 65; b <= 90; b++) {
+            const code = String.fromCharCode(a, b), label = dn.of(code);
+            if (label && label !== code) byName.set(norm(label), code.toLowerCase());
+          }
+        } catch (e) { /* older browsers: globe fallback */ }
+      }
+      return byName.get(norm(name)) || null;
+    }
+    const globe = () => h('span', { class: 'flag-globe', 'aria-hidden': 'true' }, icon('globe', '', 12));
+
+    function flag(row, width) {
+      const code = codeFromEmoji(row.flag) || codeFromName(row.country);
+      if (!code) return globe();
+      const w = width || 22;
+      const img = h('img', { class: 'flag', src: 'https://flagcdn.com/w40/' + code + '.png', alt: '', width: w,
+        height: Math.round(w * 0.73), loading: 'lazy', decoding: 'async' });
+      img.addEventListener('error', () => img.replaceWith(globe()), { once: true });
+      return img;
+    }
+
+    /** Admin-supplied icon: image URL, short emoji/text, otherwise a monogram. */
+    function serviceIcon(svc) {
+      const raw = String(svc.icon || '').trim();
+      if (/^(https?:\/\/|data:image\/)/i.test(raw)) {
+        const img = h('img', { src: raw, alt: '', loading: 'lazy' });
+        const tile = h('span', { class: 'svc-ico' }, img);
+        img.addEventListener('error', () => tile.replaceChildren(document.createTextNode(svc.name.charAt(0).toUpperCase())), { once: true });
+        return tile;
+      }
+      if (raw && raw.length <= 8 && raw.charAt(0) !== '<') return h('span', { class: 'svc-ico emoji', 'aria-hidden': 'true', text: raw });
+      return h('span', { class: 'svc-ico', 'aria-hidden': 'true', text: svc.name.charAt(0).toUpperCase() });
+    }
+    return { flag, serviceIcon };
+  })();
+
+  /* ══════════════════════════  Data layer  ══════════════════════════
+     Every read/write goes through the existing Supabase project. */
+  const Data = (() => {
+    const sb = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
+    const COLS = 'id,platform,country,flag,icon,price,stock,active,tiger_service_code,tiger_country_id,auto_delivery_enabled';
+
+    function toRow(r) {
+      const platform = String(r.platform || '').trim();
+      const price = Number(r.price);
+      if (!platform || !Number.isFinite(price)) return null;
+      const country = String(r.country || '').trim() || 'Global';
+      // Stock is the per-country balance the admin sets by hand. Not set (empty) => unavailable.
+      const stockNum = r.stock === null || r.stock === undefined || String(r.stock).trim() === '' ? null : Number(r.stock);
+      const stock = Number.isFinite(stockNum) ? stockNum : null;
+      return {
+        id: r.id, platform, serviceKey: norm(platform), country, countryKey: norm(country),
+        flag: r.flag, icon: r.icon, price, stock, active: r.active !== false,
+        available: stock !== null && stock > 0,
+        tigerService: r.tiger_service_code ? String(r.tiger_service_code).trim() : '',
+        tigerCountry: r.tiger_country_id === null || r.tiger_country_id === undefined ? null : r.tiger_country_id,
+        autoDelivery: r.auto_delivery_enabled === true
+      };
+    }
+    const isMapped = (r) => r.autoDelivery && !!r.tigerService && r.tigerCountry !== null;
+
+    async function getSession() { return (await sb.auth.getSession()).data.session; }
+
+    /** Tiger's live service/country catalog via the existing proxy. Optional: any failure returns null. */
+    async function fetchTigerIndex() {
+      const CACHE_KEY = 'gd_vn_tiger_idx_v1';
+      const remember = (payload) => { try { sessionStorage.setItem(CACHE_KEY, JSON.stringify(Object.assign({ t: Date.now() }, payload))); } catch (e) { /* ignore */ } };
+      try {
+        const c = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+        if (c && Date.now() - c.t < CONFIG.TIGER_CACHE_MS) return c.none ? null : { services: new Set(c.s), countries: new Set(c.c) };
+      } catch (e) { /* storage unavailable */ }
+      try {
+        const session = await getSession();
+        if (!session) return null;
+        const ctrl = new AbortController();
+        const timer = setTimeout(() => ctrl.abort(), CONFIG.TIGER_TIMEOUT_MS);
+        const call = (action) => fetch(CONFIG.SUPABASE_URL + CONFIG.TIGER_PROXY_PATH, {
+          method: 'POST', signal: ctrl.signal,
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + session.access_token },
+          body: JSON.stringify({ action })
+        }).then((res) => (res.ok ? res.json() : null));
+        const [svc, ctry] = await Promise.all([call('servicesList'), call('countriesList')]);
+        clearTimeout(timer);
+        const arr = (r) => (Array.isArray(r) ? r : r && (r.raw || r.data || r.services || r.countries));
+        const sList = arr(svc), cList = arr(ctry);
+        // Proxy refused this user or returned something unusable: remember that, so we don't retry on every refresh.
+        if (!Array.isArray(sList) || !Array.isArray(cList) || !sList.length || !cList.length) { remember({ none: true }); return null; }
+        const s = sList.map((x) => x && (x.code !== undefined ? x.code : x.id)).filter((v) => v != null).map((v) => String(v).toLowerCase());
+        const c = cList.map((x) => x && (x.id !== undefined ? x.id : x.code)).filter((v) => v != null).map(String);
+        if (!s.length || !c.length) { remember({ none: true }); return null; }
+        remember({ s, c });
+        return { services: new Set(s), countries: new Set(c) };
+      } catch (e) { return null; }   // timeouts/network: not cached, next refresh may try again
+    }
+
+    /** Rows the page may show: enabled by admin AND mapped to (and, when checkable, present in) Tiger. */
+    function sellable(rows, tigerIdx, report) {
+      let list = rows.filter((r) => r.active && r.price > 0);
+      if (report) report.active = list.length;
+      if (CONFIG.REQUIRE_TIGER_MAPPING) list = list.filter(isMapped);
+      if (report) { report.tigerMapped = list.length; report.tigerLiveCheck = tigerIdx ? 'used' : 'not available (using admin mapping)'; }
+      if (tigerIdx) {
+        const live = list.filter((r) => tigerIdx.services.has(r.tigerService.toLowerCase()) && tigerIdx.countries.has(String(r.tigerCountry)));
+        if (live.length) list = live;
+        else dbg('Tiger catalog matched no rows; relying on admin mapping');
+      }
+      if (report) report.afterTiger = list.length;
+      return list;
+    }
+
+    /** Map<serviceKey, {key,name,icon,countries: Map<countryKey,row>}>. One row per country (best available, then cheapest). */
+    function group(rows) {
+      const services = new Map();
+      for (const r of rows) {
+        let s = services.get(r.serviceKey);
+        if (!s) { s = { key: r.serviceKey, name: r.platform, icon: '', countries: new Map() }; services.set(r.serviceKey, s); }
+        if (!s.icon && r.icon) s.icon = r.icon;
+        const cur = s.countries.get(r.countryKey);
+        if (!cur || (r.available && !cur.available) || (r.available === cur.available && r.price < cur.price)) s.countries.set(r.countryKey, r);
+      }
+      return services;
+    }
+
+    return {
+      sb,
+      getUser: async () => (await sb.auth.getUser()).data.user || null,
+      signOut: () => sb.auth.signOut(),
+      async getProfile(userId) {
+        const r = await sb.from('profiles').select('balance,status').eq('id', userId).single();
+        if (r.error) throw r.error;
+        return r.data;
+      },
+      async fetchCatalog(report) {
+        let r = await sb.from(CONFIG.CATALOG_TABLE).select(COLS).eq('active', true);
+        if (r.error) {
+          // The explicit column list was rejected (for example a column has another name in this database).
+          // Retry with * exactly like the existing App Verification page does.
+          dbg('column query failed, retrying with *', describeError(r.error));
+          if (report) report.columnQueryError = describeError(r.error);
+          r = await sb.from(CONFIG.CATALOG_TABLE).select('*').eq('active', true);
+        }
+        if (r.error) { const e = r.error; e.stage = 'query'; throw e; }
+        const out = []; let skipped = 0;
+        for (const raw of r.data || []) {
+          try { const row = toRow(raw); if (row) out.push(row); else skipped++; } catch (e) { skipped++; dbg('skipped a malformed row', describeError(e)); }
+        }
+        if (report) { report.fetched = (r.data || []).length; report.unreadableRows = skipped; }
+        return out;
+      },
+      async fetchRow(id) {
+        const r = await sb.from(CONFIG.CATALOG_TABLE).select(COLS).eq('id', id).maybeSingle();
+        if (r.error) throw r.error;
+        return r.data ? toRow(r.data) : null;
+      },
+      fetchTigerIndex, sellable, group, isMapped,
+
+      /** Same parameters and semantics as the existing App Verification order. Quantity is always 1. */
+      async purchase(userId, row) {
+        const res = await sb.rpc(CONFIG.PURCHASE_RPC, {
+          p_user_id: userId, p_service_id: row.id, p_platform: row.platform, p_country: row.country,
+          p_qty: 1, p_unit_price: row.price, p_total_price: Math.round(row.price)
+        });
+        if (!res.error) return { ok: true };
+        const msg = String(res.error.message || '').toLowerCase();
+        console.error('[virtual-numbers] purchase failed', res.error);
+        if (msg.includes('insufficient_stock')) return { ok: false, kind: 'stock' };
+        if (msg.includes('insufficient_balance')) return { ok: false, kind: 'balance' };
+        // A Postgres/PostgREST error carries a code, so the order definitely did not go through.
+        // No code means the request itself failed (network) and the outcome is unknown.
+        return { ok: false, kind: res.error.code ? 'failed' : 'unknown' };
+      }
+    };
+  })();
+
+  /* ══════════════════════════  Custom picker  ══════════════════════════
+     One accessible dropdown/bottom-sheet component. The Service and Country
+     pickers below are separate instances with their own item renderers,
+     search text and state handling. No <select> is used anywhere. */
+  let pickerSeq = 0;
+  let openPicker = null;
+  const isPhone = () => window.matchMedia('(max-width: 639px)').matches;
+
+  function createPicker(cfg) {
+    const uid = 'pk' + (++pickerSeq);
+    let items = [], view = [], selectedId = null, active = -1, open = false;
+    let status = 'loading', statusMsg = '';
+
+    const valueEl = h('span', { class: 'pk-val', id: uid + '-v' });
+    const trigger = h('button', {
+      type: 'button', class: 'pk-trigger', 'aria-haspopup': 'listbox', 'aria-expanded': 'false',
+      'aria-controls': uid + '-p', 'aria-labelledby': cfg.labelId + ' ' + uid + '-v'
+    }, valueEl, icon('chevron', 'pk-chev'));
+    const scrim = h('div', { class: 'pk-scrim' });
+    const closeBtn = h('button', { type: 'button', class: 'pk-close', 'aria-label': 'Close' }, icon('x'));
+    const head = h('div', { class: 'pk-head' }, h('span', { class: 'pk-grab', 'aria-hidden': 'true' }),
+      h('span', { class: 'pk-title-sheet', text: cfg.title }), closeBtn);
+    const input = h('input', {
+      type: 'search', class: 'pk-input', placeholder: cfg.searchPlaceholder, autocomplete: 'off', autocapitalize: 'off',
+      spellcheck: 'false', enterkeyhint: 'search', role: 'combobox', 'aria-expanded': 'true',
+      'aria-controls': uid + '-l', 'aria-autocomplete': 'list', 'aria-label': cfg.searchPlaceholder
+    });
+    const search = h('div', { class: 'pk-search' }, icon('search', 'pk-search-ico', 16), input);
+    const list = h('ul', { class: 'pk-list', id: uid + '-l', role: 'listbox', 'aria-labelledby': cfg.labelId });
+    const stateBox = h('div', { class: 'pk-state', hidden: true });
+    const pop = h('div', { class: 'pk-pop', id: uid + '-p', tabindex: '-1' }, head, search, list, stateBox);
+    const root = cfg.mount;
+    root.classList.add('pk');
+    root.dataset.open = 'false';
+    root.append(trigger, scrim, pop);
+
+    const selectedItem = () => items.find((i) => i.id === selectedId) || null;
+    const firstEnabled = () => view.findIndex((i) => !i.disabled);
+
+    function paintTrigger() {
+      root.dataset.status = status;
+      valueEl.replaceChildren();
+      trigger.disabled = status === 'loading' || status === 'disabled';
+      if (status === 'loading') {
+        valueEl.append(h('span', { class: 'sk' }), h('span', { class: 'sr-only', text: cfg.loadingText }));
+      } else if (status === 'disabled') {
+        valueEl.append(h('span', { class: 'pk-ph', text: statusMsg }));
+      } else if (status === 'error') {
+        valueEl.append(h('span', { class: 'pk-ph', text: cfg.errorText }));
+      } else {
+        const sel = selectedItem();
+        if (sel) valueEl.append(cfg.renderValue(sel));
+        else valueEl.append(h('span', { class: 'pk-ph', text: items.length ? cfg.placeholder : cfg.emptyTitle }));
+      }
+    }
+
+    function showState(node) { list.hidden = true; stateBox.hidden = false; stateBox.replaceChildren(node); }
+
+    function filterItems(q) {
+      const n = norm(q);
+      if (!n) return items.slice();
+      const a = [], b = [], c = [];
+      for (const it of items) {
+        const t = norm(cfg.searchText(it)), i = t.indexOf(n);
+        if (i === 0) a.push(it); else if (i > 0 && t.charAt(i - 1) === ' ') b.push(it); else if (i > 0) c.push(it);
+      }
+      return a.concat(b, c);
+    }
+
+    function paintBody() {
+      search.hidden = true;
+      if (status === 'loading') {
+        showState(h('div', {}, [0, 1, 2, 3].map(() => h('div', { class: 'pk-skel' }, h('span', { class: 'sk' }), h('span', { class: 'sk' })))));
+        return;
+      }
+      if (status === 'error') {
+        showState(h('div', {}, h('strong', { text: cfg.errorTitle }), cfg.errorText,
+          h('div', {}, h('button', { type: 'button', text: 'Try again', onclick: () => cfg.onRetry && cfg.onRetry() }))));
+        return;
+      }
+      if (status === 'disabled') { showState(h('div', { text: statusMsg })); return; }
+      if (!items.length) {
+        showState(h('div', {}, h('strong', { text: cfg.emptyTitle }), cfg.emptyHint || ''));
+        return;
+      }
+      search.hidden = false;
+      view = filterItems(input.value);
+      if (!view.length) {
+        showState(h('div', {}, h('strong', { text: 'No matches' }), cfg.noResultsHint(input.value.trim())));
+        return;
+      }
+      stateBox.hidden = true; list.hidden = false;
+      list.replaceChildren(...view.map((it, i) => h('li', {
+        class: 'pk-opt', id: uid + '-o' + i, role: 'option', dataset: { i },
+        'aria-selected': String(it.id === selectedId), 'aria-disabled': it.disabled ? 'true' : null
+      }, cfg.renderOption(it), it.id === selectedId ? icon('check', 'pk-check') : null)));
+      active = -1;
+      const sel = view.findIndex((i) => i.id === selectedId);
+      setActive(sel >= 0 ? sel : firstEnabled());
+    }
+
+    function setActive(i, scroll) {
+      const prev = list.children[active];
+      if (prev) prev.removeAttribute('data-active');
+      active = i;
+      const el = list.children[i];
+      if (el) {
+        el.setAttribute('data-active', 'true');
+        input.setAttribute('aria-activedescendant', el.id);
+        if (scroll !== false) el.scrollIntoView({ block: 'nearest' });
+      } else input.removeAttribute('aria-activedescendant');
+    }
+    function step(dir) {
+      if (!view.length) return;
+      let i = active < 0 && dir < 0 ? 0 : active;
+      for (let n = 0; n < view.length; n++) {
+        i = (i + dir + view.length) % view.length;
+        if (!view[i].disabled) { setActive(i); return; }
+      }
+    }
+
+    function placeSide() {
+      root.dataset.side = 'bottom';
+      if (isPhone()) return;
+      const r = trigger.getBoundingClientRect();
+      const below = window.innerHeight - r.bottom - 12, above = r.top - 12;
+      if (below < 300 && above > below) root.dataset.side = 'top';
+    }
+
+    function openPop() {
+      if (open || trigger.disabled) return;
+      if (openPicker && openPicker !== api) openPicker.close();
+      open = true; openPicker = api; input.value = '';
+      root.dataset.open = 'true'; trigger.setAttribute('aria-expanded', 'true');
+      placeSide(); paintBody();
+      if (isPhone()) document.documentElement.classList.add('pk-lock');
+      (search.hidden || isPhone() ? pop : input).focus({ preventScroll: true });
+    }
+    function closePop(opts) {
+      if (!open) return;
+      open = false; if (openPicker === api) openPicker = null;
+      root.dataset.open = 'false'; trigger.setAttribute('aria-expanded', 'false');
+      document.documentElement.classList.remove('pk-lock');
+      if (!(opts && opts.restoreFocus === false) && pop.contains(document.activeElement)) trigger.focus({ preventScroll: true });
+    }
+    function choose(it) {
+      if (!it || it.disabled) return;
+      selectedId = it.id; paintTrigger(); closePop();
+      if (cfg.onChange) cfg.onChange(it);
+    }
+
+    trigger.addEventListener('click', () => (open ? closePop() : openPop()));
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); openPop(); }
+    });
+    scrim.addEventListener('click', () => closePop());
+    closeBtn.addEventListener('click', () => closePop());
+    input.addEventListener('input', () => paintBody());
+    list.addEventListener('click', (e) => {
+      const li = e.target.closest('.pk-opt');
+      if (li) choose(view[+li.dataset.i]);
+    });
+    list.addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      const li = e.target.closest('.pk-opt');
+      if (!li || li.getAttribute('aria-disabled') === 'true') return;
+      if (+li.dataset.i !== active) setActive(+li.dataset.i, false);
+    });
+    pop.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); closePop(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
+      else if (e.key === 'Enter' && e.target.tagName !== 'BUTTON' && active >= 0) { e.preventDefault(); choose(view[active]); }
+      else if (e.key === 'Tab' && isPhone()) {   // keep focus inside the sheet
+        const f = [closeBtn, input, ...stateBox.querySelectorAll('button')].filter((n) => n.offsetParent !== null);
+        if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && (document.activeElement === first || document.activeElement === pop)) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+    root.addEventListener('focusout', (e) => {
+      if (open && !isPhone() && e.relatedTarget && !root.contains(e.relatedTarget)) closePop({ restoreFocus: false });
+    });
+    document.addEventListener('pointerdown', (e) => { if (open && !root.contains(e.target)) closePop({ restoreFocus: false }); });
+    window.addEventListener('resize', debounce(() => { if (open) closePop({ restoreFocus: false }); }, 150));
+
+    const api = {
+      setItems(next) {
+        items = next;
+        if (selectedId !== null && !items.some((i) => i.id === selectedId)) selectedId = null;
+        paintTrigger(); if (open) paintBody();
+      },
+      setStatus(s, msg) {
+        status = s; statusMsg = msg || '';
+        if (open && (s === 'loading' || s === 'disabled')) closePop({ restoreFocus: false });
+        paintTrigger(); if (open) paintBody();
+      },
+      select(id) {
+        const it = items.find((i) => i.id === id);
+        if (!it || it.disabled) return false;
+        selectedId = id; paintTrigger(); return true;
+      },
+      clear() { selectedId = null; paintTrigger(); },
+      value: () => selectedId,
+      has: (id) => items.some((i) => i.id === id && !i.disabled),
+      setLocked(locked) { trigger.disabled = locked || status === 'loading' || status === 'disabled'; },
+      focus: () => trigger.focus(),
+      close: closePop
+    };
+    paintTrigger();
+    return api;
+  }
+
+  /* ══════════════════════════  App  ══════════════════════════ */
+  const state = {
+    user: null,
+    balance: null, balanceState: 'loading',     // loading | ready | error
+    catalogStatus: 'loading',                    // loading | ready | error
+    services: new Map(),
+    serviceKey: null, countryKey: null,
+    phase: 'form',                               // form | done
+    buying: false,
+    notice: null,                                // { tone, text, action? } from user actions
+    done: null
+  };
+  let servicePicker, countryPicker, catalogReq = 0, lastRefresh = 0;
+  const channels = [];
+
+  const MSG = {
+    pickService: 'Select a service first',
+    noServices: 'No services are available right now. Please check back soon.',
+    catalogError: 'We couldn’t load the available services. Check your connection and try again.',
+    generic: 'We couldn’t complete your order. Your wallet wasn’t charged. Please try again.',
+    unknown: 'We couldn’t confirm your order. Check your orders before trying again so you don’t pay twice.',
+    precheck: 'We couldn’t check availability. Please try again.'
+  };
+
+  const selectedService = () => state.services.get(state.serviceKey) || null;
+  const selectedRow = () => { const s = selectedService(); return s && state.countryKey ? s.countries.get(state.countryKey) || null : null; };
+  const insufficient = (row) => !!row && state.balance !== null && state.balance < row.price;
+
+  /* ── Pickers ── */
+  function buildPickers() {
+    servicePicker = createPicker({
+      mount: $('servicePicker'), labelId: 'serviceLabel', title: 'Select service',
+      placeholder: 'Select a service', searchPlaceholder: 'Search services', loadingText: 'Loading services',
+      errorTitle: 'Couldn’t load services', errorText: 'Couldn’t load services. Tap to retry.',
+      emptyTitle: 'No services available', emptyHint: 'Services will appear here as soon as they are available.',
+      noResultsHint: (q) => 'Nothing matches “' + q + '”.',
+      searchText: (it) => it.label,
+      renderValue: (it) => h('span', { class: 'pk-val' }, Visuals.serviceIcon(it.svc), h('span', { class: 'txt', text: it.label })),
+      renderOption: (it) => [Visuals.serviceIcon(it.svc), h('div', { class: 'pk-main' },
+        h('div', { class: 'pk-title', text: it.label }),
+        h('div', { class: 'pk-sub', text: it.disabled ? 'Unavailable' : it.count + (it.count === 1 ? ' country' : ' countries') }))],
+      onChange: (it) => onServiceChange(it),
+      onRetry: () => loadCatalog()
+    });
+    countryPicker = createPicker({
+      mount: $('countryPicker'), labelId: 'countryLabel', title: 'Select country',
+      placeholder: 'Select a country', searchPlaceholder: 'Search countries', loadingText: 'Loading countries',
+      errorTitle: 'Couldn’t load countries', errorText: 'Couldn’t load countries. Tap to retry.',
+      emptyTitle: 'No countries available', emptyHint: 'This service has no countries available right now.',
+      noResultsHint: (q) => 'No country matches “' + q + '”.',
+      searchText: (it) => it.label,
+      renderValue: (it) => h('span', { class: 'pk-val' }, Visuals.flag(it.row), h('span', { class: 'txt', text: it.label })),
+      renderOption: (it) => [Visuals.flag(it.row), h('div', { class: 'pk-main' },
+        h('div', { class: 'pk-title', text: it.label }),
+        it.disabled ? h('div', { class: 'pk-sub', text: 'Unavailable' }) : null),
+        h('div', { class: 'pk-end', text: money(it.row.price) })],
+      onChange: (it) => onCountryChange(it),
+      onRetry: () => loadCatalog()
+    });
+    servicePicker.setStatus('loading');
+    countryPicker.setStatus('disabled', MSG.pickService);
+  }
+
+  function serviceItems() {
+    return [...state.services.values()].map((svc) => {
+      const count = [...svc.countries.values()].filter((r) => r.available).length;
+      return { id: svc.key, label: svc.name, svc, count, disabled: count === 0 };
+    }).sort((a, b) => (a.disabled - b.disabled) || a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
+  }
+  function countryItems(serviceKey) {
+    const svc = state.services.get(serviceKey);
+    if (!svc) return [];
+    return [...svc.countries.values()].map((row) => ({ id: row.countryKey, label: row.country, row, disabled: !row.available }))
+      .sort((a, b) => (a.disabled - b.disabled) || a.label.localeCompare(b.label, undefined, { sensitivity: 'base' }));
+  }
+
+  function syncCountries() {
+    if (!state.serviceKey) {
+      countryPicker.setItems([]);
+      countryPicker.setStatus('disabled', state.services.size || state.catalogStatus !== 'ready' ? MSG.pickService : 'Unavailable');
+      return;
+    }
+    countryPicker.setItems(countryItems(state.serviceKey));
+    countryPicker.setStatus('ready');
+    if (state.countryKey && countryPicker.value() !== state.countryKey) state.countryKey = null;
+  }
+
+  function onServiceChange(it) {
+    const keep = state.countryKey;
+    state.serviceKey = it.id; state.notice = null;
+    syncCountries();
+    state.countryKey = keep && countryPicker.select(keep) ? keep : null;   // keep the country if the new service offers it
+    if (!state.countryKey) countryPicker.clear();
+    render();
+  }
+  function onCountryChange(it) { state.countryKey = it.id; state.notice = null; render(); }
+
+  /* ── Catalog ── */
+  async function loadCatalog(opts) {
+    const silent = !!(opts && opts.silent);
+    const req = ++catalogReq;
+    lastRefresh = Date.now();
+    if (!silent) {
+      state.catalogStatus = 'loading';
+      servicePicker.setStatus('loading');
+      countryPicker.setStatus('disabled', MSG.pickService);
+      render();
+    }
+    let stage = 'query';
+    const report = {};
+    try {
+      const [rows, tigerIdx] = await Promise.all([Data.fetchCatalog(report), CONFIG.TIGER_LIVE_CHECK ? Data.fetchTigerIndex() : null]);
+      if (req !== catalogReq) return;
+      stage = 'filter';
+      const sell = Data.sellable(rows, tigerIdx, report);
+      stage = 'group';
+      state.services = Data.group(sell);
+      report.services = state.services.size;
+      report.countries = sell.length;
+      report.availableCountries = sell.filter((r) => r.available).length;
+      dbg('catalog', report);
+      stage = 'render';
+      state.catalogStatus = 'ready';
+      const hadService = state.serviceKey, hadCountry = state.countryKey;
+      servicePicker.setItems(serviceItems());
+      servicePicker.setStatus('ready');
+      if (state.serviceKey && servicePicker.value() !== state.serviceKey) {   // admin removed it
+        state.serviceKey = null; state.countryKey = null; countryPicker.clear();
+      }
+      syncCountries();
+      if (hadService && !state.serviceKey) state.notice = { tone: 'info', text: 'That service is no longer available. Choose another.' };
+      else if (hadCountry && !state.countryKey) state.notice = { tone: 'info', text: 'That country is no longer available for this service. Choose another.' };
+    } catch (err) {
+      if (req !== catalogReq) return;
+      console.error('[virtual-numbers] catalog failed at "' + stage + '"', err);
+      dbg('catalog FAILED at ' + stage, describeError(err));
+      state.catalogErr = stage + ': ' + (err && err.message ? err.message : 'unknown');
+      if (silent && state.catalogStatus === 'ready') return;   // keep showing what we have
+      state.catalogStatus = 'error';
+      servicePicker.setStatus('error');
+      countryPicker.setStatus('disabled', MSG.pickService);
+    }
+    render();
+  }
+
+  /* ── Wallet ── */
+  function setBalance(n) {
+    const v = Number(n);
+    if (Number.isFinite(v)) { state.balance = v; state.balanceState = 'ready'; }
+    else state.balanceState = 'error';
+    render();
+  }
+  async function loadBalance() {
+    try {
+      const p = await Data.getProfile(state.user.id);
+      if (p.status === 'deactivated') { await Data.signOut(); location.replace(CONFIG.URLS.login); return false; }
+      setBalance(p.balance);
+    } catch (e) {
+      console.error('[virtual-numbers] balance failed', e); dbg('balance FAILED', describeError(e));
+      if (state.balance === null) { state.balanceState = 'error'; render(); }
+    }
+    return true;
+  }
+
+  /* ── Purchase ── */
+  async function purchase() {
+    if (state.buying) return;
+    const row = selectedRow();
+    if (!row) return;
+    state.buying = true; state.notice = null;
+    servicePicker.setLocked(true); countryPicker.setLocked(true);
+    render();
+    let stage = 'precheck';
+    try {
+      // 1. Re-read the row so the price and stock we charge are the current ones.
+      const fresh = await Data.fetchRow(row.id);
+      if (!fresh || !fresh.active || fresh.price <= 0 || (CONFIG.REQUIRE_TIGER_MAPPING && !Data.isMapped(fresh))) {
+        state.notice = { tone: 'warn', text: 'This option is no longer available. Choose another.' };
+        await loadCatalog({ silent: true }); return;
+      }
+      if (!fresh.available) {
+        state.notice = { tone: 'warn', text: 'No numbers are available for ' + fresh.platform + ' in ' + fresh.country + ' right now. Try another country.' };
+        await loadCatalog({ silent: true }); return;
+      }
+      if (fresh.price !== row.price) {
+        state.notice = { tone: 'info', text: 'The price changed to ' + money(fresh.price) + '. Review it, then tap Get number again.' };
+        await loadCatalog({ silent: true }); return;
+      }
+      // 2. Re-read the wallet; the button turns into "Add funds" if it can't cover the price.
+      if (!(await loadBalance())) return;
+      if (insufficient(fresh)) return;
+      // 3. Real purchase through the existing RPC.
+      stage = 'submit';
+      const res = await Data.purchase(state.user.id, fresh);
+      if (res.ok) {
+        await loadBalance();
+        state.done = { row: fresh };
+        state.phase = 'done';
+        return;
+      }
+      if (res.kind === 'stock') {
+        state.notice = { tone: 'warn', text: 'No numbers are available for ' + fresh.platform + ' in ' + fresh.country + ' right now. Try another country.' };
+        await loadCatalog({ silent: true });
+      } else if (res.kind === 'balance') {
+        await loadBalance();
+        state.notice = { tone: 'warn', text: 'Your wallet balance is too low for this number.' };
+      } else if (res.kind === 'unknown') {
+        state.notice = { tone: 'warn', text: MSG.unknown, action: { label: 'View orders', href: CONFIG.URLS.orders } };
+      } else {
+        state.notice = { tone: 'error', text: MSG.generic };
+      }
+    } catch (err) {
+      console.error('[virtual-numbers] purchase error', err);
+      state.notice = stage === 'submit'
+        ? { tone: 'warn', text: MSG.unknown, action: { label: 'View orders', href: CONFIG.URLS.orders } }
+        : { tone: 'error', text: MSG.precheck };
+    } finally {
+      state.buying = false;
+      servicePicker.setLocked(false); countryPicker.setLocked(false);
+      render();
+      if (state.phase === 'done') $('doneView').focus({ preventScroll: false });
+    }
+  }
+
+  function onCta() {
+    const row = selectedRow();
+    if (!row || state.buying) return;
+    if (insufficient(row)) { location.href = CONFIG.URLS.addFunds; return; }
+    purchase();
+  }
+
+  function resetForNext() {
+    state.phase = 'form'; state.done = null; state.notice = null;
+    render();
+    servicePicker.focus();
+  }
+
+  /* ── Rendering ── */
+  function noticeNode(n) {
+    return h('div', { class: 'notice', dataset: { tone: n.tone } },
+      icon(n.tone === 'info' ? 'info' : 'alert', '', 16),
+      h('div', { class: 'notice-body' }, n.text,
+        n.action ? h('div', {}, n.action.href
+          ? h('a', { class: 'notice-action', href: n.action.href, text: n.action.label })
+          : h('button', { type: 'button', class: 'notice-action', text: n.action.label, onclick: n.action.onClick })) : null));
+  }
+
+  function currentNotice(row) {
+    if (state.catalogStatus === 'error') return { tone: 'error', text: MSG.catalogError + (DEBUG ? ' [' + state.catalogErr + ']' : ''), action: { label: 'Try again', onClick: () => loadCatalog() } };
+    if (state.notice) return state.notice;
+    if (state.catalogStatus === 'ready' && !state.services.size) return { tone: 'info', text: MSG.noServices };
+    if (row && !row.available) return { tone: 'warn', text: 'No numbers are available for ' + row.platform + ' in ' + row.country + ' right now. Try another country.' };
+    if (insufficient(row)) return { tone: 'warn', text: 'You need ' + money(row.price - state.balance) + ' more to buy this number.' };
+    return null;
+  }
+
+  function renderWallet() {
+    const w = $('wallet');
+    w.replaceChildren(icon('wallet', '', 16));
+    if (state.balanceState === 'loading') w.append(h('span', { class: 'sk' }), h('span', { class: 'sr-only', text: 'Loading balance' }));
+    else if (state.balanceState === 'error' && state.balance === null) w.append('—');
+    else w.append(money(state.balance));
+    w.setAttribute('aria-label', 'Wallet balance ' + (state.balance === null ? 'unavailable' : money(state.balance)) + '. Add funds');
+  }
+
+  function renderSummary(row) {
+    const name = $('sumName'), sub = $('sumSub'), price = $('sumPrice'), bal = $('sumBal');
+    sub.replaceChildren();
+    if (state.catalogStatus === 'loading') {
+      name.className = 'sum-name'; name.replaceChildren(h('span', { class: 'sk', style: 'width:120px' }));
+      sub.append(h('span', { class: 'sk', style: 'width:80px;height:10px' }));
+      price.className = 'sum-price'; price.replaceChildren(h('span', { class: 'sk', style: 'width:96px;height:26px;border-radius:8px' }));
+    } else if (row) {
+      name.className = 'sum-name'; name.textContent = row.platform;
+      sub.append(Visuals.flag(row, 18), row.country);
+      price.className = 'sum-price'; price.textContent = money(row.price);
+    } else {
+      name.className = 'sum-name is-empty';
+      name.textContent = state.serviceKey ? 'Now choose a country' : 'Choose a service and a country';
+      price.className = 'sum-price is-empty'; price.textContent = '—';
+    }
+    const low = insufficient(row);
+    bal.className = 'sum-row sum-bal' + (low ? ' is-low' : '');
+    bal.replaceChildren(h('span', { text: 'Wallet balance' }),
+      state.balanceState === 'loading' ? h('span', { class: 'sk', style: 'width:64px' })
+        : h('b', { text: state.balance === null ? 'Unavailable' : money(state.balance) }));
+  }
+
+  function renderCta(row) {
+    const cta = $('cta');
+    cta.classList.toggle('is-busy', state.buying);
+    cta.replaceChildren();
+    cta.setAttribute('aria-busy', String(state.buying));
+    if (state.buying) {
+      cta.disabled = true; cta.append(h('span', { class: 'spin', 'aria-hidden': 'true' }), 'Getting your number…');
+    } else if (!row) {
+      cta.disabled = true; cta.textContent = 'Get number';
+    } else if (!row.available) {
+      cta.disabled = true; cta.textContent = 'Unavailable';
+    } else if (insufficient(row)) {
+      cta.disabled = false; cta.textContent = 'Add funds';
+    } else {
+      cta.disabled = false; cta.textContent = 'Get number';
+    }
+  }
+
+  function renderDone() {
+    const d = state.done, row = d.row, box = $('doneView');
+    box.replaceChildren(
+      h('div', { class: 'done-ico' }, icon('ok', '', 22)),
+      h('h2', { text: 'Order placed' }),
+      h('p', { text: 'Your ' + row.platform + ' number for ' + row.country + ' is being assigned. Find it, and the code when it arrives, in your orders.' }),
+      h('dl', {},
+        h('dt', { text: 'Service' }), h('dd', {}, h('span', { text: row.platform })),
+        h('dt', { text: 'Country' }), h('dd', {}, Visuals.flag(row, 18), h('span', { text: row.country })),
+        h('dt', { text: 'Charged' }), h('dd', {}, h('span', { text: money(row.price) }))),
+      h('a', { class: 'cta', href: CONFIG.URLS.orders, style: 'margin-top:20px', text: 'View order' }),
+      h('button', { type: 'button', class: 'cta cta-ghost', text: 'Get another number', onclick: resetForNext }));
+  }
+
+  function render() {
+    renderWallet();
+    const done = state.phase === 'done' && state.done;
+    $('formView').hidden = !!done;
+    $('doneView').hidden = !done;
+    if (done) { if (!$('doneView').firstChild) renderDone(); return; }
+    $('doneView').replaceChildren();
+    const row = selectedRow();
+    renderSummary(row);
+    const n = currentNotice(row);
+    $('noticeSlot').replaceChildren(...(n ? [noticeNode(n)] : []));
+    renderCta(row);
+  }
+
+  /* ── Live updates: admin changes and wallet changes appear without a reload ── */
+  function subscribe() {
+    const refresh = debounce(() => loadCatalog({ silent: true }), 400);
+    try {
+      channels.push(Data.sb.channel('gd_vn_catalog')
+        .on('postgres_changes', { event: '*', schema: 'public', table: CONFIG.CATALOG_TABLE }, refresh).subscribe());
+      channels.push(Data.sb.channel('gd_vn_wallet')
+        .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'profiles', filter: 'id=eq.' + state.user.id },
+          (p) => { if (p.new && p.new.balance !== undefined) setBalance(p.new.balance); }).subscribe());
+    } catch (e) { console.warn('[virtual-numbers] realtime unavailable', e); }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible' || state.buying) return;
+      if (Date.now() - lastRefresh > CONFIG.REFRESH_ON_FOCUS_MS) { loadCatalog({ silent: true }); loadBalance(); }
+    });
+    window.addEventListener('pageshow', (e) => {   // back-forward cache: never show a stale page
+      if (!e.persisted) return;
+      state.phase = 'form'; state.done = null; state.notice = null;
+      loadCatalog({ silent: true }); loadBalance();
+    });
+  }
+
+  /* ── Boot ── */
+  async function init() {
+    $('backLink').append(icon('back', '', 20));
+    $('backLink').href = CONFIG.URLS.home;
+    $('wallet').href = CONFIG.URLS.addFunds;
+    if (DEBUG) { $('debugBox').hidden = false; dbg('debug mode on'); }
+    buildPickers();
+    $('cta').addEventListener('click', onCta);
+    render();
+
+    const user = await Data.getUser().catch(() => null);
+    if (!user) { location.replace(CONFIG.URLS.login); return; }
+    state.user = user;
+    await Promise.all([loadBalance(), loadCatalog()]);
+    subscribe();
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
