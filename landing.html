@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<script>
+/* ══ PWA GATE ══
+   landing.html is the default page for a normal browser visit. An
+   installed PWA (opened from the home-screen/app icon) should skip
+   this marketing page entirely and open the main site directly, since
+   showing it again on every launch would defeat the point of
+   installing the app. Runs synchronously, before anything else on the
+   page loads, so there's no flash of landing content before the
+   redirect. Any detection failure fails OPEN (stays on the landing
+   page) rather than trapping the user. */
+(function(){
+  try{
+    var isStandalone=
+      (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||
+      window.navigator.standalone===true|| // iOS "Add to Home Screen"
+      document.referrer.indexOf('android-app://')===0; // Android TWA/installed
+    if(isStandalone){
+      window.location.replace('index.html');
+    }
+  }catch(e){/* fail open — stay on the landing page */}
+})();
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<title>Global Digits — Your Trusted Plug for Online Services</title>
+<meta name="description" content="Buy virtual verification numbers, verification codes, social media accounts, boosting services and more — all in one place with Global Digits."/>
+<meta property="og:title" content="Global Digits — Your Trusted Plug for Online Services"/>
+<meta property="og:description" content="Buy virtual verification numbers, verification codes, social media accounts, boosting services and more — all in one place with Global Digits."/>
+<meta property="og:type" content="website"/>
+<meta property="og:url" content="https://globaldigits.shop/"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Global Digits — Your Trusted Plug for Online Services"/>
+<meta name="twitter:description" content="Buy virtual verification numbers, verification codes, social media accounts, boosting services and more — all in one place with Global Digits."/>
+<link rel="canonical" href="https://globaldigits.shop/"/>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"/>
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png"/>
+<link rel="manifest" href="site.webmanifest"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --bg:#f6f9ff;--surface:#fff;--surface2:#f1f5fc;--border:#dbe9fd;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --green:#16a34a;--green-lt:#e7f7ed;
+  --font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;
+  --grad-premium:linear-gradient(135deg,#2f6feb 0%,#1a56db 100%);
+  --grad-dark:linear-gradient(135deg,#0b1330 0%,#122a66 60%,#1a3d8f 100%);
+  --shadow:0 10px 28px rgba(15,25,50,.07);
+  --shadow-md:0 16px 40px rgba(26,86,219,.16);
+  --r:16px;--r-lg:22px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+button{cursor:pointer;font-family:var(--font);border:none;background:none}
+.wrap{max-width:1160px;margin:0 auto;padding:0 24px}
+svg{display:block}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;max-width:1160px;margin:0 auto;background:rgba(246,249,255,.82);backdrop-filter:blur(10px);gap:8px}
+.navBrand{display:flex;align-items:center;gap:7px;font-family:var(--font-d);font-weight:800;font-size:13.5px;flex-shrink:0}
+.navBrandLogo{width:24px;height:24px;border-radius:8px;overflow:hidden;flex-shrink:0;box-shadow:0 4px 12px rgba(26,86,219,.22)}
+.navBrandLogo img{width:100%;height:100%;object-fit:cover}
+.navLinks{display:flex;align-items:center;gap:22px}
+.navLinks a{font-size:12px;font-weight:600;color:var(--text2);transition:color .15s}
+.navLinks a:hover{color:var(--brand)}
+.navActions{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.navBtn{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:100px;font-size:11px;font-weight:700;white-space:nowrap;transition:transform .12s,opacity .12s}
+.navBtn:active{transform:scale(.96)}
+.navBtnGhost{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
+.navBtnSolid{background:var(--grad-premium);color:#fff;box-shadow:0 6px 16px rgba(26,86,219,.26);padding:7px 14px}
+@media(max-width:900px){.navLinks{display:none}}
+@media(max-width:480px){
+  .navBtnGhost .btnLabel{display:none}
+  .navBtnGhost{padding:7px 9px}
+  .navBtnSolid{padding:7px 12px;font-size:10.5px}
+  .navBrand{font-size:12.5px}
+}
+
+/* ── HERO ── */
+.hero{padding:44px 24px 0}
+.heroGrid{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:36px;align-items:center;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;background:var(--brand-lt);color:var(--brand-dk);
+  padding:6px 14px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:.01em;margin-bottom:18px}
+h1{font-family:var(--font-d);font-weight:800;font-size:clamp(23px,4.6vw,36px);line-height:1.14;letter-spacing:-.01em}
+h1 span{color:var(--brand)}
+.heroSub{font-size:13px;color:var(--text2);max-width:440px;margin:12px auto 0;line-height:1.6}
+.heroCtas{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.cta{padding:11.5px 20px;border-radius:100px;font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;transition:transform .12s}
+.cta:active{transform:scale(.97)}
+.ctaP{background:var(--grad-premium);color:#fff;box-shadow:0 10px 24px rgba(26,86,219,.28)}
+.ctaG{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
+.trustRow{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+.trustItem{display:flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--text2)}
+.trustItem .ti-ico{width:24px;height:24px;border-radius:50%;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* Phone mock — purely illustrative product visual, no live data */
+.heroVisual{display:none;position:relative;justify-content:center;padding:8px 0 4px}
+.phoneBack{position:absolute;width:190px;height:340px;background:var(--grad-dark);border-radius:32px;
+  transform:rotate(9deg) translateX(78px);top:14px;box-shadow:0 20px 44px rgba(10,20,50,.28);opacity:.9}
+.phoneBack .pbLogo{padding:20px 16px;color:#fff;font-family:var(--font-d);font-weight:800;font-size:12.5px;display:flex;align-items:center;gap:6px}
+.phoneBack .pbDot{width:16px;height:16px;border-radius:6px;overflow:hidden;flex-shrink:0}
+.phoneBack .pbDot img{width:100%;height:100%;object-fit:cover}
+.phoneBack .pbText{padding:0 16px;color:rgba(255,255,255,.72);font-size:10.5px;line-height:1.5;margin-top:60px}
+.phone{position:relative;width:212px;background:#0d1321;border-radius:34px;padding:9px;box-shadow:0 26px 54px rgba(15,25,50,.24)}
+.phoneScreen{background:var(--surface);border-radius:26px;overflow:hidden}
+.phoneStatus{display:flex;justify-content:space-between;align-items:center;padding:9px 14px 4px;font-size:9.5px;font-weight:700;color:var(--text)}
+.phoneHead{display:flex;align-items:center;gap:6px;padding:2px 14px 10px;font-family:var(--font-d);font-weight:800;font-size:11px}
+.phoneHead .phLogo{width:16px;height:16px;border-radius:5px;overflow:hidden;flex-shrink:0}
+.phoneHead .phLogo img{width:100%;height:100%;object-fit:cover}
+.phoneBal{margin:0 10px;background:var(--grad-premium);border-radius:14px;padding:12px 13px;color:#fff}
+.phoneBal .pbl{font-size:8.5px;opacity:.8;font-weight:600}
+.phoneBal .pbv{font-family:var(--font-d);font-size:14px;font-weight:800;margin-top:2px}
+.phoneGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:11px 10px 0}
+.phoneGridItem{background:var(--surface2);border-radius:11px;padding:8px 5px;text-align:center}
+.phoneGridItem .pgi{width:20px;height:20px;border-radius:50%;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;margin:0 auto 4px}
+.phoneGridItem span{font-size:7.5px;font-weight:700;color:var(--text2);line-height:1.2;display:block}
+.phoneActivity{padding:12px 10px 14px}
+.phoneActivity .pah{font-size:8.5px;font-weight:700;color:var(--text3);margin-bottom:7px;text-transform:uppercase;letter-spacing:.03em}
+.phoneActRow{display:flex;align-items:center;gap:7px;padding:5px 0}
+.phoneActRow .par-ico{width:20px;height:20px;border-radius:50%;background:var(--green-lt);color:var(--green);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.phoneActRow .par-body{flex:1;min-width:0}
+.phoneActRow .par-t{font-size:8.5px;font-weight:700;line-height:1.3}
+.phoneActRow .par-s{font-size:7px;color:var(--text3)}
+.phoneActRow .par-amt{font-size:8.5px;font-weight:800;color:var(--green)}
+@media(min-width:760px){
+  .heroGrid{grid-template-columns:1.05fr .95fr;gap:40px;text-align:left}
+  .heroSub{margin:14px 0 0}
+  .heroCtas{justify-content:flex-start}
+  .trustRow{justify-content:flex-start}
+  .heroVisual{display:flex}
+}
+
+/* ── SERVICE STRIP ── */
+.strip{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);overflow:hidden;padding:13px 0;margin-top:40px}
+.stripTrack{display:flex;gap:0;width:max-content;animation:scroll 28s linear infinite}
+.stripTrack:hover{animation-play-state:paused}
+.stripItem{display:flex;align-items:center;gap:8px;padding:0 24px;font-size:11.5px;font-weight:600;color:var(--text2);white-space:nowrap}
+.stripItem b{color:var(--text)}
+.stripDiv{width:1px;height:13px;background:var(--border)}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ── SECTION HEAD (shared) ── */
+.sectionHead{text-align:center;max-width:560px;margin:0 auto 34px}
+.sectionHead .eyebrow{margin-bottom:12px}
+.sectionHead h2{font-family:var(--font-d);font-weight:800;font-size:clamp(19px,3vw,25px)}
+.sectionHead h2 span{color:var(--brand)}
+.sectionHead p{color:var(--text2);font-size:12.5px;line-height:1.6;margin-top:7px}
+
+/* ── SERVICES GRID ── */
+.services{padding:56px 24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;max-width:1160px;margin:0 auto}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r-lg);padding:20px;transition:box-shadow .15s,transform .15s}
+.card:hover{box-shadow:var(--shadow);transform:translateY(-2px)}
+.cardIcon{width:38px;height:38px;border-radius:11px;background:var(--grad-premium);display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.cardIcon.green{background:var(--green)}
+.card h3{font-size:13px;font-weight:700;margin-bottom:5px}
+.card p{font-size:11.5px;color:var(--text2);line-height:1.5;margin-bottom:11px}
+.cardLink{font-size:10.5px;font-weight:700;color:var(--brand);display:inline-flex;align-items:center;gap:4px}
+.cardHi{background:var(--grad-premium);border-radius:var(--r-lg);padding:20px;color:#fff;position:relative;overflow:hidden;display:flex;flex-direction:column}
+.cardHi .hiPill{display:inline-flex;background:rgba(255,255,255,.16);padding:4px 10px;border-radius:100px;font-size:9px;font-weight:700;margin-bottom:9px;align-self:flex-start}
+.cardHi h3{font-size:13.5px;font-weight:800;font-family:var(--font-d);line-height:1.25;margin-bottom:5px}
+.cardHi p{font-size:10.5px;color:rgba(255,255,255,.82);line-height:1.5}
+.cardHi .hiDeco{position:absolute;right:-18px;bottom:-18px;width:78px;height:78px;border-radius:50%;background:rgba(255,255,255,.1)}
+
+/* ── BENEFITS ── */
+.benefits{padding:52px 24px;background:var(--surface2)}
+.benefitsWrap{max-width:1160px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:28px}
+.benefitsCopy .eyebrow{margin-bottom:12px}
+.benefitsCopy h2{font-family:var(--font-d);font-weight:800;font-size:clamp(18px,2.8vw,23px);line-height:1.22}
+.benefitsCopy h2 span{color:var(--brand)}
+.benefitsCopy p{font-size:12.5px;color:var(--text2);line-height:1.6;margin:10px 0 16px;max-width:380px}
+.benefitsGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:11px}
+.bTile{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:15px}
+.bTile .bt-ico{width:30px;height:30px;border-radius:9px;background:var(--brand-lt);color:var(--brand);display:flex;align-items:center;justify-content:center;margin-bottom:9px}
+.bTile h4{font-size:11.5px;font-weight:700;margin-bottom:3px}
+.bTile p{font-size:10px;color:var(--text3);line-height:1.4}
+@media(min-width:820px){.benefitsWrap{grid-template-columns:.85fr 1.15fr;align-items:center}}
+
+/* ── HOW IT WORKS ── */
+.how{padding:56px 24px}
+.stepsRow{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.step{display:flex;align-items:flex-start;gap:14px;background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:16px 18px}
+.step .sNum{width:28px;height:28px;border-radius:50%;background:var(--grad-premium);color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-weight:800;font-size:12px;flex-shrink:0}
+.step h4{font-size:12.5px;font-weight:700;margin-bottom:2px}
+.step p{font-size:11px;color:var(--text2)}
+@media(min-width:760px){
+  .stepsRow{flex-direction:row;align-items:stretch}
+  .step{flex:1;flex-direction:column;text-align:center;align-items:center;gap:10px;position:relative}
+  .step:not(:last-child)::after{content:'';position:absolute;top:31px;right:-7px;width:14px;height:2px;background:var(--border)}
+}
+
+/* ── DARK CTA ── */
+.footCta{background:var(--grad-dark);color:#fff;border-radius:var(--r-lg);max-width:1112px;margin:8px auto 52px;
+  padding:36px 30px;position:relative;overflow:hidden}
+.footCta::before{content:'';position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(47,111,235,.35),transparent 70%)}
+.footCtaInner{position:relative;display:flex;flex-direction:column;gap:18px}
+.footCta .eyebrow{background:rgba(255,255,255,.12);color:#cfe0ff}
+.footCta h2{font-family:var(--font-d);font-weight:800;font-size:clamp(17px,3vw,23px);line-height:1.22;margin-bottom:7px}
+.footCta p{color:#aeb9d6;font-size:12px;max-width:360px}
+.footCta .cta{background:#fff;color:var(--text);flex-shrink:0}
+.footCtaRow{display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:space-between}
+.footCtaFine{font-size:10.5px;color:#8f9dc4;margin-top:8px}
+@media(min-width:720px){.footCtaRow{flex-wrap:nowrap}}
+
+/* ── FOOTER ── */
+footer{padding:28px 24px 36px}
+.footWrap{max-width:1160px;margin:0 auto;display:flex;flex-direction:column;gap:20px;align-items:center;text-align:center;
+  border-top:1px solid var(--border);padding-top:24px}
+.footBrand{display:flex;align-items:center;gap:8px;font-family:var(--font-d);font-weight:800;font-size:13.5px}
+.footTag{font-size:11px;color:var(--text3);margin-top:3px}
+.footNav{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.footNav a{font-size:11.5px;font-weight:600;color:var(--text2)}
+.footNav a:hover{color:var(--brand)}
+.footCopy{font-size:11px;color:var(--text3)}
+@media(min-width:700px){
+  .footWrap{flex-direction:row;justify-content:space-between;text-align:left}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="navBrand" href="#top">
+    <span class="navBrandLogo"><img src="logo.png" alt="Global Digits"/></span>
+    Global Digits
+  </a>
+  <div class="navLinks">
+    <a href="#top">Home</a>
+    <a href="#services">Services</a>
+    <a href="#benefits">About</a>
+    <a href="#how">Help</a>
+  </div>
+  <div class="navActions">
+    <a class="navBtn navBtnGhost" href="#" id="installBtn" onclick="installApp();return false;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <span class="btnLabel">Install App</span>
+    </a>
+    <a class="navBtn navBtnGhost" href="#" onclick="enterApp();return false;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+      <span class="btnLabel">Log In</span>
+    </a>
+    <a class="navBtn navBtnSolid" href="#" onclick="enterApp();return false;">
+      Get Started
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="heroGrid">
+    <div>
+      <span class="eyebrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg>
+        Trusted by thousands across Nigeria
+      </span>
+      <h1>Your Trusted Plug<br/>for <span>Online Services</span></h1>
+      <p class="heroSub">Get virtual numbers, verification codes, social media accounts, boosting, airtime &amp; data and more — all funded from one wallet, all in one place.</p>
+      <div class="heroCtas">
+        <a class="cta ctaP" href="#" onclick="enterApp();return false;">
+          Open Global Digits
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <a class="cta ctaG" href="#services" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'});return false;">See what's inside</a>
+      </div>
+      <div class="trustRow">
+        <div class="trustItem"><span class="ti-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>Fast Delivery</div>
+        <div class="trustItem"><span class="ti-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg></span>Secure Transactions</div>
+        <div class="trustItem"><span class="ti-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-8h3z"/><path d="M3 19a2 2 0 002 2h1v-8H3z"/></svg></span>24/7 Support</div>
+        <div class="trustItem"><span class="ti-ico"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span>Reliable Services</div>
+      </div>
+    </div>
+
+    <div class="heroVisual" aria-hidden="true">
+      <div class="phoneBack">
+        <div class="pbLogo"><span class="pbDot"><img src="logo.png" alt=""/></span>Global Digits</div>
+        <div class="pbText">Fast, secure, reliable — all your digital needs in one place.</div>
+      </div>
+      <div class="phone">
+        <div class="phoneScreen">
+          <div class="phoneStatus"><span>9:41</span><span>●●●●</span></div>
+          <div class="phoneHead"><span class="phLogo"><img src="logo.png" alt=""/></span>Global Digits</div>
+          <div class="phoneBal">
+            <div class="pbl">Wallet Balance</div>
+            <div class="pbv">₦12,450.00</div>
+          </div>
+          <div class="phoneGrid">
+            <div class="phoneGridItem"><span class="pgi"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></span><span>Numbers</span></div>
+            <div class="phoneGridItem"><span class="pgi"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span><span>SM Accounts</span></div>
+            <div class="phoneGridItem"><span class="pgi"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></span><span>Boosting</span></div>
+          </div>
+          <div class="phoneActivity">
+            <div class="pah">Recent Activity</div>
+            <div class="phoneActRow">
+              <span class="par-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <div class="par-body"><div class="par-t">Instagram Followers</div><div class="par-s">2 mins ago</div></div>
+              <div class="par-amt">+500</div>
+            </div>
+            <div class="phoneActRow">
+              <span class="par-ico"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></span>
+              <div class="par-body"><div class="par-t">Virtual Number (US)</div><div class="par-s">12 mins ago</div></div>
+              <div class="par-amt">+1,200</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="strip">
+  <div class="stripTrack" id="stripTrack"></div>
+</div>
+
+<section class="services" id="services">
+  <div class="sectionHead">
+    <span class="eyebrow">Our Services</span>
+    <h2>Everything, in <span>one wallet</span></h2>
+    <p>No juggling apps or accounts — fund once, and spend across every service.</p>
+  </div>
+  <div class="grid">
+    <div class="card">
+      <div class="cardIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+      <h3>Virtual Numbers</h3>
+      <p>Get a working number in seconds for verification on any platform, from anywhere.</p>
+      <a class="cardLink" href="#" onclick="enterApp();return false;">Get Numbers
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="card">
+      <div class="cardIcon green"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+      <h3>SM Accounts</h3>
+      <p>Buy ready social media accounts across Instagram, TikTok, Facebook and more.</p>
+      <a class="cardLink" href="#" onclick="enterApp();return false;">Buy Accounts
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="card">
+      <div class="cardIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+      <h3>Boosting</h3>
+      <p>Grow followers, likes and views on your own accounts, paid straight from your wallet.</p>
+      <a class="cardLink" href="#" onclick="enterApp();return false;">Start Boosting
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="card">
+      <div class="cardIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+      <h3>Airtime &amp; Data (VTU)</h3>
+      <p>Top up airtime, data, cable TV and electricity on any Nigerian network, instantly.</p>
+      <a class="cardLink" href="#" onclick="enterApp();return false;">Top Up Now
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="card">
+      <div class="cardIcon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3a12 12 0 008.5 3.5V12a12 12 0 01-8.5 8.5A12 12 0 013.5 12V6.5A12 12 0 0012 3z"/></svg></div>
+      <h3>Verification Codes</h3>
+      <p>Get fast and reliable verification codes for various platforms and services.</p>
+      <a class="cardLink" href="#" onclick="enterApp();return false;">Get Codes
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="cardHi">
+      <span class="hiPill">New &amp; Improved</span>
+      <h3>More Services,<br/>More Possibilities</h3>
+      <p>We're constantly adding new services to make your digital life easier.</p>
+      <div class="hiDeco"></div>
+    </div>
+  </div>
+</section>
+
+<section class="benefits" id="benefits">
+  <div class="benefitsWrap">
+    <div class="benefitsCopy">
+      <span class="eyebrow">Why Choose Global Digits</span>
+      <h2>Built for speed, security and <span>your trust</span></h2>
+      <p>We're more than just a service — we're your digital partner. Simple, fast and always here.</p>
+      <a class="cta ctaP" href="#" onclick="enterApp();return false;">
+        Get Started
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="benefitsGrid">
+      <div class="bTile"><span class="bt-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span><h4>Instant Delivery</h4><p>Get your services in seconds.</p></div>
+      <div class="bTile"><span class="bt-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z"/></svg></span><h4>Secure Platform</h4><p>Your data and wallet are safe.</p></div>
+      <div class="bTile"><span class="bt-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M3 18v-6a9 9 0 0118 0v6"/><path d="M21 19a2 2 0 01-2 2h-1v-8h3z"/><path d="M3 19a2 2 0 002 2h1v-8H3z"/></svg></span><h4>24/7 Support</h4><p>We're always here to help.</p></div>
+      <div class="bTile"><span class="bt-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z"/></svg></span><h4>Trusted Worldwide</h4><p>Used by thousands globally.</p></div>
+      <div class="bTile"><span class="bt-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></span><h4>Easy Payments</h4><p>Top up and pay with ease.</p></div>
+      <div class="bTile"><span class="bt-ico"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M20 6L9 17l-5-5"/></svg></span><h4>Reliable Services</h4><p>100% working and verified.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="sectionHead">
+    <span class="eyebrow">How It Works</span>
+    <h2>Get started in <span>3 simple steps</span></h2>
+    <p>It only takes a few minutes to start using all our services.</p>
+  </div>
+  <div class="stepsRow">
+    <div class="step"><span class="sNum">1</span><div><h4>Create Account</h4><p>Sign up in seconds, it's free.</p></div></div>
+    <div class="step"><span class="sNum">2</span><div><h4>Fund Your Wallet</h4><p>Use your preferred payment method.</p></div></div>
+    <div class="step"><span class="sNum">3</span><div><h4>Start Using Services</h4><p>Buy, top up, boost, and more.</p></div></div>
+  </div>
+</section>
+
+<div class="footCta">
+  <div class="footCtaInner">
+    <span class="eyebrow">Ready to get started?</span>
+    <div class="footCtaRow">
+      <div>
+        <h2>Your digital journey starts here.</h2>
+        <p>Create your wallet and get access to every service above in under a minute.</p>
+      </div>
+      <a class="cta" href="#" onclick="enterApp();return false;">
+        Open Global Digits
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+    <div class="footCtaFine">
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="display:inline;vertical-align:-1.5px"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg>
+      100% Secure &nbsp;•&nbsp; Instant Access &nbsp;•&nbsp; No Hidden Fees
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footWrap">
+    <div>
+      <div class="footBrand">
+        <span class="navBrandLogo"><img src="logo.png" alt="Global Digits"/></span>
+        Global Digits
+      </div>
+      <div class="footTag">Your Trusted Plug for Online Services</div>
+    </div>
+    <div class="footNav">
+      <a href="#top">Home</a>
+      <a href="#services">Services</a>
+      <a href="#benefits">About</a>
+      <a href="#how">Help</a>
+    </div>
+    <div class="footCopy">&copy; <span id="yr"></span> Global Digits. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+// Marks this visit as having come through the landing page, then hands
+// off into the main site. index.html's gate checks this flag so a
+// normal (non-installed) visit doesn't get bounced back here.
+function enterApp(){
+  try{sessionStorage.setItem('gd_entered_app','1');}catch(e){}
+  window.location.href='index.html';
+}
+// ── Install App button: real native PWA install flow only ──
+// The button is visible immediately so users can find it. Tapping it
+// only ever calls the browser's real native install prompt via the
+// captured 'beforeinstallprompt' event — no manual instructions, no
+// fallback text. Registering the service worker here (in addition to
+// index.html) is what makes the browser evaluate this page's
+// installability in the first place, since a first-time visitor may
+// land here before ever loading index.html. Runs after 'load' so it
+// never competes with the page's own rendering or the PWA gate above.
+if('serviceWorker' in navigator){
+  window.addEventListener('load',function(){
+    navigator.serviceWorker.register('sw.js').catch(function(e){
+      console.error('Service worker registration failed:',e);
+    });
+  });
+}
+var deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',function(e){
+  e.preventDefault();
+  deferredInstallPrompt=e;
+  var btn=document.getElementById('installBtn');
+  if(btn)btn.style.display='inline-flex';
+});
+window.addEventListener('appinstalled',function(){
+  deferredInstallPrompt=null;
+  var btn=document.getElementById('installBtn');
+  if(btn)btn.style.display='none';
+});
+function installApp(){
+  if(!deferredInstallPrompt)return;
+  var promptEvent=deferredInstallPrompt;
+  deferredInstallPrompt=null;
+  var btn=document.getElementById('installBtn');
+  if(btn)btn.style.display='none';
+  promptEvent.prompt();
+  promptEvent.userChoice.catch(function(){});
+}
+document.getElementById('yr').textContent=new Date().getFullYear();
+// Build the scrolling service strip twice back-to-back so the CSS
+// animation loops seamlessly.
+(function(){
+  var items=[
+    '<b>Virtual Numbers</b> from ₦150','<b>SM Accounts</b> — Instagram, TikTok, Facebook',
+    '<b>Airtime &amp; Data</b> on every network','<b>Boosting</b> for followers &amp; views',
+    '<b>Verification Codes</b> for every platform','<b>Reseller Plans</b> available',
+    '<b>Wallet</b> — fund once, spend everywhere'
+  ];
+  var track=document.getElementById('stripTrack');
+  var html='';
+  for(var r=0;r<2;r++){
+    items.forEach(function(t,i){
+      html+='<div class="stripItem">'+t+'</div>'+(i<items.length-1?'<div class="stripDiv"></div>':'');
+    });
+    html+='<div class="stripDiv"></div>';
+  }
+  track.innerHTML=html;
+})();
+</script>
+</body>
+</html>
