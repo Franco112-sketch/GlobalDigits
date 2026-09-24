@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/>
+<title>Policy — Global Digits</title>
+<meta name="description" content="Global Digits Terms &amp; Privacy Policy: account rules, deposit limits, refunds, SM accounts, virtual numbers, boosting services, privacy and data practices."/>
+<meta name="robots" content="noindex, follow"/>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;
+  --danger:#ef4444;--warn:#f59e0b;--success:#10b981;
+  --bg:#f6f9ff;--surface:#fff;--surface2:#eef5ff;--border:#dbe9fd;
+  --text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;
+  --r:10px;--r-sm:7px;--r-lg:18px;
+  --shadow:0 2px 12px rgba(15,25,50,.06);
+  --shadow-md:0 6px 28px rgba(15,25,50,.1);
+  --font:'Plus Jakarta Sans',sans-serif;--font-d:'Syne',sans-serif;
+  --t:.18s ease;--ring:#bfdbfe;
+}
+[data-theme="dark"]{
+  --bg:#090d18;--surface:#111827;--surface2:#19223a;--border:#1e2a42;
+  --text:#e8edf8;--text2:#7a87a2;--text3:#3d4d66;--brand-lt:#0f1e3d;
+  --shadow:0 2px 16px rgba(0,0,0,.35);--shadow-md:0 6px 32px rgba(0,0,0,.45);--ring:#1e3a6b;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6}
+.wrap{max-width:720px;margin:0 auto;padding:0 16px 40px}
+.head{
+  position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+}
+.backBtn{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--border);background:var(--surface);
+  color:var(--text2);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:var(--t);
+}
+.backBtn:hover{background:var(--surface2);color:var(--brand);}
+.headTitle{font-family:var(--font-d);font-size:16px;font-weight:700;}
+.hero{padding:26px 0 18px;text-align:center}
+.hero .badge{
+  display:inline-block;background:var(--brand-lt);color:var(--brand);font-size:10px;font-weight:800;
+  letter-spacing:.05em;padding:4px 12px;border-radius:100px;margin-bottom:12px;text-transform:uppercase;
+}
+.hero h1{font-family:var(--font-d);font-size:24px;font-weight:800;margin-bottom:8px;}
+.hero p{font-size:12.5px;color:var(--text2);max-width:480px;margin:0 auto;}
+.updated{font-size:10.5px;color:var(--text3);margin-top:10px;}
+.sectionLabel{
+  font-family:var(--font-d);font-size:12.5px;font-weight:800;color:var(--brand);
+  text-transform:uppercase;letter-spacing:.06em;margin:26px 4px 10px;
+}
+.sectionLabel:first-of-type{margin-top:6px;}
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:18px;margin-bottom:14px;box-shadow:var(--shadow);
+}
+.card .cardHead{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.cardIcon{
+  width:34px;height:34px;border-radius:10px;background:var(--brand-lt);color:var(--brand);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.card h2{font-family:var(--font-d);font-size:14.5px;font-weight:700;}
+.card p{font-size:12.5px;color:var(--text2);margin-top:2px;}
+.card p + p{margin-top:8px;}
+.card ul{margin:8px 0 0 18px;font-size:12.5px;color:var(--text2);}
+.card ul li{margin-bottom:5px;}
+.highlight{
+  background:var(--brand-lt);border:1px solid var(--ring);border-radius:var(--r);
+  padding:10px 12px;margin-top:10px;font-size:12px;color:var(--brand-dk);font-weight:600;
+}
+.warnBox{
+  background:#fff7ed;border:1px solid #fed7aa;border-radius:var(--r);
+  padding:10px 12px;margin-top:10px;font-size:12px;color:#9a3412;font-weight:600;
+}
+[data-theme="dark"] .warnBox{background:#2a1a0d;border-color:#5a3a1a;color:#fdba74;}
+.ownerCard{
+  background:linear-gradient(135deg,#2f6feb 0%,#1a56db 100%);color:#fff;
+  border-radius:var(--r-lg);padding:20px;text-align:center;margin:26px 0 14px;
+  box-shadow:0 10px 28px rgba(26,86,219,.28);
+}
+.ownerCard .ownerAvatar{
+  width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.18);border:1.5px solid rgba(255,255,255,.32);
+  display:flex;align-items:center;justify-content:center;margin:0 auto 10px;
+}
+.ownerCard h3{font-family:var(--font-d);font-size:16px;font-weight:800;}
+.ownerCard span{font-size:11px;color:rgba(255,255,255,.85);display:block;margin-top:3px;}
+.contactCard{text-align:center;}
+.contactCard a{color:var(--brand);font-weight:700;text-decoration:none;}
+.footNote{text-align:center;font-size:10.5px;color:var(--text3);margin-top:20px;line-height:1.7;}
+.footNote b{color:var(--text2);}
+@media(max-width:420px){
+  .hero h1{font-size:20px;}
+  .card{padding:15px;}
+}
+</style>
+</head>
+<body>
+<div class="head">
+  <button class="backBtn" onclick="if(window.history.length>1){window.history.back();}else{window.close();}" aria-label="Back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  </button>
+  <span class="headTitle">Global Digits Policy</span>
+</div>
+
+<div class="wrap">
+  <div class="hero">
+    <span class="badge">Terms &amp; Privacy Policy</span>
+    <h1>Global Digits Policy</h1>
+    <p>Please read this policy carefully. By creating an account, making a deposit, placing an order, or using Global Digits, you agree to the terms and policies below.</p>
+    <div class="updated">Last updated: 2026</div>
+  </div>
+
+  <div class="sectionLabel">Terms &amp; Conditions</div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg></div>
+      <h2>Eligibility &amp; Account Responsibilities</h2>
+    </div>
+    <p>You must be at least 18 years old, or the age of legal majority in your jurisdiction, to create a Global Digits account.</p>
+    <p>You must:</p>
+    <ul>
+      <li>Provide accurate information when creating your account.</li>
+      <li>Keep your login details secure and confidential.</li>
+      <li>Not share your account credentials with unauthorized persons.</li>
+      <li>Not use another person's account without permission.</li>
+      <li>Notify Global Digits promptly if you believe your account has been compromised.</li>
+      <li>Use the platform only for lawful purposes.</li>
+    </ul>
+    <p>Global Digits may restrict or suspend an account involved in fraud, abuse, suspicious activity, payment manipulation, or violation of these policies.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 010-4h14v4"/><path d="M3 5v14a2 2 0 002 2h16v-5"/><path d="M18 12a2 2 0 000 4h4v-4z"/></svg></div>
+      <h2>Account Balance &amp; Deposit Limit</h2>
+    </div>
+    <p>Every Global Digits user account has a maximum wallet balance/deposit limit. Your wallet balance and deposits cannot exceed this limit at any time.</p>
+    <p>Global Digits may reject or return deposits that would cause an account to exceed the permitted balance.</p>
+    <div class="highlight">Maximum account balance: ₦50,000</div>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg></div>
+      <h2>Payments &amp; Deposits</h2>
+    </div>
+    <p>You must send the correct amount, use the payment method specified for the transaction, and upload genuine payment receipts where required.</p>
+    <p>Submitting a false, altered, or misleading payment receipt, or attempting to receive credit for a payment that was not made, may result in account restriction or termination.</p>
+    <p>Global Digits may delay processing a deposit while a payment is being verified.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 109-9 9.75 9.75 0 00-6.74 2.74L3 8"/><polyline points="3 3 3 8 8 8"/></svg></div>
+      <h2>Refund Policy</h2>
+    </div>
+    <p>Refunds are provided only for eligible failed transactions. If a transaction completes successfully and the requested service is delivered as ordered, it is considered final and non-refundable.</p>
+    <p>A refund will not be provided simply because a user changes their mind after a successful transaction. Where a service-specific replacement policy exists, replacement will generally be attempted before a refund.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/></svg></div>
+      <h2>SM Accounts</h2>
+    </div>
+    <p>If a delivered SM (social media) account's login details are invalid, or the account cannot be accessed due to an issue present at delivery, Global Digits may provide replacement login/account details. Replacement is the primary resolution.</p>
+    <p>A refund may be provided when a suitable replacement cannot be given or is not reasonably appropriate.</p>
+    <p>Users are responsible for using delivered accounts in accordance with the rules of the relevant platform. Global Digits does not guarantee that a third-party platform will permanently maintain an account, its features, followers, engagement, verification, or availability.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg></div>
+      <h2>Virtual Numbers</h2>
+    </div>
+    <p>Once a virtual number and its verification code have been successfully delivered, Global Digits is no longer responsible for the number or its subsequent use.</p>
+    <p>A replacement may be provided only where the number or verification code was not successfully delivered in the first place. Users are responsible for using virtual numbers lawfully and in accordance with the rules of the service they are used with.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg></div>
+      <h2>Social Media Boosting &amp; Digital Services</h2>
+    </div>
+    <p>You are responsible for providing correct order information, including the correct link, username, quantity, and selected service where applicable. If incorrect information is provided, Global Digits may be unable to correct or reverse the order.</p>
+    <p>Delivery times may vary depending on the service, provider, platform conditions, demand, and other circumstances outside Global Digits' control.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.9" y1="4.9" x2="19.1" y2="19.1"/></svg></div>
+      <h2>Prohibited Use</h2>
+    </div>
+    <p>You must not use Global Digits for:</p>
+    <ul>
+      <li>Fraud, scams, or fake payment submissions.</li>
+      <li>Payment manipulation, theft, or unauthorized access.</li>
+      <li>Hacking, phishing, malware, or malicious activity.</li>
+      <li>Harassment, threats, or any unlawful activity.</li>
+      <li>Attempts to exploit or damage the platform, or circumvent account/transaction restrictions.</li>
+    </ul>
+    <p>Global Digits may suspend or terminate accounts involved in prohibited activity, and may report unlawful activity to the relevant authorities.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg></div>
+      <h2>Service Availability</h2>
+    </div>
+    <p>Global Digits aims to keep its services available and functional, but uninterrupted availability cannot be guaranteed. Services may temporarily become unavailable because of maintenance, technical problems, provider or network downtime, security updates, or other circumstances outside our control.</p>
+    <p>Global Digits is not responsible for delays caused by third-party providers or services outside its direct control.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+      <h2>Limitation of Liability</h2>
+    </div>
+    <p>To the fullest extent permitted by law, Global Digits is not liable for indirect, incidental, or consequential losses arising from your use of the platform, including losses caused by third-party platforms, payment providers, or circumstances outside our reasonable control.</p>
+    <p>Global Digits' total liability for any claim relating to a transaction is limited to the amount paid for that specific transaction.</p>
+  </div>
+
+  <div class="sectionLabel">Privacy Policy</div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M3 12h18M3 19h18"/></svg></div>
+      <h2>Information We Collect</h2>
+    </div>
+    <p>We may collect information necessary to operate the platform, including your name, email address, phone number where provided, account information, transaction and order information, wallet and deposit information, payment references, information submitted to customer support, and technical information such as device, browser, IP address, and activity logs.</p>
+    <p>We only request information that is reasonably necessary for operating, securing, and improving the service.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg></div>
+      <h2>How We Use &amp; Share Information</h2>
+    </div>
+    <p>Information may be used to create and manage your account, process orders and deposits, deliver purchased services, provide support, verify transactions, prevent fraud, protect account and platform security, improve Global Digits, communicate important updates, and comply with legal requirements.</p>
+    <p>Global Digits does not sell your personal information. Information may be shared where reasonably necessary with payment providers, hosting and infrastructure providers, security and fraud-prevention services, customer-support providers, and government or law-enforcement authorities where legally required.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 9l10 6 10-6"/></svg></div>
+      <h2>Payment Information</h2>
+    </div>
+    <p>Payments may be processed through third-party payment providers or financial services. Global Digits may receive transaction information such as payment status, amount, reference, and date. Where payment information is handled directly by a third-party provider, that provider's own terms and privacy policy may also apply.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+      <h2>Account &amp; Data Security</h2>
+    </div>
+    <p>You are responsible for keeping your login credentials secure. Global Digits will never ask you to disclose your password through unofficial channels.</p>
+    <p>We use reasonable security measures to protect user information, though no online service can guarantee complete security. If you suspect unauthorized access to your account, contact support immediately.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2h14a2 2 0 002-2v-2"/><path d="M15 12h6l-2-2m2 2l-2 2"/></svg></div>
+      <h2>Data Retention</h2>
+    </div>
+    <p>We may retain account, transaction, and support information for as long as reasonably necessary for providing the service, record-keeping, fraud prevention, dispute resolution, and legal or regulatory requirements. Information is deleted or anonymized when it is no longer reasonably required, subject to applicable law.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg></div>
+      <h2>Third-Party Services &amp; Children's Privacy</h2>
+    </div>
+    <p>Global Digits may rely on third-party services that have their own terms and privacy policies. We are not responsible for the independent privacy practices or availability of third-party services.</p>
+    <p>Global Digits is not directed at, and does not knowingly collect information from, children under the age of 18.</p>
+  </div>
+
+  <div class="card">
+    <div class="cardHead">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4v16h16"/><path d="M4 15l5-5 4 4 7-7"/></svg></div>
+      <h2>Policy Updates</h2>
+    </div>
+    <p>Global Digits may update this Terms &amp; Privacy Policy when necessary. The updated policy will be published on our website with a revised "Last updated" date. Continued use of Global Digits after an update becomes effective constitutes acceptance of the updated policy, where permitted by applicable law.</p>
+  </div>
+
+  <div class="card contactCard">
+    <div class="cardHead" style="justify-content:center;">
+      <div class="cardIcon"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.96.36 1.9.68 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.32 1.85.55 2.81.68A2 2 0 0122 16.92z"/></svg></div>
+      <h2>Contact &amp; Support</h2>
+    </div>
+    <p>For questions, complaints, transaction issues, or privacy requests, contact Global Digits through the official support channels on our website.</p>
+    <div class="highlight"><a href="https://globaldigits.shop" style="color:inherit;">globaldigits.shop</a></div>
+  </div>
+
+  <div class="ownerCard">
+    <div class="ownerAvatar">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 10-16 0"/></svg>
+    </div>
+    <h3>CHIKEZIE CHISOM KINGSLEY</h3>
+    <span>Owner &amp; Web Developer, Global Digits</span>
+  </div>
+
+  <div class="footNote">
+    <b>Global Digits</b> · globaldigits.shop<br/>
+    This policy applies to all users of the Global Digits platform. Global Digits reserves the right to update this policy at any time.
+  </div>
+</div>
+</body>
+</html>
