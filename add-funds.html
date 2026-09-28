@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#ffffff"/>
+<meta name="color-scheme" content="light"/>
+<meta name="robots" content="noindex"/>
+<title>Add Funds — Global Digits</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{
+  --brand:#1a56db;--brand-2:#1342b0;--brand-soft:#eef3ff;
+  --bg:#f7f8fa;--panel:#fff;--line:#e6e9ef;--line-2:#d5dae3;
+  --ink:#0b1220;--ink-2:#4b566b;--ink-3:#8791a5;
+  --ok:#0f9d6b;--ok-soft:#e6f6ef;--warn:#b7791f;--warn-soft:#fdf5e4;--bad:#d1293d;--bad-soft:#fdecee;
+  color-scheme:light;
+  --r:12px;--r-s:8px;
+  --sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--bg)}
+body{font-family:var(--sans);font-size:14px;line-height:1.5;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;min-height:100vh}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0}
+svg{flex-shrink:0}
+.hidden{display:none!important}
+.num{font-variant-numeric:tabular-nums}
+.mono{font-family:var(--mono);letter-spacing:-.01em}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.bar-in{max-width:960px;margin:0 auto;height:54px;padding:0 16px;display:flex;align-items:center;gap:12px}
+.icon-btn{width:36px;height:36px;border-radius:var(--r-s);display:grid;place-items:center;color:var(--ink-2)}
+.icon-btn:hover{background:var(--brand-soft);color:var(--brand)}
+.bar h1{font-size:15px;font-weight:600;flex:1}
+.link-btn{font-size:13px;font-weight:500;color:var(--ink-2);display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--r-s)}
+.link-btn:hover{color:var(--brand)}
+
+/* layout */
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px calc(40px + env(safe-area-inset-bottom,0px));display:grid;gap:16px;grid-template-columns:1fr}
+@media (min-width:860px){.wrap{grid-template-columns:minmax(0,1fr) 300px;gap:24px;padding-top:32px}}
+.aside{order:-1}
+@media (min-width:860px){.aside{order:0;position:sticky;top:78px;align-self:start}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r)}
+.sec{padding:20px}
+.sec+.sec{border-top:1px solid var(--line)}
+.h{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.sub{font-size:13px;color:var(--ink-2);margin-top:2px}
+.lbl{font-size:12px;font-weight:500;color:var(--ink-2);margin-bottom:8px;display:block}
+
+/* progress */
+.steps{display:flex;align-items:center;gap:8px;margin-bottom:16px;font-size:12px;color:var(--ink-3);font-weight:500}
+.steps .s{display:flex;align-items:center;gap:6px}
+.steps .d{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line-2);display:grid;place-items:center;font-size:11px}
+.steps .s.on{color:var(--ink)}.steps .s.on .d{border-color:var(--brand);background:var(--brand);color:#fff}
+.steps .s.done .d{border-color:var(--ok);background:var(--ok);color:#fff}
+.steps .ln{flex:1;height:1px;background:var(--line);max-width:40px}
+
+/* method segmented */
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:var(--r-s);text-align:left;transition:border-color .15s,background .15s}
+.opt:hover:not(:disabled){border-color:var(--line-2)}
+.opt[aria-pressed=true]{border-color:var(--brand);background:var(--brand-soft);box-shadow:0 0 0 1px var(--brand) inset}
+.opt:disabled{opacity:.5;cursor:not-allowed}
+.opt .cur{width:32px;height:32px;border-radius:8px;display:grid;place-items:center;font-weight:600;font-size:14px;background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.opt b{display:block;font-size:13.5px;font-weight:600}
+.opt small{font-size:12px;color:var(--ink-3)}
+.tag{font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-soft);border-radius:99px;padding:1px 8px;margin-left:6px}
+.secure{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:12.5px;color:var(--ink-2);padding:10px 12px;border-radius:var(--r-s);background:var(--bg);border:1px solid var(--line)}
+.secure svg{color:var(--ok)}.secure b{font-weight:600;color:var(--ink)}
+
+/* amount */
+.amt{display:flex;align-items:center;gap:8px;border:1px solid var(--line-2);border-radius:var(--r-s);padding:0 14px;height:56px;background:var(--panel);transition:border-color .15s,box-shadow .15s}
+.amt:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.amt.bad{border-color:var(--bad)}
+.amt span{color:var(--ink-3);font-weight:500}
+.amt input{flex:1;min-width:0;border:0;background:none;outline:0;font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.amt input::placeholder{color:var(--ink-3);font-weight:500}
+.err{display:flex;gap:6px;align-items:center;color:var(--bad);font-size:12.5px;margin-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{border:1px solid var(--line);border-radius:99px;padding:6px 12px;font-size:12.5px;font-weight:500;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.chip:hover{border-color:var(--line-2);color:var(--ink)}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.limits{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-3);margin-top:10px}
+select.net{width:100%;height:44px;border:1px solid var(--line-2);border-radius:var(--r-s);padding:0 12px;background:var(--panel);outline:0}
+select.net:focus{border-color:var(--brand)}
+
+/* buttons */
+.cta{width:100%;height:46px;border-radius:var(--r-s);background:var(--brand);color:#fff;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,opacity .15s}
+.cta:hover:not(:disabled){background:var(--brand-2)}
+.cta:disabled{opacity:.45;cursor:not-allowed}
+.ghost{width:100%;height:44px;border-radius:var(--r-s);border:1px solid var(--line-2);font-weight:500;display:flex;align-items:center;justify-content:center;gap:8px}
+.ghost:hover{border-color:var(--brand);color:var(--brand)}
+.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* details rows */
+.kv{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.kv:last-child{border-bottom:0}
+.kv dt{font-size:12.5px;color:var(--ink-3);flex-shrink:0}
+.kv dd{font-size:13.5px;font-weight:500;text-align:right;display:flex;align-items:center;gap:8px;min-width:0;word-break:break-all}
+.copy{width:28px;height:28px;border-radius:6px;display:grid;place-items:center;color:var(--ink-3);border:1px solid var(--line)}
+.copy:hover{color:var(--brand);border-color:var(--brand)}
+.pay{display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px;border-radius:var(--r-s);background:var(--brand-soft);margin-bottom:8px}
+.pay span{font-size:12.5px;color:var(--ink-2)}.pay b{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.timer{font-size:12.5px;color:var(--ink-2);display:flex;align-items:center;gap:6px;margin-top:10px}
+.timer.exp{color:var(--bad)}
+.note{display:flex;gap:10px;font-size:12.5px;padding:12px;border-radius:var(--r-s);margin-top:14px;line-height:1.5}
+.note.info{background:var(--brand-soft);color:var(--ink-2)}.note.info svg{color:var(--brand)}
+.note.warn{background:var(--warn-soft);color:var(--ink-2)}.note.warn svg{color:var(--warn)}
+.note.bad{background:var(--bad-soft);color:var(--ink-2)}.note.bad svg{color:var(--bad)}
+.qr{display:grid;place-items:center;padding:14px 0 4px}
+.qr>div{background:#fff;padding:8px;border-radius:var(--r-s);border:1px solid var(--line);width:150px;height:150px;display:grid;place-items:center}
+.qr img{width:100%;height:100%;object-fit:contain}
+.field{width:100%;height:44px;border:1px solid var(--line-2);border-radius:var(--r-s);padding:0 12px;background:var(--panel);outline:0}
+.field:focus{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 18%,transparent)}
+.drop{display:flex;align-items:center;gap:12px;width:100%;padding:16px;border:1.5px dashed var(--line-2);border-radius:var(--r-s);text-align:left}
+.drop:hover{border-color:var(--brand)}
+.drop.has{border-style:solid;border-color:var(--ok);background:var(--ok-soft)}
+.drop .ic{width:36px;height:36px;border-radius:8px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center}
+.drop.has .ic{color:var(--ok);background:var(--panel)}
+.drop b{font-size:13px;font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.drop small{font-size:12px;color:var(--ink-3)}
+.drop .x{margin-left:auto}
+
+/* summary */
+.sum{padding:16px 20px}
+.sum h2{font-size:12px;font-weight:600;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.sum .r{display:flex;justify-content:space-between;font-size:13px;color:var(--ink-2);padding:6px 0}
+.sum .r b{color:var(--ink);font-weight:500}
+.sum .t{border-top:1px solid var(--line);margin-top:6px;padding-top:12px;color:var(--ink);font-weight:600}
+.sum .t b{font-size:16px;font-weight:600}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:2px 10px;border-radius:99px}
+.pill.p{background:var(--warn-soft);color:var(--warn)}.pill.a{background:var(--ok-soft);color:var(--ok)}.pill.x{background:var(--bad-soft);color:var(--bad)}
+.hero{text-align:center;padding:36px 20px 8px}
+.hero .c{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;background:var(--warn-soft);color:var(--warn)}
+.hero .c.a{background:var(--ok-soft);color:var(--ok)}.hero .c.x{background:var(--bad-soft);color:var(--bad)}
+.hero p{font-size:13px;color:var(--ink-2);max-width:340px;margin:4px auto 0}
+.gate{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:50}
+.gate i{width:28px;height:28px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brand);animation:sp .8s linear infinite}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,8px);background:var(--ink);color:var(--bg);font-size:13px;font-weight:500;padding:10px 16px;border-radius:99px;opacity:0;pointer-events:none;transition:.2s;z-index:60;max-width:88%;text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="gate" id="gate"><i></i></div>
+
+<header class="bar"><div class="bar-in">
+  <button class="icon-btn" id="back" aria-label="Back"></button>
+  <h1>Add funds</h1>
+  <button class="link-btn" id="hist"></button>
+</div></header>
+
+<main class="wrap hidden" id="app">
+  <div id="stage" class="panel"></div>
+  <aside class="aside"><div class="panel sum" id="sum"></div></aside>
+</main>
+<div id="toast" role="status"></div>
+
+<script>
+/* ══ BACKEND (same Supabase project as the rest of the site) ══ */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+/* ══ HELPERS ══ */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const I=(p,s)=>'<svg width="'+(s||18)+'" height="'+(s||18)+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+p+'</svg>';
+const IC={
+  back:'<polyline points="15 18 9 12 15 6"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  shield:'<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9.5 12l1.8 1.8L14.7 10"/>',
+  copy:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  info:'<circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/>',
+  warn:'<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/>',
+  up:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M17 8l-5-5-5 5M12 3v12"/>',
+  file:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  arrow:'<path d="M5 12h14M12 5l7 7-7 7"/>',
+  home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>'
+};
+let tt;function toast(m){const e=$('#toast');clearTimeout(tt);e.textContent=m;e.classList.add('show');tt=setTimeout(()=>e.classList.remove('show'),3000)}
+function copy(t){if(!t)return;navigator.clipboard.writeText(t).then(()=>toast('Copied')).catch(()=>toast(t))}
+const ref=()=>{const d=new Date(),p=n=>String(n).padStart(2,'0');return 'GD-'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+Math.floor(1000+Math.random()*9000)};
+const mid=(s,h,t)=>{s=s||'';return s.length<=h+t+1?s:s.slice(0,h)+'…'+s.slice(-t)};
+function compress(file){return new Promise((res,rej)=>{
+  if(!file.type||file.type.indexOf('image/')!==0){res('');return}
+  const r=new FileReader();r.onerror=()=>rej(new Error('Could not read file'));
+  r.onload=()=>{const im=new Image();im.onerror=()=>rej(new Error('Could not read image'));
+    im.onload=()=>{const k=Math.min(1,1280/Math.max(im.width,im.height)),c=document.createElement('canvas');
+      c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));
+      c.getContext('2d').drawImage(im,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.75))};im.src=r.result};
+  r.readAsDataURL(file)})}
+
+/* ══ STATE ══ */
+const S={user:null,cfg:{},accts:[],nets:[],net:null,method:'ngn',amount:0,step:'amount',
+  ref:null,file:null,depId:null,chan:null,timer:null,secs:0,busy:false,status:'pending'};
+const M={
+  ngn:{name:'NGN',sub:'Bank transfer',sym:'₦'},
+  usdt:{name:'USDT',sub:'Crypto transfer',sym:'₮'}
+};
+const cfg=k=>S.cfg[k];
+const enabled=c=>cfg(c+'_deposit_enabled')!==false;
+const num=k=>{const v=Number(cfg(S.method+'_deposit_'+k));return isFinite(v)&&cfg(S.method+'_deposit_'+k)!=null?v:null};
+const min=()=>num('min'),max=()=>num('max'),fee=()=>num('fee')||0;
+const money=(c,n)=>c==='ngn'?'₦'+(+n||0).toLocaleString(undefined,{maximumFractionDigits:2}):(+n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+' USDT';
+const total=()=>S.amount+fee();
+
+/* ══ DATA ══ */
+async function loadConfig(){
+  const r=await sb.from('admin_config').select('key,value');
+  if(r.error)throw r.error;
+  (r.data||[]).forEach(x=>S.cfg[x.key]=x.value);
+  let n=(cfg('usdt_networks')||[]).filter(x=>x&&x.enabled!==false&&x.network&&x.address);
+  const legacy=cfg('usdt_payment_details');
+  if(!n.length&&legacy&&legacy.wallet_address)n=[{network:legacy.network||'',address:legacy.wallet_address,qr:legacy.qr_data||''}];
+  S.nets=n;S.net=n[0]||null;
+}
+async function loadAccounts(){
+  try{const r=await sb.from('payment_accounts').select('*').eq('active',true);S.accts=r.data||[]}catch(e){S.accts=[]}
+}
+/* Quick amounts derive from admin limits (no hardcoded presets) */
+function presets(){
+  const lo=min(),hi=max();if(!lo)return [];
+  return [1,2,5,10,20,50].map(k=>lo*k).filter(v=>!hi||v<=hi).slice(0,5);
+}
+
+/* ══ INIT ══ */
+(async function(){
+  $('#back').innerHTML=I(IC.back);
+  $('#hist').innerHTML=I(IC.clock,16)+'<span>History</span>';
+  $('#back').onclick=()=>{if(S.step==='pay'){go('amount')}else location.href='index.html'};
+  $('#hist').onclick=()=>location.href='transaction-history.html?type=deposit';
+  try{
+    const u=await sb.auth.getUser();
+    if(!u.data||!u.data.user){location.replace('index.html');return}
+    S.user={id:u.data.user.id,email:u.data.user.email};
+    await Promise.all([loadConfig(),loadAccounts()]);
+  }catch(e){
+    console.error(e);
+    if(!S.user){location.replace('index.html');return}
+    toast('Could not load payment settings');
+  }
+  const q=(new URLSearchParams(location.search).get('method')||'').toLowerCase();
+  S.method=q==='usdt'?'usdt':q==='ngn'?'ngn':(enabled('ngn')?'ngn':'usdt');
+  $('#gate').classList.add('hidden');$('#app').classList.remove('hidden');
+  go('amount');
+})();
+
+function go(step){S.step=step;window.scrollTo(0,0);render()}
+function steps(){
+  const o=['amount','pay','done'],l=['Amount','Payment','Confirmation'],i=o.indexOf(S.step);
+  return '<div class="steps">'+l.map((t,k)=>(k?'<span class="ln"></span>':'')+
+    '<span class="s '+(k<i?'done':k===i?'on':'')+'"><span class="d">'+(k<i?I(IC.check,12):k+1)+'</span>'+t+'</span>').join('')+'</div>';
+}
+function secure(){return '<div class="secure">'+I(IC.shield,18)+'<span><b>Protected by Global Secure</b></span></div>'}
+function note(k,ic,t){return '<div class="note '+k+'">'+I(IC[ic],16)+'<div>'+t+'</div></div>'}
+
+/* ══ RENDER ══ */
+function render(){
+  if(S.step==='amount')renderAmount();else if(S.step==='pay')renderPay();else renderDone();
+  renderSum();
+}
+function renderSum(){
+  const c=S.method,d=S.step==='done';
+  let h='<h2>Summary</h2><div class="r"><span>Method</span><b>'+M[c].name+' · '+M[c].sub+'</b></div>'+
+    '<div class="r"><span>Amount</span><b class="num" id="sAmt">'+(S.amount?money(c,S.amount):'—')+'</b></div>';
+  if(fee())h+='<div class="r"><span>Processing fee</span><b class="num">'+money(c,fee())+'</b></div>';
+  h+='<div class="r t"><span>Total to pay</span><b class="num" id="sTot">'+(S.amount?money(c,total()):'—')+'</b></div>';
+  if(S.ref&&S.step!=='amount')h+='<div class="r"><span>Reference</span><b class="mono">'+esc(S.ref)+'</b></div>';
+  if(d)h+='<div class="r"><span>Status</span>'+pill()+'</div>';
+  $('#sum').innerHTML=h;
+}
+const pill=()=>({pending:'<span class="pill p">Pending</span>',approved:'<span class="pill a">Verified</span>',rejected:'<span class="pill x">Rejected</span>'}[S.status]||'');
+
+/* ── Step 1 ── */
+function renderAmount(){
+  const c=S.method,on=enabled(c);
+  const opts=['ngn','usdt'].map(k=>{const e=enabled(k);
+    return '<button class="opt" data-m="'+k+'" aria-pressed="'+(k===c)+'"'+(e?'':' disabled')+'><span class="cur">'+M[k].sym+'</span><span><b>'+M[k].name+(e?'':'<span class="tag">Unavailable</span>')+'</b><small>'+M[k].sub+'</small></span></button>'}).join('');
+  const chips=presets().map(v=>'<button class="chip" data-v="'+v+'" aria-pressed="'+(S.amount===v)+'">'+money(c,v)+'</button>').join('');
+  const netSel=(c==='usdt'&&S.nets.length>1)?'<div class="sec"><label class="lbl" for="net">Network</label><select class="net" id="net">'+
+    S.nets.map((n,i)=>'<option value="'+i+'"'+(S.net===n?' selected':'')+'>'+esc(n.network)+'</option>').join('')+'</select></div>':'';
+  $('#stage').innerHTML='<div class="sec">'+steps()+'<h2 class="h">Choose how to pay</h2><p class="sub">Select a method and enter the amount to add to your wallet.</p>'+
+    '<div class="seg" style="margin-top:16px">'+opts+'</div>'+secure()+'</div>'+
+    (on?'<div class="sec"><label class="lbl" for="amt">Amount</label><div class="amt" id="amtBox"><span>'+(c==='ngn'?'₦':'USDT')+'</span>'+
+      '<input id="amt" inputmode="decimal" autocomplete="off" placeholder="0.00" value="'+(S.amount||'')+'"/></div>'+
+      '<div class="err hidden" id="err"></div>'+(chips?'<div class="chips">'+chips+'</div>':'')+
+      '<div class="limits num"><span>'+(min()!=null?'Min '+money(c,min()):'')+'</span><span>'+(max()!=null?'Max '+money(c,max()):'')+'</span></div></div>'+netSel+
+      '<div class="sec"><button class="cta" id="next">Continue '+I(IC.arrow,16)+'</button></div>'
+     :'<div class="sec">'+note('bad','warn','<b>Deposits are temporarily disabled</b><br>This method isn’t accepting deposits right now. Please choose another.')+'</div>');
+  const seg=$('#stage');
+  seg.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{S.method=b.dataset.m;S.amount=0;render()});
+  if(!on)return;
+  const inp=$('#amt');
+  inp.oninput=()=>{let v=inp.value.replace(/[^0-9.]/g,'');const p=v.split('.');if(p.length>2)v=p[0]+'.'+p.slice(1).join('');
+    inp.value=v;S.amount=parseFloat(v)||0;syncChips();validate(false);renderSum()};
+  seg.querySelectorAll('[data-v]').forEach(b=>b.onclick=()=>{S.amount=+b.dataset.v;inp.value=S.amount;syncChips();validate(false);renderSum()});
+  const ns=$('#net');if(ns)ns.onchange=()=>S.net=S.nets[+ns.value];
+  $('#next').onclick=next;
+  inp.onkeydown=e=>{if(e.key==='Enter')next()};
+}
+function syncChips(){$('#stage').querySelectorAll('[data-v]').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.v===S.amount))}
+function validate(show){
+  const c=S.method,a=S.amount,lo=min(),hi=max();let m='';
+  if(!a||a<=0)m='Enter an amount to continue';
+  else if(lo!=null&&a<lo)m='Minimum deposit is '+money(c,lo);
+  else if(hi!=null&&a>hi)m='Maximum deposit is '+money(c,hi);
+  const e=$('#err'),b=$('#amtBox');
+  if(e){const vis=!!m&&(show||a>0);e.classList.toggle('hidden',!vis);b.classList.toggle('bad',vis);
+    e.innerHTML=vis?I(IC.info,14)+'<span>'+m+'</span>':''}
+  return !m;
+}
+async function next(){
+  if(!enabled(S.method)){toast('This payment method is temporarily unavailable');return}
+  if(!validate(true))return;
+  if(S.method==='ngn'&&!S.accts.length){const b=$('#next');b.disabled=true;await loadAccounts();b.disabled=false}
+  S.ref=ref();S.file=null;S.busy=false;
+  go('pay');startTimer();
+}
+
+/* ── Step 2 ── */
+function renderPay(){
+  const c=S.method;let d='',need=false;
+  if(c==='ngn'){
+    const a=S.accts[0];
+    if(!a)d=note('bad','warn','<b>Payment details unavailable</b><br>No payment account is available right now. Please try again shortly.');
+    else{need=true;d='<div class="pay"><span>Amount to pay</span><b>'+money('ngn',total())+'</b></div><dl>'+
+      kv('Bank',esc(a.bank||'—'))+kv('Account name',esc(a.account_name||'—'),a.account_name)+
+      kv('Account number','<span class="mono">'+esc(a.account_number||'—')+'</span>',a.account_number)+
+      kv('Reference','<span class="mono">'+esc(S.ref)+'</span>',S.ref)+'</dl>'+
+      '<div class="timer hidden" id="tm">'+I(IC.clock,14)+'<span>Reference expires in <b class="num" id="tv"></b></span></div>'+
+      note('info','info','Send the exact amount and include the reference in your transfer. Your wallet is credited after the payment is verified.')}
+  }else{
+    const n=S.net;
+    if(!n||!n.address)d=note('bad','warn','<b>Payment details unavailable</b><br>USDT deposits aren’t configured right now. Please try again shortly.');
+    else{need=true;d='<div class="pay"><span>Amount to send</span><b>'+money('usdt',total())+'</b></div><dl>'+
+      kv('Network',esc(n.network))+kv('Wallet address','<span class="mono">'+esc(mid(n.address,10,8))+'</span>',n.address)+
+      kv('Reference','<span class="mono">'+esc(S.ref)+'</span>',S.ref)+'</dl>'+
+      '<div class="qr"><div id="qr"></div></div>'+
+      '<div class="timer hidden" id="tm">'+I(IC.clock,14)+'<span>Reference expires in <b class="num" id="tv"></b></span></div>'+
+      note('warn','warn','Only send USDT on the selected network. Sending another asset or using a different network may result in permanent loss.')}
+  }
+  const hashReq=!!cfg('usdt_require_tx_hash');
+  const proof=need?'<div class="sec"><h3 class="h" style="font-size:14px">'+(c==='usdt'?'Transaction details':'Payment proof')+'</h3>'+
+    (c==='usdt'?'<label class="lbl" for="hash" style="margin-top:12px">Transaction hash '+(hashReq?'(required)':'(optional)')+'</label><input class="field" id="hash" placeholder="Paste transaction hash" autocomplete="off"/><div style="height:14px"></div>':'<p class="sub">Upload a clear screenshot or photo of your transfer receipt.</p><div style="height:12px"></div>')+
+    '<input type="file" id="file" class="hidden" accept="image/*,.pdf"/><button class="drop" id="drop" type="button"></button>'+
+    '<div style="height:16px"></div><button class="cta" id="submit"><span id="sl">Submit deposit</span></button></div>':'';
+  $('#stage').innerHTML='<div class="sec">'+steps()+'<h2 class="h">'+(c==='ngn'?'Transfer to this account':'Send USDT')+'</h2>'+
+    '<p class="sub">Use the exact details below.</p>'+secure()+'<div style="height:8px"></div>'+d+'</div>'+proof;
+  if(!need)return;
+  if(c==='usdt')drawQr();
+  $('#file').onchange=e=>pick(e.target.files[0]);
+  $('#drop').onclick=()=>$('#file').click();
+  $('#submit').onclick=submit;
+  $('#stage').querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>copy(b.dataset.c));
+  drawDrop();tick();
+}
+function kv(k,v,c){return '<div class="kv"><dt>'+k+'</dt><dd>'+v+(c?'<button class="copy" data-c="'+esc(c)+'" aria-label="Copy '+k+'">'+I(IC.copy,14)+'</button>':'')+'</dd></div>'}
+function drawQr(){
+  const b=$('#qr');b.innerHTML='';const n=S.net;
+  if(n.qr){const i=document.createElement('img');i.alt='Wallet QR code';i.src=n.qr;b.appendChild(i);return}
+  if(window.QRCode){try{new QRCode(b,{text:n.address,width:134,height:134,correctLevel:QRCode.CorrectLevel.M})}catch(e){}}
+}
+function startTimer(){
+  clearInterval(S.timer);const m=Number(cfg('deposit_reference_expiry_minutes')||0);
+  if(!m){S.secs=0;return}
+  S.secs=m*60;
+  S.timer=setInterval(()=>{S.secs--;if(S.secs<=0)clearInterval(S.timer);tick()},1000);
+}
+function tick(){
+  const t=$('#tm'),v=$('#tv');if(!t||!v)return;
+  if(!Number(cfg('deposit_reference_expiry_minutes')||0)){t.classList.add('hidden');return}
+  t.classList.remove('hidden');
+  if(S.secs<=0){v.textContent='now';t.classList.add('exp');return}
+  const m=Math.floor(S.secs/60),s=S.secs%60;v.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+}
+
+/* files */
+function pick(f){
+  if(!f)return;
+  if(f.size>5*1024*1024){toast('File is too large — max 5MB');return}
+  if(!(/^image\//.test(f.type)||f.type==='application/pdf')){toast('Unsupported file — use JPG, PNG or PDF');return}
+  S.file=f;drawDrop();
+}
+function drawDrop(){
+  const d=$('#drop');if(!d)return;const f=S.file;d.classList.toggle('has',!!f);
+  d.innerHTML='<span class="ic">'+I(f?IC.file:IC.up)+'</span><span style="min-width:0"><b>'+(f?esc(f.name):(S.method==='ngn'?'Upload receipt':'Upload screenshot'))+'</b><small>'+(f?Math.round(f.size/1024)+' KB':'JPG, PNG or PDF · max 5MB')+'</small></span>'+
+    (f?'<span class="x copy" id="rm" role="button" aria-label="Remove file">'+I(IC.x,14)+'</span>':'');
+  const r=$('#rm');if(r)r.onclick=e=>{e.stopPropagation();S.file=null;$('#file').value='';drawDrop()};
+}
+async function upload(f){
+  let url='',data='';
+  try{const p='dep_'+S.method+'_'+Date.now()+'_'+S.user.id;
+    const u=await sb.storage.from('deposit-receipts').upload(p,f,{cacheControl:'3600',upsert:false});
+    if(!u.error&&u.data)url=sb.storage.from('deposit-receipts').getPublicUrl(u.data.path).data.publicUrl;
+  }catch(e){console.warn('Receipt upload failed:',e.message)}
+  if(!url){try{data=await compress(f)}catch(e){console.warn('Receipt fallback failed:',e.message)}}
+  return {url,data};
+}
+
+/* ── Submit (same deposits payload as before) ── */
+async function submit(){
+  if(S.busy)return;
+  if(!validate(true)){toast('Please check the amount and try again');return}
+  const c=S.method;let hash='';
+  if(c==='usdt'){
+    hash=($('#hash').value||'').trim();
+    if(cfg('usdt_require_tx_hash')&&!hash){toast('Please enter the transaction hash');return}
+    if(hash&&hash.length<6){toast('That transaction hash looks invalid');return}
+    if(cfg('usdt_require_receipt')!==false&&!S.file){toast('Please upload your transaction proof');return}
+  }else if(!S.file){toast('Please upload your payment receipt');return}
+  const btn=$('#submit');S.busy=true;btn.disabled=true;btn.innerHTML='<span class="spin"></span><span>Submitting…</span>';
+  const reset=()=>{S.busy=false;btn.disabled=false;btn.innerHTML='<span id="sl">Submit deposit</span>'};
+  let up={url:'',data:''};
+  if(S.file){up=await upload(S.file);if(!up.url&&!up.data){toast('Could not upload your file. Please try again.');reset();return}}
+  try{
+    const f=fee();
+    const row={user_id:S.user.id,amount:S.amount,currency:c,fee:f,credited_amount:S.amount,tx_ref:S.ref,
+      amount_paid:S.amount+f,payment_time:new Date().toISOString(),receipt_url:up.url,receipt_data:up.data,status:'pending',locked:true};
+    if(c==='usdt'){row.tx_hash=hash;row.network=S.net?S.net.network:''}
+    const r=await sb.from('deposits').insert(row).select().single();
+    if(r.error){toast(/duplicate/i.test(r.error.message||'')?'This deposit was already submitted.':'Submission failed: '+(r.error.message||'please try again'));reset();return}
+    S.depId=r.data&&r.data.id;S.status='pending';clearInterval(S.timer);
+    go('done');watch();
+  }catch(e){toast(e.message||'Submission failed');reset()}
+}
+
+/* ── Step 3 ── */
+function renderDone(){
+  const s=S.status,c=s==='approved'?'a':s==='rejected'?'x':'',
+    ic=s==='approved'?IC.check:s==='rejected'?IC.x:IC.clock,
+    t=s==='approved'?'Deposit verified':s==='rejected'?'Deposit rejected':'Deposit submitted',
+    p=s==='approved'?'Your wallet has been credited.':s==='rejected'?'This deposit could not be verified. Check your deposit history for details.':'Your payment was received and is awaiting verification. We’ll update your balance once it’s verified.';
+  $('#stage').innerHTML='<div class="sec">'+steps()+'</div><div class="hero" style="padding-top:8px"><div class="c '+c+'">'+I(ic,26)+'</div><h2 class="h">'+t+'</h2><p>'+p+'</p></div>'+
+    '<div class="sec" style="display:grid;gap:8px;margin-top:12px"><button class="cta" id="w">'+I(IC.home,16)+'Back to wallet</button><button class="ghost" id="h">View deposit history</button></div>';
+  $('#w').onclick=()=>location.href='index.html';
+  $('#h').onclick=()=>location.href='transaction-history.html?type=deposit';
+}
+/* realtime status */
+function watch(){
+  if(!S.depId)return;
+  if(S.chan){try{sb.removeChannel(S.chan)}catch(e){}}
+  sb.from('deposits').select('status').eq('id',S.depId).single().then(r=>{if(r.data&&r.data.status&&r.data.status!=='pending')resolved(r.data.status)});
+  S.chan=sb.channel('af_dep_'+S.depId).on('postgres_changes',{event:'UPDATE',schema:'public',table:'deposits',filter:'id=eq.'+S.depId},
+    p=>{if(p.new&&p.new.status&&p.new.status!=='pending')resolved(p.new.status)}).subscribe();
+}
+function resolved(s){S.status=s;if(S.step==='done')render()}
+window.addEventListener('beforeunload',()=>{if(S.chan)try{sb.removeChannel(S.chan)}catch(e){}});
+</script>
+</body>
+</html>
