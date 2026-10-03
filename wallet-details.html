@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="color-scheme" content="light"/>
+<meta name="theme-color" content="#ffffff"/>
+<title>Wallet · Global Digits</title>
+<link rel="icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --blue:#2563eb;--blue-d:#1d4ed8;--blue-50:#f1f6ff;--blue-100:#dce8ff;
+  --ink:#0f172a;--ink2:#475569;--ink3:#74839a;
+  --line:#e2e8f2;--bg:#f6f8fc;--card:#fff;
+  --ok:#047857;--ok-bg:#e8f7f0;--warn:#92400e;--warn-bg:#fff4e0;--bad:#b91c1c;--bad-bg:#fdecec;
+  --r:12px;--r-sm:8px;--font:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);font-size:13px;line-height:1.5;color:var(--ink);background:var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;font-size:inherit;color:inherit;cursor:pointer;border:0;background:none}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px}
+.hidden{display:none!important}
+.i{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.i.sm{width:13px;height:13px}.i.lg{width:18px;height:18px}
+
+/* gate */
+#authGate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:50}
+.spin{width:22px;height:22px;border:2px solid var(--blue-100);border-top-color:var(--blue);border-radius:50%;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* header */
+.top{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
+.wrap{max-width:980px;margin:0 auto;padding:0 14px}
+.top-in{height:50px;display:flex;align-items:center;gap:10px}
+.back{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--ink2);background:#fff}
+.back:hover{background:var(--blue-50);color:var(--blue)}
+.ttl{font-size:14px;font-weight:600;letter-spacing:-.1px}
+.sp{flex:1}
+.seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:2px}
+.seg a{padding:4px 11px;border-radius:6px;font-size:12px;font-weight:500;color:var(--ink2)}
+.seg a[aria-current="page"]{background:#fff;color:var(--blue-d);font-weight:600;box-shadow:0 1px 2px rgba(15,23,42,.08)}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:var(--ok);background:var(--ok-bg);border-radius:99px;padding:3px 8px}
+@media(max-width:420px){.chip span{display:none}.chip{padding:5px}}
+
+/* layout */
+.grid{display:grid;grid-template-columns:1fr;gap:12px;padding-top:14px;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+@media(min-width:820px){.grid{grid-template-columns:340px 1fr;gap:14px;align-items:start;padding-top:20px}}
+.col{display:flex;flex-direction:column;gap:12px;min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;min-width:0}
+.card-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.card-h h2{font-size:13px;font-weight:600;flex:1}
+.link{font-size:12px;font-weight:500;color:var(--blue);padding:3px 6px;border-radius:6px}
+.link:hover{background:var(--blue-50)}
+.lbl{font-size:11px;color:var(--ink3);font-weight:500}
+
+/* balance */
+.bal{background:linear-gradient(180deg,#f4f8ff,#fff);border-color:var(--blue-100)}
+.bal-top{display:flex;align-items:center;gap:6px;color:var(--ink2);font-size:12px;font-weight:500}
+.bal-top .sp{flex:1}
+.icon-btn{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--ink3)}
+.icon-btn:hover{background:var(--blue-50);color:var(--blue)}
+.amount{font-size:24px;font-weight:600;letter-spacing:-.5px;margin:8px 0 12px;min-height:34px;display:flex;align-items:center;font-variant-numeric:tabular-nums}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:34px;padding:0 14px;border-radius:8px;font-size:12.5px;font-weight:600;transition:background .15s,opacity .15s}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover{background:var(--blue-d)}
+.btn-o{background:#fff;color:var(--ink2);border:1px solid #cdd7e6}.btn-o:hover{background:var(--bg)}
+.btn-block{width:100%}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* stats */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stat{padding:12px}
+.stat-ic{width:26px;height:26px;border-radius:7px;background:var(--blue-50);color:var(--blue);display:flex;align-items:center;justify-content:center;margin-bottom:8px}
+.stat-v{font-size:14px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:21px}
+.stat-v.muted{color:var(--ink3);font-weight:500;font-size:12.5px}
+
+/* lists */
+.list{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:10px;padding:10px 4px;border-top:1px solid var(--line);width:100%;text-align:left;border-radius:0}
+.list .row:first-child{border-top:0}
+button.row:hover{background:var(--blue-50)}
+.row-ic{width:30px;height:30px;border-radius:8px;background:var(--blue-50);color:var(--blue);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.row-b{flex:1;min-width:0}
+.row-t{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row-m{font-size:11px;color:var(--ink3);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.row-r{text-align:right;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;gap:2px}
+.row-a{font-size:12.5px;font-weight:600;font-variant-numeric:tabular-nums}
+.row-a.cr{color:var(--ok)}
+.badge{display:inline-block;font-size:10.5px;font-weight:500;padding:1px 7px;border-radius:99px;background:var(--ok-bg);color:var(--ok)}
+.badge.pending{background:var(--warn-bg);color:var(--warn)}
+.badge.failed{background:var(--bad-bg);color:var(--bad)}
+
+/* states */
+.empty{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;color:var(--ink3);font-size:12px;padding:22px 10px}
+.empty .i{width:22px;height:22px;color:#a6b3c8}
+.empty .btn{margin-top:4px;height:30px;font-size:12px}
+.sk{background:linear-gradient(90deg,#edf1f8 25%,#f6f8fc 37%,#edf1f8 63%);background-size:400% 100%;animation:sh 1.3s ease infinite;border-radius:6px;color:transparent!important;user-select:none}
+@keyframes sh{0%{background-position:100% 50%}100%{background-position:0 50%}}
+.sk-row{display:flex;gap:10px;align-items:center;padding:10px 4px;border-top:1px solid var(--line)}
+.sk-row:first-child{border-top:0}
+
+/* convert */
+.cv-head{display:flex;gap:10px;margin-bottom:12px}
+.cv-head p{font-size:12px;color:var(--ink2)}
+.info{display:flex;align-items:stretch;border:1px solid var(--line);border-radius:var(--r-sm);margin-bottom:12px;background:var(--bg)}
+.info>div{flex:1;padding:8px 10px;min-width:0}
+.info>div+div{border-left:1px solid var(--line)}
+.info b{display:block;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;line-height:1.35}
+.rate-line{display:flex;align-items:flex-start;gap:6px}
+.rate-line .icon-btn{width:22px;height:22px;margin-left:auto;flex-shrink:0}
+.icon-btn.spinning .i{animation:rot .7s linear infinite}
+.field-l{font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:5px;display:block}
+.amt-row{display:flex;gap:8px}
+.amt{flex:1;display:flex;align-items:center;gap:6px;height:38px;padding:0 11px;border:1px solid #cdd7e6;border-radius:var(--r-sm);background:#fff;min-width:0}
+.amt:focus-within{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.amt.err{border-color:#e0766f;box-shadow:none}
+.amt span{color:var(--ink3);font-size:13px}
+.amt input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:14px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.amt input:disabled{cursor:not-allowed}
+.max{height:38px;padding:0 12px;border:1px solid #cdd7e6;border-radius:var(--r-sm);font-size:12px;font-weight:600;color:var(--blue);background:#fff}
+.max:hover:not(:disabled){background:var(--blue-50)}.max:disabled{opacity:.5;cursor:not-allowed}
+.err-t{font-size:11.5px;color:var(--bad);min-height:17px;margin-top:4px}
+.recv{display:flex;justify-content:space-between;align-items:center;background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--r-sm);padding:9px 11px;margin:6px 0 12px}
+.recv b{font-size:14px;font-weight:600;color:var(--blue-d);font-variant-numeric:tabular-nums}
+.note{display:flex;gap:6px;font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.5}
+.note .i{margin-top:2px}
+
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:flex-end;justify-content:center;z-index:60;padding:0}
+.ov.show{display:flex}
+.sheet{background:#fff;width:100%;max-width:400px;border-radius:16px 16px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));animation:up .2s ease}
+@keyframes up{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
+@media(min-width:560px){.ov{align-items:center;padding:16px}.sheet{border-radius:14px}}
+.sheet h3{font-size:14px;font-weight:600;margin-bottom:10px}
+.kv{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink2)}
+.kv:first-of-type{border-top:0}
+.kv b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.kv.hl b{color:var(--blue-d)}
+.m-err{font-size:11.5px;color:var(--bad);min-height:16px;margin:6px 0}
+.m-btns{display:flex;gap:8px;margin-top:4px}.m-btns .btn{flex:1}
+
+/* toast + inline banner */
+#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,16px);background:#0f172a;color:#fff;font-size:12.5px;padding:9px 14px;border-radius:10px;opacity:0;pointer-events:none;transition:.2s;z-index:80;max-width:min(92vw,420px);text-align:center}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.bad{background:var(--bad)}
+.banner{display:flex;align-items:center;gap:8px;background:var(--bad-bg);color:var(--bad);border-radius:var(--r-sm);padding:8px 10px;font-size:12px}
+.banner .btn{margin-left:auto;height:26px;padding:0 10px;font-size:11.5px;background:#fff;color:var(--bad);border:1px solid #f0c4c1}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<!-- icon sprite (simple outline icons, no emojis) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-back" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></symbol>
+  <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M20 7H5a2 2 0 010-4h13v4"/><path d="M3 5v13a3 3 0 003 3h14V7"/><path d="M17 14h.01"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M1.5 12S5.5 5 12 5s10.5 7 10.5 7-4 7-10.5 7S1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.9 17.9A10.5 10.5 0 0112 19C5.5 19 1.5 12 1.5 12a18 18 0 015-5.9M9.9 5.2A9.5 9.5 0 0112 5c6.5 0 10.5 7 10.5 7a18 18 0 01-2.2 3.2M14.1 14.1a3 3 0 11-4.2-4.2"/><line x1="2" y1="2" x2="22" y2="22"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></symbol>
+  <symbol id="i-coins" viewBox="0 0 24 24"><circle cx="9" cy="9" r="6"/><path d="M15.5 9.3A6 6 0 1113 20.7M7 7.5h3.2M7 10.5h3.2"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></symbol>
+  <symbol id="i-bag" viewBox="0 0 24 24"><path d="M5 7h14l-1 13H6L5 7z"/><path d="M9 7V6a3 3 0 016 0v1"/></symbol>
+  <symbol id="i-swap" viewBox="0 0 24 24"><polyline points="17 3 21 7 17 11"/><path d="M3 11V9a2 2 0 012-2h16"/><polyline points="7 21 3 17 7 13"/><path d="M21 13v2a2 2 0 01-2 2H3"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><polyline points="21 4 21 10 15 10"/><polyline points="3 20 3 14 9 14"/><path d="M4.5 9A8 8 0 0118 6l3 4M3 14l3 4a8 8 0 0013.5-3"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><line x1="12" y1="11" x2="12" y2="16"/><line x1="12" y1="8" x2="12.01" y2="8"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9L2 18a2 2 0 001.7 3h16.6A2 2 0 0022 18L13.7 3.9a2 2 0 00-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-chev" viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M3 13l3-8h12l3 8v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6z"/><path d="M3 13h5l1 3h6l1-3h5"/></symbol>
+</svg>
+
+<div id="authGate" role="status" aria-label="Loading"><div class="spin"></div></div>
+
+<div id="app" class="hidden">
+  <header class="top">
+    <div class="wrap top-in">
+      <a class="back" href="index.html" aria-label="Back to dashboard"><svg class="i"><use href="#i-back"/></svg></a>
+      <h1 class="ttl" id="title">Wallet</h1>
+      <div class="sp"></div>
+      <nav class="seg" aria-label="Wallet currency">
+        <a id="segNgn" href="?currency=ngn">NGN</a>
+        <a id="segUsd" href="?currency=usd">USD</a>
+      </nav>
+      <span class="chip" title="Protected session"><svg class="i sm"><use href="#i-lock"/></svg><span>Secure</span></span>
+    </div>
+  </header>
+
+  <main class="wrap grid">
+    <!-- left: balance + spending -->
+    <section class="col" aria-label="Balance">
+      <div class="card bal">
+        <div class="bal-top">
+          <svg class="i"><use href="#i-wallet"/></svg><span id="balLabel">NGN wallet</span>
+          <span class="sp"></span>
+          <button class="icon-btn" id="eyeBtn" type="button" aria-label="Hide balance" aria-pressed="false"><svg class="i"><use id="eyeUse" href="#i-eye"/></svg></button>
+        </div>
+        <div class="amount sk" id="balNum" aria-live="polite">&#8358;0,000.00</div>
+        <div id="balErr" class="banner hidden" role="alert"><svg class="i sm"><use href="#i-alert"/></svg><span>Couldn&rsquo;t load balance</span><button class="btn" type="button" id="balRetry">Retry</button></div>
+        <button class="btn btn-p btn-block" id="topUpBtn" type="button"><svg class="i sm"><use href="#i-plus"/></svg><span id="topUpLbl">Top up wallet</span></button>
+      </div>
+
+      <div class="stats" aria-label="Spending overview">
+        <div class="card stat"><div class="stat-ic"><svg class="i sm"><use href="#i-coins"/></svg></div><div class="stat-v sk" id="totalSpent">&#8358;00,000</div><div class="lbl" id="totalLbl">Total spent</div></div>
+        <div class="card stat"><div class="stat-ic"><svg class="i sm"><use href="#i-cal"/></svg></div><div class="stat-v sk" id="lastWeek">&#8358;00,000</div><div class="lbl">Last 7 days</div></div>
+      </div>
+    </section>
+
+    <!-- right: NGN purchases OR USD convert + history -->
+    <section class="col" aria-label="Activity">
+      <div class="card hidden" id="boughtCard">
+        <div class="card-h"><h2 id="boughtTitle">What you bought in NGN</h2><a class="link" href="transaction-history.html">View all</a></div>
+        <div class="list" id="boughtList" aria-live="polite"></div>
+      </div>
+
+      <div class="card hidden" id="convertCard">
+        <div class="cv-head">
+          <div class="row-ic"><svg class="i"><use href="#i-swap"/></svg></div>
+          <div><div class="card-h" style="margin:0"><h2>Convert USD to NGN</h2></div><p>Turn your USD balance into NGN and use it across our services.</p></div>
+        </div>
+        <div class="info">
+          <div><span class="lbl">Available USD</span><b id="cvAvail" class="sk">$0.00</b></div>
+          <div><span class="lbl">Current rate</span>
+            <div class="rate-line"><b id="cvRate" class="sk">&#8358;0,000.00</b>
+              <button class="icon-btn" id="rateBtn" type="button" aria-label="Refresh rate"><svg class="i sm"><use href="#i-refresh"/></svg></button></div></div>
+        </div>
+        <label class="field-l" for="amtInput">Amount to convert</label>
+        <div class="amt-row">
+          <div class="amt" id="amtWrap"><span>$</span><input id="amtInput" type="text" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-describedby="amtErr"/></div>
+          <button class="max" id="maxBtn" type="button">Max</button>
+        </div>
+        <div class="err-t" id="amtErr" role="alert"></div>
+        <div class="recv"><span class="lbl" style="color:var(--ink2)">You will receive</span><b id="recvVal">&#8358;0.00</b></div>
+        <button class="btn btn-p btn-block" id="convertBtn" type="button" disabled><svg class="i sm"><use href="#i-swap"/></svg><span>Convert to NGN</span></button>
+        <div class="note"><svg class="i sm"><use href="#i-info"/></svg><span>The rate shown is a preview. The final amount is calculated securely at the moment of conversion.</span></div>
+      </div>
+
+      <div class="card hidden" id="histCard">
+        <div class="card-h"><h2>Conversion history</h2><a class="link" href="transaction-history.html?type=conversion">View all</a></div>
+        <div class="list" id="histList" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- confirm modal -->
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="sheet">
+    <h3 id="mTitle">Confirm conversion</h3>
+    <div class="kv"><span>USD amount</span><b id="mUsd">$0.00</b></div>
+    <div class="kv"><span>Exchange rate</span><b id="mRate">&#8358;0.00 / USD</b></div>
+    <div class="kv hl"><span>You will receive</span><b id="mRecv">&#8358;0.00</b></div>
+    <div class="m-err" id="mErr" role="alert"></div>
+    <div class="m-btns">
+      <button class="btn btn-o" id="mCancel" type="button">Cancel</button>
+      <button class="btn btn-p" id="mConfirm" type="button">Confirm</button>
+    </div>
+  </div>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- existing backend configuration (unchanged) ---------- */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+var currentUser=null;
+var wCurrency=(new URLSearchParams(location.search).get('currency')||'ngn').toLowerCase();
+if(wCurrency!=='usd')wCurrency='ngn';                       // unknown values fall back to NGN
+var isUsd=wCurrency==='usd';
+var SYM=isUsd?'$':'\u20a6';
+var balanceHidden=localStorage.getItem('gd_balance_hidden')==='1'; // shared with the dashboard
+var realBalance=null;         // null = not loaded yet (never coerced to 0)
+var wdRate=0,wdConverting=false;
+var purchaseRows=[],convRows=[];
+
+/* ---------- helpers ---------- */
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+function fmt2(n){return (+n||0).toLocaleString('en-NG',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function fmt0(n){return Math.round(+n||0).toLocaleString('en-NG');}
+function cap(s){s=String(s||'');return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+function fmtDate(d){try{return new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d||'';}}
+function ico(n,c){return '<svg class="i '+(c||'')+'"><use href="#i-'+n+'"/></svg>';}
+function unsk(el){el.classList.remove('sk');}
+function toast(msg,bad){var t=$('toast');t.textContent=msg;t.classList.toggle('bad',!!bad);t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show');},2800);}
+function openReceipt(row){location.href='transaction-history.html?receipt='+encodeURIComponent(JSON.stringify(row))+'&source=transactions';}
+function skRows(n){var h='';for(var i=0;i<n;i++)h+='<div class="sk-row"><div class="sk" style="width:30px;height:30px;border-radius:8px"></div><div style="flex:1"><div class="sk" style="height:11px;width:55%;margin-bottom:6px"></div><div class="sk" style="height:9px;width:30%"></div></div><div class="sk" style="height:12px;width:56px"></div></div>';return h;}
+function emptyBox(icon,text,retryId){return '<div class="empty">'+ico(icon)+'<div>'+esc(text)+'</div>'+(retryId?'<button class="btn btn-o" type="button" id="'+retryId+'">Try again</button>':'')+'</div>';}
+
+/* ---------- init (same auth gate + redirect as before) ---------- */
+(async function initPage(){
+  applyChrome();
+  try{
+    var u=await sb.auth.getUser();
+    var user=u.data&&u.data.user;
+    if(!user){location.replace('index.html');return;}
+    currentUser={id:user.id,email:user.email};
+  }catch(e){
+    console.error('Session check failed:',e);
+    $('authGate').innerHTML='<div class="empty" style="max-width:260px">'+ico('alert')+'<div>We couldn\u2019t verify your session. Check your connection and try again.</div><button class="btn btn-p" type="button" onclick="location.reload()">Retry</button></div>';
+    return;
+  }
+  $('authGate').classList.add('hidden');
+  $('app').classList.remove('hidden');
+  bindEvents();
+  loadBalance();
+  loadSpendingAndPurchases();
+  if(isUsd)initConvert();
+})();
+
+function applyChrome(){
+  $('title').textContent=isUsd?'USD wallet':'NGN wallet';
+  document.title=(isUsd?'USD':'NGN')+' wallet \u00b7 Global Digits';
+  $('balLabel').textContent=isUsd?'USD wallet':'NGN wallet';
+  $('topUpLbl').textContent='Top up '+(isUsd?'USD':'NGN')+' wallet';
+  $('boughtTitle').textContent='What you bought in '+(isUsd?'USD':'NGN');
+  (isUsd?$('segUsd'):$('segNgn')).setAttribute('aria-current','page');
+  $('boughtCard').classList.toggle('hidden',isUsd);
+  $('convertCard').classList.toggle('hidden',!isUsd);
+  $('histCard').classList.toggle('hidden',!isUsd);
+  paintEye();
+}
+
+function bindEvents(){
+  $('eyeBtn').addEventListener('click',toggleBalance);
+  $('topUpBtn').addEventListener('click',function(){location.href='add-funds.html?currency='+wCurrency;});
+  $('balRetry').addEventListener('click',loadBalance);
+  if(isUsd){
+    $('amtInput').addEventListener('input',onAmtInput);
+    $('maxBtn').addEventListener('click',useMax);
+    $('rateBtn').addEventListener('click',refreshRate);
+    $('convertBtn').addEventListener('click',openConfirm);
+    $('mCancel').addEventListener('click',closeConfirm);
+    $('mConfirm').addEventListener('click',confirmConvert);
+    $('ov').addEventListener('click',function(e){if(e.target===this)closeConfirm();});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeConfirm();});
+  }
+  document.addEventListener('visibilitychange',function(){if(!document.hidden&&!wdConverting&&currentUser)loadBalance(true);});
+}
+
+/* ---------- balance (profiles.balance / profiles.balance_usd, as before) ---------- */
+function paintEye(){
+  $('eyeUse').setAttribute('href',balanceHidden?'#i-eye-off':'#i-eye');
+  var b=$('eyeBtn');b.setAttribute('aria-pressed',String(balanceHidden));b.setAttribute('aria-label',balanceHidden?'Show balance':'Hide balance');
+}
+function toggleBalance(){
+  balanceHidden=!balanceHidden;
+  localStorage.setItem('gd_balance_hidden',balanceHidden?'1':'0');
+  paintEye();renderBalance();
+}
+async function loadBalance(silent){
+  try{
+    var col=isUsd?'balance_usd':'balance';
+    var r=await sb.from('profiles').select(col).eq('id',currentUser.id).single();
+    if(r.error||!r.data)throw (r.error||new Error('No profile'));
+    realBalance=+r.data[col]||0;
+    $('balErr').classList.add('hidden');
+    renderBalance();
+    if(isUsd)renderAvailability();
+  }catch(e){
+    console.error('loadBalance failed:',e.message);
+    if(silent&&realBalance!==null)return;      // keep showing the last good value on a background refresh
+    $('balErr').classList.remove('hidden');
+    $('balNum').classList.add('sk');$('balNum').textContent=SYM+'0,000.00';
+  }
+}
+function renderBalance(){
+  var el=$('balNum');
+  if(realBalance===null)return;
+  unsk(el);
+  el.textContent=balanceHidden?(SYM+'\u2022\u2022\u2022\u2022\u2022\u2022'):(SYM+fmt2(realBalance));
+}
+
+/* ---------- spending overview + purchases (transactions table, as before) ---------- */
+var DEBIT_OR='direction.is.null,direction.neq.cr';     // "purchases" = anything that is not a credit row
+function isDebit(t){return t.direction!=='cr';}
+async function loadSpendingAndPurchases(){
+  if(isUsd){
+    // No USD purchase ledger exists, so show an honest "not tracked" state instead of a fake $0.00.
+    $('totalSpent').textContent='Not tracked';$('lastWeek').textContent='Not tracked';
+    ['totalSpent','lastWeek'].forEach(function(id){unsk($(id));$(id).classList.add('muted');});
+    return;
+  }
+  $('boughtList').innerHTML=skRows(4);
+  try{
+    // recent rows for the list (full rows: the receipt page needs every column)
+    var recent=await sb.from('transactions').select('*').eq('user_id',currentUser.id).or(DEBIT_OR).order('created_at',{ascending:false}).limit(20);
+    var rows,serverFiltered=!recent.error;
+    if(recent.error){ // fall back to filtering in the browser if the column filter isn't supported
+      var all=await sb.from('transactions').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).limit(200);
+      if(all.error)throw all.error;
+      rows=(all.data||[]).filter(isDebit).slice(0,20);
+    }else rows=recent.data||[];
+    purchaseRows=rows;renderBought();
+    // totals: page through ALL debit rows (the old version silently summed only the latest 200)
+    var total=0,week=0,weekAgo=Date.now()-7*864e5,from=0,STEP=1000,PAGES=20,capped=false;
+    for(var p=0;p<PAGES;p++){
+      var q=sb.from('transactions').select('amount,direction,created_at').eq('user_id',currentUser.id).order('created_at',{ascending:false}).range(from,from+STEP-1);
+      if(serverFiltered)q=q.or(DEBIT_OR);
+      var pg=await q;if(pg.error)throw pg.error;
+      (pg.data||[]).filter(isDebit).forEach(function(t){var a=Math.abs(+t.amount||0);total+=a;if(new Date(t.created_at).getTime()>=weekAgo)week+=a;});
+      if(!pg.data||pg.data.length<STEP)break;
+      from+=STEP;if(p===PAGES-1)capped=true;
+    }
+    $('totalSpent').textContent=SYM+fmt0(total);$('lastWeek').textContent=SYM+fmt0(week);
+    unsk($('totalSpent'));unsk($('lastWeek'));
+    if(capped)$('totalLbl').textContent='Total spent (last '+fmt0(PAGES*STEP)+')';
+  }catch(e){
+    console.error('loadSpendingAndPurchases failed:',e.message);
+    ['totalSpent','lastWeek'].forEach(function(id){var el=$(id);unsk(el);el.classList.add('muted');el.textContent='Unavailable';});
+    $('boughtList').innerHTML=emptyBox('alert','Couldn\u2019t load your purchases.','boughtRetry');
+    var b=$('boughtRetry');if(b)b.addEventListener('click',function(){['totalSpent','lastWeek'].forEach(function(id){$(id).classList.remove('muted');$(id).classList.add('sk');});loadSpendingAndPurchases();});
+  }
+}
+function statusBadge(status){
+  if(!status)return '';
+  var s=String(status).toLowerCase(),c=(s==='pending'||s==='processing')?'pending':((s==='failed'||s==='cancelled'||s==='rejected')?'failed':'');
+  if(!c&&(s==='approved'||s==='completed'||s==='success'||s==='delivered'))return '';  // a normal completed purchase needs no badge
+  return '<span class="badge '+c+'">'+esc(cap(status))+'</span>';
+}
+function renderBought(){
+  var el=$('boughtList');
+  if(!purchaseRows.length){el.innerHTML=emptyBox('inbox','No purchases yet in your NGN wallet.');return;}
+  el.innerHTML=purchaseRows.map(function(tx,i){
+    return '<button class="row" type="button" data-i="'+i+'"><div class="row-ic">'+ico('bag')+'</div>'+
+      '<div class="row-b"><div class="row-t">'+esc(tx.title||cap(tx.category||'Purchase'))+'</div><div class="row-m">'+esc(fmtDate(tx.created_at))+statusBadge(tx.status)+'</div></div>'+
+      '<div class="row-r"><div class="row-a">\u2212\u20a6'+fmt0(Math.abs(tx.amount||0))+'</div></div>'+ico('chev','sm')+'</button>';
+  }).join('');
+  el.querySelectorAll('.row').forEach(function(b){b.addEventListener('click',function(){openReceipt(purchaseRows[+b.dataset.i]);});});
+}
+
+/* ---------- convert USD -> NGN (same RPC, same server-side authority) ---------- */
+async function initConvert(){
+  $('histList').innerHTML=skRows(3);
+  await loadExchangeRate();
+  renderAvailability();
+  loadConversionHistory();
+}
+async function loadExchangeRate(){
+  try{
+    var r=await sb.from('admin_config').select('key,value').eq('key','usd_to_ngn_rate').single();
+    if(r.error)throw r.error;
+    wdRate=(r.data&&+r.data.value)||0;
+  }catch(e){console.error('loadExchangeRate failed:',e.message);wdRate=0;}
+  var el=$('cvRate');unsk(el);
+  el.textContent=wdRate?('\u20a6'+fmt2(wdRate)+' / USD'):'Unavailable';
+  onAmtInput();
+  return wdRate;
+}
+function refreshRate(){
+  var b=$('rateBtn');b.classList.add('spinning');
+  loadExchangeRate().finally(function(){setTimeout(function(){b.classList.remove('spinning');},400);});
+}
+function balUsd(){return realBalance===null?null:(+realBalance||0);}
+function renderAvailability(){
+  var bal=balUsd(),loaded=bal!==null,el=$('cvAvail');
+  if(loaded){unsk(el);el.textContent='$'+fmt2(bal);}
+  var input=$('amtInput');
+  input.disabled=loaded&&bal<=0;                        // only disabled once a zero balance is confirmed
+  input.placeholder=(loaded&&bal<=0)?'No USD balance':'0.00';
+  $('maxBtn').disabled=!loaded||bal<=0;
+  onAmtInput();
+}
+function useMax(){
+  var bal=balUsd();if(bal===null||bal<=0)return;
+  $('amtInput').value=bal.toFixed(2);onAmtInput();
+}
+function parseAmt(){
+  var raw=$('amtInput').value.trim(),amt=parseFloat(raw);
+  return {raw:raw,amt:amt,valid:raw!==''&&!isNaN(amt)&&/^\d*\.?\d{0,2}$/.test(raw)&&amt>0};
+}
+function onAmtInput(){
+  var a=parseAmt(),bal=balUsd(),loaded=bal!==null,err='';
+  if(loaded&&bal<=0)err='You have no USD balance to convert yet.';
+  else if(a.raw!==''&&!a.valid)err=(/^\d*\.?\d{0,2}$/.test(a.raw)||isNaN(a.amt))?'Enter a valid amount greater than $0.':'Use at most 2 decimal places.';
+  else if(a.valid&&loaded&&a.amt>bal)err='Amount exceeds your available USD balance.';
+  $('amtWrap').classList.toggle('err',!!err&&a.raw!=='');
+  $('amtErr').textContent=err;
+  var ok=a.valid&&loaded&&bal>0&&a.amt<=bal&&wdRate>0&&!wdConverting;
+  $('recvVal').textContent='\u20a6'+(ok?fmt2(Math.round(a.amt*wdRate*100)/100):'0.00');
+  $('convertBtn').disabled=!ok;
+  if(a.valid&&loaded&&a.amt<=bal&&!wdRate)$('amtErr').textContent='The exchange rate is unavailable right now. Refresh the rate to continue.';
+}
+
+// A conversion attempt keeps ONE client reference so a retry after a dropped connection can never convert twice.
+var convRef=null,convRefAmt=null;
+async function openConfirm(){
+  var b=$('convertBtn');if(b.disabled||wdConverting)return;
+  b.disabled=true;
+  await loadExchangeRate();                              // never confirm against a stale rate
+  var a=parseAmt(),bal=balUsd();
+  if(!a.valid||bal===null||a.amt>bal||!wdRate){onAmtInput();return;}
+  if(convRef===null||convRefAmt!==a.amt){convRef='usd_to_ngn_'+currentUser.id+'_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);convRefAmt=a.amt;}
+  $('mUsd').textContent='$'+fmt2(a.amt);
+  $('mRate').textContent='\u20a6'+fmt2(wdRate)+' / USD';
+  $('mRecv').textContent='\u20a6'+fmt2(Math.round(a.amt*wdRate*100)/100);
+  $('mErr').textContent='';
+  $('mConfirm').disabled=false;$('mConfirm').textContent='Confirm';
+  $('ov').classList.add('show');
+  $('mConfirm').focus();
+}
+function closeConfirm(){
+  if(wdConverting)return;                                // no cancelling mid-flight
+  $('ov').classList.remove('show');
+  onAmtInput();
+}
+async function confirmConvert(){
+  if(wdConverting)return;                                // hard guard against double-click
+  var a=parseAmt(),bal=balUsd();
+  if(!a.valid||bal===null||a.amt>bal||!wdRate){$('mErr').textContent='This amount is no longer valid. Please check it and try again.';return;}
+  wdConverting=true;
+  var btn=$('mConfirm');btn.disabled=true;btn.textContent='Processing\u2026';$('mCancel').disabled=true;$('mErr').textContent='';
+  try{
+    var res=await sb.rpc('convert_usd_to_ngn',{p_user_id:currentUser.id,p_usd_amount:a.amt,p_client_ref:convRef});
+    var row=Array.isArray(res.data)?res.data[0]:res.data;
+    if(res.error||!row||!row.success){
+      var definitive=!!(row&&row.success===false);       // the server answered "no": safe to start a fresh attempt next time
+      if(definitive){convRef=null;convRefAmt=null;}
+      throw new Error((row&&row.message)||(res.error&&res.error.message)||'Conversion failed. No funds were deducted.');
+    }
+    convRef=null;convRefAmt=null;
+    realBalance=row.new_usd_balance;                      // server-confirmed, then reflect everywhere
+    renderBalance();
+    $('amtInput').value='';
+    prependConversion({id:row.transaction_id,user_id:currentUser.id,category:'usd_to_ngn_conversion',title:'USD to NGN Conversion',status:'approved',
+      usd_amount:a.amt,ngn_amount:row.ngn_amount,exchange_rate:row.rate_used,amount:row.ngn_amount,currency:'ngn',direction:'cr',created_at:new Date().toISOString()});
+    wdConverting=false;
+    $('ov').classList.remove('show');
+    renderAvailability();
+    toast('Converted $'+fmt2(a.amt)+' to \u20a6'+fmt2(row.ngn_amount));
+  }catch(e){
+    console.error('confirmConvert failed:',e.message);
+    $('mErr').textContent=e.message||'Conversion failed. No funds were deducted.';
+  }finally{
+    wdConverting=false;
+    btn.disabled=false;btn.textContent='Confirm';$('mCancel').disabled=false;
+  }
+}
+
+/* ---------- conversion history (transactions, category usd_to_ngn_conversion) ---------- */
+async function loadConversionHistory(){
+  try{
+    var r=await sb.from('transactions').select('*').eq('user_id',currentUser.id).eq('category','usd_to_ngn_conversion').order('created_at',{ascending:false}).limit(20);
+    if(r.error)throw r.error;
+    convRows=r.data||[];renderConversions();
+  }catch(e){
+    console.error('loadConversionHistory failed:',e.message);
+    $('histList').innerHTML=emptyBox('alert','Couldn\u2019t load conversion history.','histRetry');
+    var b=$('histRetry');if(b)b.addEventListener('click',function(){$('histList').innerHTML=skRows(3);loadConversionHistory();});
+  }
+}
+function prependConversion(row){convRows.unshift(row);renderConversions();}
+function renderConversions(){
+  var el=$('histList');
+  if(!convRows.length){el.innerHTML=emptyBox('swap','No conversions yet. Convert some USD above to get started.');return;}
+  el.innerHTML=convRows.map(function(row,i){
+    var usd=row.usd_amount!=null?row.usd_amount:0,ngn=row.ngn_amount!=null?row.ngn_amount:(row.amount||0),rate=row.exchange_rate!=null?row.exchange_rate:0;
+    var status=row.status||'approved',s=String(status).toLowerCase();
+    var c=(s==='pending'||s==='processing')?'pending':((s==='failed'||s==='cancelled')?'failed':'');
+    return '<button class="row" type="button" data-i="'+i+'"><div class="row-ic">'+ico('swap')+'</div>'+
+      '<div class="row-b"><div class="row-t">$'+fmt2(usd)+' converted</div><div class="row-m">\u20a6'+fmt2(rate)+' / USD<span>\u00b7</span>'+esc(fmtDate(row.created_at))+'</div></div>'+
+      '<div class="row-r"><div class="row-a cr">+\u20a6'+fmt2(ngn)+'</div><span class="badge '+c+'">'+esc(cap(status))+'</span></div></button>';
+  }).join('');
+  el.querySelectorAll('.row').forEach(function(b){b.addEventListener('click',function(){openReceipt(convRows[+b.dataset.i]);});});
+}
+</script>
+</body>
+</html>
