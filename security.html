@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#f4f8ff"/>
+<meta name="robots" content="noindex"/>
+<title>Security Center — Global Digits</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="manifest" href="site.webmanifest"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+/* Global Digits · Security Center design system (all rules are scoped to this page) */
+:root{
+  --blue:#1d5be8;--blue-2:#2f7bff;--blue-dk:#123fa8;--ink:#0b1a3a;--ink-2:#4a5a7c;--ink-3:#8190ad;
+  --bg:#f4f8ff;--surface:#fff;--line:#e3ecfb;--line-2:#d3e1f8;
+  --ok:#0e9f6e;--ok-bg:#e6f8f0;--warn:#b7791f;--warn-bg:#fff4dc;--bad:#d92d3a;--bad-bg:#fff0f1;--bad-line:#f7c9cd;
+  --r-lg:22px;--r-md:16px;--r-sm:12px;
+  --shadow:0 1px 2px rgba(16,42,100,.04),0 8px 24px -12px rgba(16,42,100,.14);
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:calc(var(--sat) + 12px)}
+body{font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;color:var(--ink);line-height:1.45;min-height:100vh;
+  background:radial-gradient(900px 420px at 85% -80px,#dbe8ff 0,transparent 70%),radial-gradient(700px 360px at -10% 8%,#e8f0ff 0,transparent 70%),var(--bg);
+  overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;text-align:left}
+svg{display:block;flex:none}
+.hidden{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+:focus-visible{outline:3px solid rgba(47,123,255,.55);outline-offset:2px;border-radius:10px}
+
+#appShell{max-width:760px;margin:0 auto;padding:calc(var(--sat) + 14px) max(16px,env(safe-area-inset-right)) calc(var(--sab) + 28px) max(16px,env(safe-area-inset-left))}
+
+/* header */
+#tb{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+#tbBack{width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.8);border:1px solid var(--line-2);box-shadow:var(--shadow);color:var(--blue-dk);transition:transform .15s}
+#tbBack:active{transform:scale(.94)}
+#tb h1{font-size:clamp(21px,5.2vw,28px);line-height:1.15;font-weight:800;letter-spacing:-.02em}
+#tbSub{font-size:13.5px;color:var(--ink-2);margin-top:2px}
+
+.view{animation:vin .22s ease both}
+@keyframes vin{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:center;padding:18px 20px;border-radius:var(--r-lg);
+  background:linear-gradient(135deg,rgba(255,255,255,.95),rgba(232,241,255,.9));border:1px solid var(--line-2);box-shadow:var(--shadow)}
+.hero::after{content:"";position:absolute;right:-70px;bottom:-90px;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle at 30% 30%,#9cc3ff,#2f7bff 70%);opacity:.22;pointer-events:none}
+.shield{width:88px;height:96px;position:relative}
+.shield::before{content:"";position:absolute;inset:-6px;border-radius:50%;background:radial-gradient(circle,rgba(47,123,255,.22),transparent 68%)}
+.shield svg{position:relative;width:100%;height:100%;filter:drop-shadow(0 8px 12px rgba(29,91,232,.28))}
+.heroBody{position:relative;min-width:0}
+.eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--blue);background:#e6efff;border-radius:999px;padding:4px 10px}
+.hero h2{font-size:clamp(19px,4.8vw,24px);letter-spacing:-.02em;font-weight:800;margin:8px 0 4px}
+.hero p{font-size:13.5px;color:var(--ink-2);max-width:46ch}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--ink-2)}
+.chip i{width:16px;height:16px;border-radius:50%;display:grid;place-items:center;background:var(--ok-bg);color:var(--ok)}
+.chip.warn i{background:var(--warn-bg);color:var(--warn)}
+.chip.skel{width:96px;height:28px;border:0}
+.hero.warn .eyebrow{background:var(--warn-bg);color:var(--warn)}
+@media(max-width:430px){.hero{grid-template-columns:1fr;gap:10px}.shield{width:64px;height:70px}}
+
+/* sections + rows */
+.secHead{margin:22px 4px 10px}
+.secHead h3{font-size:18px;font-weight:800;letter-spacing:-.01em}
+.secHead p{font-size:13px;color:var(--ink-2)}
+.list{display:grid;gap:10px}
+.row{display:flex;align-items:center;gap:14px;width:100%;min-height:68px;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);box-shadow:var(--shadow);transition:transform .15s,border-color .15s}
+.row:hover{border-color:var(--line-2)}
+.row:active{transform:scale(.99)}
+.tile{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex:none}
+.t-blue{background:linear-gradient(145deg,#dbe9ff,#c4dbff);color:#1d5be8}
+.t-violet{background:linear-gradient(145deg,#e8e4ff,#d6cfff);color:#6a4cf0}
+.t-teal{background:linear-gradient(145deg,#d9f7ee,#bff0df);color:#0f9d77}
+.t-amber{background:linear-gradient(145deg,#fff1d1,#ffe3a3);color:#d38a05}
+.t-red{background:linear-gradient(145deg,#ffe3e5,#ffcdd1);color:var(--bad)}
+.rowTxt{flex:1;min-width:0}
+.rowTxt b{display:block;font-size:15.5px;font-weight:700;letter-spacing:-.01em}
+.rowTxt span{display:block;font-size:13px;color:var(--ink-2)}
+.chev{color:var(--ink-3)}
+
+/* danger zone */
+.danger{margin-top:26px;padding-top:18px;border-top:1px solid var(--line-2)}
+.danger .secHead{margin-top:0;display:flex;gap:10px;align-items:flex-start}
+.danger .secHead svg{color:var(--bad);margin-top:3px}
+.dCard{border:1px solid var(--bad-line);background:linear-gradient(180deg,#fff8f8,#fff0f1);border-radius:var(--r-md);padding:14px;display:grid;gap:12px;box-shadow:var(--shadow)}
+.dItem{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.dItem .rowTxt{min-width:170px}
+.dItem + .dItem{padding-top:12px;border-top:1px dashed var(--bad-line)}
+.note{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--bad);margin-top:3px}
+.rowTxt .note,.rowTxt .note span{display:inline-flex;color:var(--bad);font-size:12.5px}
+.rowTxt .note{display:flex}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border-radius:14px;font-weight:700;font-size:14.5px;text-align:center;transition:transform .12s,opacity .15s,box-shadow .15s}
+.btn:active{transform:scale(.98)}
+.btn[disabled]{opacity:.55;cursor:not-allowed;transform:none}
+.btn.block{width:100%}
+.btn.primary{color:#fff;background:linear-gradient(135deg,var(--blue-2),var(--blue));box-shadow:0 8px 18px -8px rgba(29,91,232,.7)}
+.btn.ghost{background:#fff;border:1px solid var(--line-2);color:var(--blue-dk)}
+.btn.danger{color:#fff;background:linear-gradient(135deg,#ef4b57,var(--bad));box-shadow:0 8px 18px -8px rgba(217,45,58,.65)}
+.btn.dghost{background:#fff;border:1px solid var(--bad-line);color:var(--bad)}
+.btn.sm{min-height:42px;padding:0 14px;font-size:14px}
+.linkBtn{color:var(--blue);font-weight:600;font-size:13.5px;padding:10px 6px;min-height:44px}
+.linkBtn[disabled]{color:var(--ink-3);cursor:default}
+.spin{width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .7s linear infinite}
+.btn.ghost .spin,.btn.dghost .spin{border-color:rgba(29,91,232,.25);border-top-color:var(--blue)}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* subpage panels */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:16px;box-shadow:var(--shadow);margin-bottom:12px}
+.panel h4{font-size:14px;font-weight:700;margin-bottom:10px}
+.intro{display:flex;gap:14px;align-items:flex-start}
+.intro h3{font-size:17px;font-weight:800;letter-spacing:-.01em;margin-bottom:3px}
+.intro p{font-size:13.5px;color:var(--ink-2)}
+.check{display:flex;gap:12px;align-items:flex-start;padding:11px 0}
+.check + .check{border-top:1px solid var(--line)}
+.dot{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--ok-bg);color:var(--ok)}
+.dot.warn{background:var(--warn-bg);color:var(--warn)}
+.dot.info{background:#e6efff;color:var(--blue)}
+.check b{display:block;font-size:14px;font-weight:700}
+.check span{display:block;font-size:13px;color:var(--ink-2)}
+.check .linkBtn{padding:0;min-height:0;margin-top:4px}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:13.5px;padding:9px 0}
+.kv + .kv{border-top:1px solid var(--line)}
+.kv span{color:var(--ink-2)}.kv b{font-weight:600;text-align:right;overflow-wrap:anywhere}
+.callout{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--r-sm);font-size:13px;background:var(--warn-bg);color:#7a4f0c;margin-bottom:12px}
+.callout.info{background:#e9f1ff;color:#1c3f8c}
+.callout svg{margin-top:2px}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:var(--ok-bg);color:var(--ok);white-space:nowrap}
+.tag.warn{background:var(--warn-bg);color:var(--warn)}.tag.bad{background:var(--bad-bg);color:var(--bad)}
+.msg{font-size:13px;min-height:0;margin-top:10px}.msg:empty{display:none}
+.msg.err{color:var(--bad)}.msg.okc{color:var(--ok)}
+.act{display:flex;align-items:center;gap:12px;padding:11px 0}
+.act + .act{border-top:1px solid var(--line)}
+.act .pt{width:10px;height:10px;border-radius:50%;background:var(--ok);flex:none;box-shadow:0 0 0 4px var(--ok-bg)}
+.act .m{flex:1;min-width:0}.act .m b{display:block;font-size:14px;font-weight:600}.act .m span{display:block;font-size:12.5px;color:var(--ink-2);overflow-wrap:anywhere}
+.empty{text-align:center;color:var(--ink-2);font-size:13.5px;padding:18px 6px}
+.skel{background:linear-gradient(90deg,#eaf1fd 25%,#f5f8ff 50%,#eaf1fd 75%);background-size:200% 100%;animation:sk 1.3s infinite;border-radius:12px}
+@keyframes sk{to{background-position:-200% 0}}
+.fG{margin-bottom:12px}
+.fG label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.fI{width:100%;min-height:48px;padding:0 14px;border-radius:13px;border:1px solid var(--line-2);background:#fff;font-size:16px;outline:none}
+.fI:focus{border-color:var(--blue-2);box-shadow:0 0 0 4px rgba(47,123,255,.15)}
+.otp{display:flex;gap:8px;justify-content:center;margin:14px 0 8px}
+.otp input{width:44px;height:52px;text-align:center;font-size:20px;font-weight:700;border-radius:12px;border:1px solid var(--line-2);background:#fff;outline:none}
+.otp input:focus{border-color:var(--blue-2);box-shadow:0 0 0 4px rgba(47,123,255,.15)}
+@media(max-width:360px){.otp input{width:38px}}
+.brand{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:30px;color:var(--ink-3);font-size:11.5px}
+.brand b{display:flex;align-items:center;gap:7px;color:var(--ink);font-size:14px}
+
+/* dialog */
+#scrim{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center;background:rgba(10,26,64,.45);opacity:0;pointer-events:none;transition:opacity .18s}
+#scrim.show{opacity:1;pointer-events:auto}
+#dlg{width:100%;max-width:520px;max-height:92vh;overflow:auto;background:#fff;border-radius:24px 24px 0 0;padding:22px 20px calc(var(--sab) + 20px);transform:translateY(24px);transition:transform .2s ease}
+#scrim.show #dlg{transform:none}
+@media(min-width:600px){#scrim{align-items:center}#dlg{border-radius:24px;padding-bottom:22px}}
+#dlg h3{font-size:19px;font-weight:800;letter-spacing:-.01em;margin:10px 0 6px}
+#dlg p.lead{font-size:14px;color:var(--ink-2)}
+.dIcon{width:52px;height:52px;border-radius:16px;display:grid;place-items:center}
+.cons{list-style:none;display:grid;gap:9px;margin:14px 0}
+.cons li{display:flex;gap:10px;font-size:13.5px;color:var(--ink)}
+.cons svg{color:var(--bad);margin-top:2px}
+.steps{display:flex;gap:6px;margin-bottom:6px}.steps i{height:4px;flex:1;border-radius:4px;background:var(--line-2)}.steps i.on{background:var(--bad)}
+.btnRow{display:grid;gap:10px;margin-top:16px}
+@media(min-width:420px){.btnRow.two{grid-template-columns:1fr 1fr}}
+.big{display:grid;place-items:center;text-align:center;padding:10px 0}
+
+/* toast */
+#toast{position:fixed;left:50%;bottom:calc(var(--sab) + 18px);transform:translate(-50%,12px);background:var(--ink);color:#fff;font-size:13.5px;padding:11px 16px;border-radius:14px;opacity:0;pointer-events:none;transition:.2s;z-index:60;max-width:calc(100vw - 32px)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="appShell">
+  <header id="tb">
+    <button id="tbBack" type="button" aria-label="Back" onclick="goBack()" data-ic="back"></button>
+    <div>
+      <h1 id="tbTitle">Security Center</h1>
+      <p id="tbSub">Keep your Global Digits account safe and in your control</p>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ══ DASHBOARD ══ -->
+    <section id="view-dashboard" class="view" aria-label="Security Center">
+      <div class="hero" id="hero">
+        <div class="shield" aria-hidden="true">
+          <svg viewBox="0 0 88 96" fill="none"><defs>
+            <linearGradient id="sg1" x1="14" y1="4" x2="74" y2="92" gradientUnits="userSpaceOnUse"><stop stop-color="#5aa0ff"/><stop offset=".55" stop-color="#1d5be8"/><stop offset="1" stop-color="#123fa8"/></linearGradient>
+            <linearGradient id="sg2" x1="44" y1="8" x2="44" y2="88" gradientUnits="userSpaceOnUse"><stop stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+            <path d="M44 4 78 16v28c0 22-15 38-34 48C25 82 10 66 10 44V16L44 4Z" fill="url(#sg1)"/>
+            <path d="M44 4 78 16v28c0 22-15 38-34 48V4Z" fill="url(#sg2)" opacity=".35"/>
+            <path d="M44 15 69 24v20c0 16-11 28-25 36C30 72 19 60 19 44V24l25-9Z" fill="#fff" fill-opacity=".14" stroke="#fff" stroke-opacity=".7" stroke-width="2"/>
+            <path d="m31 46 9.5 9.5L58 37" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="heroBody">
+          <span class="eyebrow"><span data-ic="shield" data-s="14"></span>Account Protection</span>
+          <h2 id="heroTitle">Checking your account…</h2>
+          <p id="heroText">Reading your live account and session details.</p>
+          <div class="chips" id="heroChips" aria-live="polite"><span class="chip skel skel"></span><span class="chip skel skel"></span><span class="chip skel skel"></span></div>
+        </div>
+      </div>
+
+      <div class="secHead"><h3>Security Settings</h3><p>Manage your account security and protection settings.</p></div>
+      <div class="list">
+        <button type="button" class="row" onclick="openView('status')">
+          <span class="tile t-blue" data-ic="shieldcheck" data-s="22"></span>
+          <span class="rowTxt"><b>Security Status</b><span>View your security overview and checks.</span></span><span class="chev" data-ic="chev" data-s="18"></span></button>
+        <button type="button" class="row" onclick="openView('logout')">
+          <span class="tile t-violet" data-ic="devices" data-s="22"></span>
+          <span class="rowTxt"><b>Log Out All Devices</b><span>Sign out of every other device and session.</span></span><span class="chev" data-ic="chev" data-s="18"></span></button>
+        <button type="button" class="row" onclick="openView('txsec')">
+          <span class="tile t-teal" data-ic="wallet" data-s="22"></span>
+          <span class="rowTxt"><b>Transaction Security</b><span>Review deposit safety and recent deposits.</span></span><span class="chev" data-ic="chev" data-s="18"></span></button>
+        <button type="button" class="row" onclick="openView('login')">
+          <span class="tile t-violet" data-ic="activity" data-s="22"></span>
+          <span class="rowTxt"><b>Login Activity</b><span>See recent sign-ins on your account.</span></span><span class="chev" data-ic="chev" data-s="18"></span></button>
+        <button type="button" class="row" onclick="openView('recovery')">
+          <span class="tile t-amber" data-ic="mail" data-s="22"></span>
+          <span class="rowTxt"><b>Account Recovery</b><span>Manage your recovery email.</span></span><span class="chev" data-ic="chev" data-s="18"></span></button>
+      </div>
+
+      <div class="danger" id="dangerZone">
+        <div class="secHead"><span data-ic="alert" data-s="22"></span><div><h3>Danger Zone</h3><p>These actions are permanent or hard to undo.</p></div></div>
+        <div class="dCard">
+          <div class="dItem">
+            <span class="tile t-red" data-ic="trash" data-s="22"></span>
+            <span class="rowTxt"><b>Delete Account</b><span>Permanently remove your account and personal data.</span>
+              <span class="note"><span data-ic="info" data-s="14"></span>This action cannot be undone.</span></span>
+            <button type="button" class="btn danger sm" id="delBtn" onclick="openDelete()">Delete Account</button>
+          </div>
+          <div class="dItem">
+            <span class="tile t-red" data-ic="pause" data-s="22"></span>
+            <span class="rowTxt"><b>Deactivate Account</b><span>Sign out and disable your account. Contact support to reactivate.</span></span>
+            <button type="button" class="btn dghost sm" onclick="confirmDeactivate()">Deactivate</button>
+          </div>
+        </div>
+      </div>
+
+      <footer class="brand"><b><span data-ic="shield" data-s="18" style="color:var(--blue)"></span>Global Digits</b><span>Secure · Simple · Global</span></footer>
+    </section>
+
+    <!-- ══ SECURITY STATUS ══ -->
+    <section id="view-status" class="view hidden" aria-label="Security Status">
+      <div class="panel"><div class="intro"><span class="tile t-blue" data-ic="shieldcheck" data-s="22"></span>
+        <div><h3 id="statusDetailTitle">Checking your account…</h3><p id="statusDetailSub">Loading your live account data.</p></div></div></div>
+      <div class="panel"><h4>Checks</h4><div id="statusChecks"></div><p class="msg" id="statusChecked" style="color:var(--ink-3);margin-top:8px"></p></div>
+      <div class="panel"><h4>Account details</h4>
+        <div class="kv"><span>Login email</span><b id="stEmail">—</b></div>
+        <div class="kv"><span>Account created</span><b id="stCreated">—</b></div>
+        <div class="kv"><span>Last sign-in</span><b id="stLast">—</b></div></div>
+      <div class="panel"><h4>Good habits</h4>
+        <div class="check"><span class="dot info" data-ic="key" data-s="14"></span><div><b>Keep your password private</b></div></div>
+        <div class="check"><span class="dot info" data-ic="key" data-s="14"></span><div><b>Use a strong, unique password</b></div></div>
+        <div class="check"><span class="dot info" data-ic="key" data-s="14"></span><div><b>Never share your login details or codes</b></div></div></div>
+    </section>
+
+    <!-- ══ LOG OUT ALL DEVICES ══ -->
+    <section id="view-logout" class="view hidden" aria-label="Log Out All Devices">
+      <div class="panel"><div class="intro"><span class="tile t-violet" data-ic="devices" data-s="22"></span>
+        <div><h3>Sign out other devices</h3><p>Ends your Global Digits sessions on every other phone, tablet or computer. This device stays signed in.</p></div></div></div>
+      <div class="callout"><span data-ic="alert" data-s="16"></span><span>You’ll need to sign in again on those devices. A device may remain usable for a short while (until its current access token expires, typically within an hour) before it is asked to sign in.</span></div>
+      <button type="button" class="btn danger block" id="logoutAllBtn" onclick="confirmLogoutAll()"><span data-ic="logout" data-s="18"></span>Log out other devices</button>
+      <div class="msg" id="logoutAllMsg" role="status" aria-live="polite"></div>
+    </section>
+
+    <!-- ══ TRANSACTION SECURITY ══ -->
+    <section id="view-txsec" class="view hidden" aria-label="Transaction Security">
+      <div class="panel"><div class="intro"><span class="tile t-teal" data-ic="wallet" data-s="22"></span>
+        <div><h3>Deposit security</h3><p>How to keep your wallet deposits safe, plus your latest deposit activity.</p></div></div></div>
+      <div class="panel"><h4>Safety checks</h4>
+        <div class="check"><span class="dot" id="txHttpsDot"></span><div><b id="txHttpsTitle">Secure connection</b><span id="txHttpsDesc"></span></div></div>
+        <div class="check"><span class="dot info" data-ic="shield" data-s="14"></span><div><b>We will never ask for your card details or password</b><span>Global Digits staff will never ask for your password, codes or card details in chat or by phone.</span></div></div>
+        <div class="check"><span class="dot info" data-ic="wallet" data-s="14"></span><div><b>Check every deposit below</b><span>If you see a deposit you didn’t make, log out other devices and contact support.</span></div></div></div>
+      <div class="panel"><h4>Recent deposits</h4><div id="depositList"><div class="skel" style="height:48px;margin-bottom:8px"></div><div class="skel" style="height:48px"></div></div></div>
+    </section>
+
+    <!-- ══ LOGIN ACTIVITY ══ -->
+    <section id="view-login" class="view hidden" aria-label="Login Activity">
+      <div class="panel"><div class="intro"><span class="tile t-violet" data-ic="activity" data-s="22"></span>
+        <div><h3>Login activity</h3><p>Sign-in events recorded on your account, most recent first.</p></div></div></div>
+      <div class="panel"><div id="loginActivityList"><div class="skel" style="height:48px;margin-bottom:8px"></div><div class="skel" style="height:48px;margin-bottom:8px"></div><div class="skel" style="height:48px"></div></div>
+        <div style="text-align:center"><button type="button" class="btn ghost sm hidden" id="loginMoreBtn" onclick="loadLoginActivity(false)">Load more</button></div></div>
+    </section>
+
+    <!-- ══ ACCOUNT RECOVERY ══ -->
+    <section id="view-recovery" class="view hidden" aria-label="Account Recovery">
+      <div class="panel"><div class="intro"><span class="tile t-amber" data-ic="mail" data-s="22"></span>
+        <div><h3>Recovery email</h3><p>A verified recovery email lets you sign in to this account if you forget your login email. It works with your current password.</p></div></div></div>
+
+      <div id="recoveryNoneState" class="panel hidden">
+        <div class="kv" id="recoveryPendingRow" style="display:none"><span>Waiting for verification</span><b id="recoveryPendingEmail">—</b></div>
+        <p style="font-size:13.5px;color:var(--ink-2);margin-bottom:12px" id="recoveryNoneText">No recovery email on file yet.</p>
+        <button type="button" class="btn primary block" onclick="showAddRecoveryForm()"><span data-ic="mail" data-s="18"></span><span id="recoveryAddLabel">Add recovery email</span></button>
+      </div>
+
+      <div id="recoveryVerifiedState" class="panel hidden">
+        <div class="kv" style="padding-top:0"><span>Recovery email</span><b id="recoveryEmailMasked">—</b></div>
+        <div class="kv"><span>Status</span><span class="tag">Verified</span></div>
+        <div class="callout info" style="margin-top:10px"><span data-ic="info" data-s="16"></span><span>You can sign in with either your main email or this recovery email. Both use your current password.</span></div>
+        <button type="button" class="btn ghost block" onclick="showAddRecoveryForm()">Change recovery email</button>
+      </div>
+
+      <div id="recoveryFormEmail" class="panel hidden">
+        <div class="fG"><label for="recoveryEmailInput">Recovery email address</label>
+          <input type="email" id="recoveryEmailInput" class="fI" placeholder="you@example.com" autocomplete="email" inputmode="email"/></div>
+        <div class="msg err" id="recoveryEmailErr" role="alert"></div>
+        <button type="button" class="btn primary block" id="recoverySendBtn" onclick="sendRecoveryOtp()" style="margin-top:12px">Send verification code</button>
+        <button type="button" class="linkBtn" onclick="loadRecoveryState()">Cancel</button>
+      </div>
+
+      <div id="recoveryFormOtp" class="panel hidden" style="text-align:center">
+        <div style="font-size:13.5px;color:var(--ink-2)">Enter the 6-digit code sent to</div>
+        <div style="font-size:14.5px;font-weight:700;margin-top:2px;overflow-wrap:anywhere" id="recoveryOtpEmailLabel">—</div>
+        <div class="otp" id="otpInputs">
+          <input maxlength="1" inputmode="numeric" autocomplete="one-time-code" aria-label="Digit 1"/><input maxlength="1" inputmode="numeric" aria-label="Digit 2"/><input maxlength="1" inputmode="numeric" aria-label="Digit 3"/>
+          <input maxlength="1" inputmode="numeric" aria-label="Digit 4"/><input maxlength="1" inputmode="numeric" aria-label="Digit 5"/><input maxlength="1" inputmode="numeric" aria-label="Digit 6"/>
+        </div>
+        <div style="font-size:12.5px;color:var(--ink-3)" id="otpExpiryLabel"></div>
+        <div class="msg err" id="recoveryOtpErr" role="alert"></div>
+        <div class="msg okc" id="recoveryOtpOk" role="status"></div>
+        <button type="button" class="btn primary block" id="recoveryVerifyBtn" onclick="verifyRecoveryOtp()" style="margin-top:12px">Verify code</button>
+        <button type="button" class="linkBtn" id="resendOtpBtn" onclick="resendRecoveryOtp()">Resend code</button>
+        <button type="button" class="linkBtn" onclick="showAddRecoveryForm()">Use a different email</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="scrim" aria-hidden="true"><div id="dlg" role="dialog" aria-modal="true" aria-labelledby="dlgTitle" tabindex="-1"></div></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script>
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+var currentUser=null,currentView='dashboard',toastTimer,resendCooldownTimer=null,otpExpiryTimer=null,pendingRecoveryEmail=null;
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+/* ── icons (one consistent 1.9px rounded stroke set) ── */
+var ICONS={
+ back:'<polyline points="15 18 9 12 15 6"/>',chev:'<polyline points="9 18 15 12 9 6"/>',
+ shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>',shieldcheck:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+ devices:'<rect x="2" y="4" width="14" height="10" rx="2"/><path d="M6 20h6M9 14v6"/><rect x="18" y="9" width="4" height="9" rx="1.2"/>',
+ wallet:'<path d="M20 7H5a2 2 0 010-4h13v4z"/><path d="M3 5v14a2 2 0 002 2h15V7"/><circle cx="16.5" cy="14" r="1.2"/>',
+ activity:'<line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/>',
+ mail:'<rect x="2" y="4" width="20" height="16" rx="3"/><polyline points="22 6.5 12 13 2 6.5"/>',
+ trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>',
+ alert:'<path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+ info:'<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>',
+ check:'<polyline points="20 6 9 17 4 12"/>',key:'<circle cx="8" cy="15" r="4"/><path d="M10.8 12.2 21 2M16 7l3 3"/>',
+ logout:'<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>',
+ pause:'<circle cx="12" cy="12" r="10"/><line x1="10" y1="9" x2="10" y2="15"/><line x1="14" y1="9" x2="14" y2="15"/>',
+ x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>'
+};
+function ic(n,s){s=s||18;return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+(ICONS[n]||'')+'</svg>';}
+function paintIcons(root){(root||document).querySelectorAll('[data-ic]').forEach(function(el){if(el.dataset.done)return;el.innerHTML=ic(el.dataset.ic,+el.dataset.s||20);el.dataset.done='1';});}
+paintIcons();
+
+function toast(msg){clearTimeout(toastTimer);var el=$('toast');if(!el)return;el.textContent=msg;el.classList.add('show');toastTimer=setTimeout(function(){el.classList.remove('show');},3200);}
+function fmtDate(d){try{return new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'});}catch(e){return d||'';}}
+function fmtDateTime(d){try{return new Date(d).toLocaleDateString('en-NG',{day:'numeric',month:'short',year:'numeric'})+' \u00b7 '+new Date(d).toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'});}catch(e){return d||'';}}
+function maskEmail(e){
+  if(!e)return'\u2014';var parts=e.split('@');if(parts.length!==2)return e;var name=parts[0];
+  var masked=name.length<=2?name[0]+'*'.repeat(Math.max(name.length-1,1)):name.slice(0,1)+'*'.repeat(name.length-2)+name.slice(-1);
+  return masked+'@'+parts[1];
+}
+function parseUserAgent(ua){
+  if(!ua)return{browser:'Unknown',os:'Unknown device'};
+  var browser='Browser';
+  if(/edg/i.test(ua))browser='Edge';else if(/chrome/i.test(ua)&&!/chromium/i.test(ua))browser='Chrome';else if(/firefox/i.test(ua))browser='Firefox';else if(/safari/i.test(ua)&&!/chrome/i.test(ua))browser='Safari';
+  var os='Unknown device';
+  if(/android/i.test(ua))os='Android';else if(/iphone|ipad|ios/i.test(ua))os='iOS';else if(/windows/i.test(ua))os='Windows';else if(/mac os/i.test(ua))os='macOS';else if(/linux/i.test(ua))os='Linux';
+  return{browser:browser,os:os};
+}
+
+/* ── Boot: require a real logged-in session, then load real profile data ── */
+(async function init(){
+  try{
+    var res=await sb.auth.getSession();
+    var session=res.data&&res.data.session;
+    if(!session||!session.user){window.location.href='index.html';return;}
+    var user=session.user;
+    var pr=await sb.from('profiles').select('*').eq('id',user.id).single();
+    currentUser={
+      id:user.id,email:user.email,
+      created_at:(pr.data&&pr.data.created_at)||user.created_at,
+      last_sign_in_at:user.last_sign_in_at,
+      recovery_email:pr.data?pr.data.recovery_email:null,
+      recovery_email_verified:pr.data?!!pr.data.recovery_email_verified:false,
+      status:(pr.data&&pr.data.status)||'active'
+    };
+    renderDashboardStatus();
+  }catch(e){console.error('Security init error:',e);window.location.href='index.html';}
+})();
+
+/* ── Navigation ── */
+function goBack(){
+  if(currentView!=='dashboard'){openView('dashboard');return;}
+  window.location.href='index.html?page=settings';
+}
+var VIEWS={
+ dashboard:['Security Center','Keep your Global Digits account safe and in your control'],
+ status:['Security Status','Your protection checks, based on real account data'],
+ logout:['Log Out All Devices','End sessions on your other devices'],
+ txsec:['Transaction Security','Deposit safety and recent deposits'],
+ login:['Login Activity','Recent sign-ins on your account'],
+ recovery:['Account Recovery','Manage your recovery email']
+};
+function openView(key){
+  if(key==='danger'){openView('dashboard');var z=$('dangerZone');if(z)z.scrollIntoView({behavior:'smooth',block:'start'});return;}
+  var target=$('view-'+key);if(!target||!VIEWS[key])return;
+  document.querySelectorAll('.view').forEach(function(v){v.classList.add('hidden');});
+  target.classList.remove('hidden');currentView=key;
+  $('tbTitle').textContent=VIEWS[key][0];$('tbSub').textContent=VIEWS[key][1];
+  window.scrollTo(0,0);
+  if(key==='status')loadStatusDetail();
+  if(key==='txsec')loadDeposits();
+  if(key==='login')loadLoginActivity(true);
+  if(key==='recovery')loadRecoveryState();
+}
+
+/* ── Real checks (single source of truth for hero + Security Status) ── */
+function computeChecks(){
+  var c=currentUser,active=c.status==='active',secure=location.protocol==='https:'||location.hostname==='localhost';
+  return [
+    {key:'session',ok:true,title:'Signed in on this device',desc:'Your session was verified when this page opened.'},
+    {key:'status',ok:active,title:'Account status',desc:active?'Your account is active.':'Your account status is \u201c'+c.status+'\u201d. Contact support if this is unexpected.'},
+    {key:'recovery',ok:c.recovery_email_verified,title:'Recovery email',desc:c.recovery_email_verified?'Verified: '+maskEmail(c.recovery_email):'Not verified yet. Add one so you can regain access if you lose your login email.',action:c.recovery_email_verified?null:'recovery'},
+    {key:'https',ok:secure,title:'Secure connection',desc:secure?'This page was loaded over an encrypted (HTTPS) connection.':'This page was not loaded over HTTPS. Avoid entering sensitive details.'}
+  ];
+}
+function renderDashboardStatus(){
+  var checks=computeChecks(),c=currentUser,active=c.status==='active',rec=c.recovery_email_verified;
+  var hero=$('hero');hero.classList.toggle('warn',!active||!rec);
+  $('heroTitle').textContent=!active?'Your account needs attention':rec?'Your account is secure':'Your account is active';
+  $('heroText').textContent=!active?'Your account status is \u201c'+c.status+'\u201d. Contact support if this is unexpected.':rec?'Your session, account status and recovery email all check out.':'Verify a recovery email to complete your account protection.';
+  function chip(ok,t){return '<span class="chip'+(ok?'':' warn')+'"><i>'+ic(ok?'check':'alert',11)+'</i>'+esc(t)+'</span>';}
+  $('heroChips').innerHTML=chip(true,'Signed in')+chip(active,active?'Account active':'Status: '+c.status)+chip(rec,rec?'Recovery email verified':'No verified recovery email');
+}
+
+/* ── Security Status ── */
+function loadStatusDetail(){
+  var checks=computeChecks(),bad=checks.filter(function(x){return !x.ok;}).length,c=currentUser;
+  $('statusDetailTitle').textContent=bad===0?'No issues found':bad===1?'1 item needs attention':bad+' items need attention';
+  $('statusDetailSub').textContent=bad===0?'All '+checks.length+' checks below passed.':'Review the highlighted checks below.';
+  $('statusChecks').innerHTML=checks.map(function(x){
+    return '<div class="check"><span class="dot'+(x.ok?'':' warn')+'">'+ic(x.ok?'check':'alert',14)+'</span><div><b>'+esc(x.title)+'</b><span>'+esc(x.desc)+'</span>'+(x.action?'<button type="button" class="linkBtn" onclick="openView(\''+x.action+'\')">Set it up</button>':'')+'</div></div>';
+  }).join('');
+  $('statusChecked').textContent='Checked at '+new Date().toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'});
+  $('stEmail').textContent=maskEmail(c.email);$('stCreated').textContent=c.created_at?fmtDate(c.created_at):'\u2014';
+  $('stLast').textContent=c.last_sign_in_at?fmtDateTime(c.last_sign_in_at):'\u2014';
+}
+
+/* ── Dialog manager (accessible: focus trap, Esc, restores focus) ── */
+var modalOpener=null,modalLocked=false;
+function showModal(html){
+  var s=$('scrim'),d=$('dlg');
+  if(!s.classList.contains('show'))modalOpener=document.activeElement;
+  d.innerHTML=html;paintIcons(d);s.classList.add('show');s.setAttribute('aria-hidden','false');
+  setTimeout(function(){var f=d.querySelector('[data-autofocus]')||d;f.focus();},30);
+}
+function closeModal(force){
+  if(modalLocked&&!force)return;
+  var s=$('scrim');s.classList.remove('show');s.setAttribute('aria-hidden','true');modalLocked=false;
+  if(modalOpener&&modalOpener.focus&&document.contains(modalOpener))try{modalOpener.focus();}catch(e){}
+  modalOpener=null;
+}
+$('scrim').addEventListener('mousedown',function(e){if(e.target===this)closeModal();});
+document.addEventListener('keydown',function(e){
+  var s=$('scrim');if(!s.classList.contains('show'))return;
+  if(e.key==='Escape'){closeModal();return;}
+  if(e.key!=='Tab')return;
+  var f=Array.prototype.filter.call($('dlg').querySelectorAll('button,input,[href],[tabindex]:not([tabindex="-1"])'),function(el){return !el.disabled&&el.offsetParent!==null;});
+  if(!f.length){e.preventDefault();return;}
+  var first=f[0],last=f[f.length-1];
+  if(e.shiftKey&&(document.activeElement===first||document.activeElement===$('dlg'))){e.preventDefault();last.focus();}
+  else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+});
+function setBtn(btn,busy,label){btn.disabled=!!busy;btn.innerHTML=busy?'<span class="spin"></span> '+label:label;}
+
+/* ── Log Out All Devices (Supabase Auth: scope "others") ── */
+function confirmLogoutAll(){
+  showModal('<div class="dIcon t-violet">'+ic('devices',26)+'</div><h3 id="dlgTitle">Sign out your other devices?</h3>'+
+   '<p class="lead">Every other session on your account will be ended. This device stays signed in.</p>'+
+   '<ul class="cons"><li>'+ic('alert',16)+'<span>You’ll need to sign in again on your other devices.</span></li><li>'+ic('info',16)+'<span>A device may keep working briefly until its current access token expires (typically within an hour).</span></li></ul>'+
+   '<div class="msg err" id="logoutModalErr" role="alert"></div>'+
+   '<div class="btnRow two"><button type="button" class="btn ghost" onclick="closeModal()">Cancel</button><button type="button" class="btn danger" id="logoutConfirmBtn" data-autofocus onclick="logoutAllDevices()">Log out other devices</button></div>');
+}
+async function logoutAllDevices(){
+  var btn=$('logoutConfirmBtn'),err=$('logoutModalErr'),msg=$('logoutAllMsg');
+  if(!btn||btn.disabled)return;
+  err.textContent='';setBtn(btn,true,'Signing out…');modalLocked=true;
+  try{
+    // scope:'others' revokes the refresh tokens of every session except this one (server-side, Supabase Auth).
+    var res=await sb.auth.signOut({scope:'others'});
+    if(res&&res.error)throw res.error;
+    modalLocked=false;closeModal(true);
+    msg.className='msg okc';msg.textContent='Done. Other sessions were signed out at '+new Date().toLocaleTimeString('en-NG',{hour:'2-digit',minute:'2-digit'})+'. This device stays signed in.';
+    toast('Signed out of your other devices');
+  }catch(e){
+    console.error('logout others failed:',e&&e.message);
+    modalLocked=false;setBtn(btn,false,'Try again');
+    err.textContent='We couldn\u2019t sign out your other devices. Check your connection and try again.';
+  }
+}
+
+/* ── Transaction Security (read-only: real recent deposits) ── */
+async function loadDeposits(){
+  var s=location.protocol==='https:'||location.hostname==='localhost';
+  $('txHttpsDot').className='dot'+(s?'':' warn');$('txHttpsDot').innerHTML=ic(s?'check':'alert',14);
+  $('txHttpsTitle').textContent=s?'Encrypted connection':'Connection is not encrypted';
+  $('txHttpsDesc').textContent=s?'This page was loaded over HTTPS.':'Open Global Digits over HTTPS before making deposits.';
+  var el=$('depositList');
+  try{
+    var res=await sb.from('transactions').select('*').eq('user_id',currentUser.id).eq('direction','cr').eq('category','funding').order('created_at',{ascending:false}).limit(5);
+    if(res.error)throw res.error;
+    var rows=res.data||[];
+    if(!rows.length){el.innerHTML='<div class="empty">No deposits yet.</div>';return;}
+    el.innerHTML=rows.map(function(d){
+      var st=d.status||'pending',cls=st==='success'?'':(st==='failed'||st==='error'?' bad':' warn');
+      return '<div class="act"><span class="pt"></span><div class="m"><b>\u20a6'+Number(d.amount||0).toLocaleString()+' deposit</b><span>'+esc(fmtDateTime(d.created_at))+'</span></div><span class="tag'+cls+'">'+esc(st)+'</span></div>';
+    }).join('');
+  }catch(e){
+    console.error('deposits load failed:',e&&e.message);
+    el.innerHTML='<div class="empty">Couldn\u2019t load deposit history.<br><button type="button" class="btn ghost sm" style="margin-top:10px" onclick="loadDeposits()">Retry</button></div>';
+  }
+}
+
+/* ── Login Activity (real rows from public.login_activity, paged) ── */
+var LOGIN_PAGE=20,loginOffset=0,loginBusy=false;
+async function loadLoginActivity(reset){
+  if(loginBusy)return;loginBusy=true;
+  var el=$('loginActivityList'),more=$('loginMoreBtn');
+  if(reset){loginOffset=0;el.innerHTML='<div class="skel" style="height:48px;margin-bottom:8px"></div><div class="skel" style="height:48px;margin-bottom:8px"></div><div class="skel" style="height:48px"></div>';more.classList.add('hidden');}
+  else{more.disabled=true;more.textContent='Loading…';}
+  try{
+    var res=await sb.from('login_activity').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false}).range(loginOffset,loginOffset+LOGIN_PAGE-1);
+    if(res.error)throw res.error;
+    var rows=res.data||[];
+    if(reset&&!rows.length){el.innerHTML='<div class="empty">No login activity recorded yet.</div>';return;}
+    var html=rows.map(function(r){
+      var ua=parseUserAgent(r.user_agent);
+      return '<div class="act"><span class="pt"></span><div class="m"><b>'+esc(fmtDateTime(r.created_at))+'</b><span>'+esc(ua.browser+' on '+ua.os+(r.ip?' \u00b7 '+r.ip:''))+'</span></div><span class="tag">Success</span></div>';
+    }).join('');
+    if(reset)el.innerHTML=html;else el.insertAdjacentHTML('beforeend',html);
+    loginOffset+=rows.length;
+    more.classList.toggle('hidden',rows.length<LOGIN_PAGE);
+  }catch(e){
+    console.error('login activity failed:',e&&e.code,e&&e.message);
+    var missing=e&&(e.code==='42P01'||/does not exist|schema cache/i.test(e.message||''));
+    var box='<div class="empty">'+(missing?'Login activity isn\u2019t set up on this project yet.':'Couldn\u2019t load login activity.')+'<br><button type="button" class="btn ghost sm" style="margin-top:10px" onclick="loadLoginActivity(true)">Retry</button></div>';
+    if(reset)el.innerHTML=box;else toast('Couldn\u2019t load more activity.');
+  }finally{loginBusy=false;more.disabled=false;more.textContent='Load more';}
+}
+
+/* ── Account Recovery ── */
+function loadRecoveryState(){
+  ['recoveryNoneState','recoveryVerifiedState','recoveryFormEmail','recoveryFormOtp'].forEach(function(i){$(i).classList.add('hidden');});
+  clearInterval(otpExpiryTimer);clearInterval(resendCooldownTimer);
+  var c=currentUser;
+  if(c.recovery_email_verified){
+    $('recoveryEmailMasked').textContent=maskEmail(c.recovery_email);$('recoveryVerifiedState').classList.remove('hidden');
+  }else{
+    var pending=!!c.recovery_email;
+    $('recoveryPendingRow').style.display=pending?'flex':'none';
+    $('recoveryPendingEmail').textContent=pending?maskEmail(c.recovery_email):'';
+    $('recoveryNoneText').textContent=pending?'This email hasn\u2019t been verified, so it can\u2019t be used to sign in yet.':'No recovery email on file yet.';
+    $('recoveryAddLabel').textContent=pending?'Verify a recovery email':'Add recovery email';
+    $('recoveryNoneState').classList.remove('hidden');
+  }
+}
+function showAddRecoveryForm(){
+  ['recoveryNoneState','recoveryVerifiedState','recoveryFormOtp'].forEach(function(i){$(i).classList.add('hidden');});
+  $('recoveryEmailErr').textContent='';$('recoveryEmailInput').value='';$('recoveryFormEmail').classList.remove('hidden');
+  setTimeout(function(){$('recoveryEmailInput').focus();},30);
+}
+async function recoveryCall(payload){
+  var sess=await sb.auth.getSession();
+  var jwt=sess.data&&sess.data.session&&sess.data.session.access_token;
+  if(!jwt)throw new Error('Your session has expired. Please sign in again.');
+  var res=await fetch(SUPA_URL+'/functions/v1/recovery-email-otp',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'apikey':SUPA_KEY},body:JSON.stringify(payload)});
+  var data={};try{data=await res.json();}catch(e){}
+  return {res:res,data:data};
+}
+async function sendRecoveryOtp(){
+  var input=$('recoveryEmailInput'),err=$('recoveryEmailErr'),btn=$('recoverySendBtn');
+  var email=(input.value||'').trim().toLowerCase();err.textContent='';
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){err.textContent='Enter a valid email address.';return;}
+  if(email===(currentUser.email||'').toLowerCase()){err.textContent='Recovery email must be different from your login email.';return;}
+  setBtn(btn,true,'Sending code…');
+  try{
+    var r=await recoveryCall({action:'send',email:email});
+    if(!r.res.ok)throw new Error(r.data.error||'Could not send verification code.');
+    pendingRecoveryEmail=email;
+    $('recoveryOtpEmailLabel').textContent=email;
+    $('recoveryFormEmail').classList.add('hidden');$('recoveryFormOtp').classList.remove('hidden');
+    $('recoveryOtpErr').textContent='';$('recoveryOtpOk').textContent='';
+    clearOtpInputs();startOtpExpiryCountdown(r.data.expires_in_seconds||600);startResendCooldown(60);toast('Verification code sent');
+  }catch(e){console.error('send otp failed:',e&&e.message);err.textContent=e.message||'Could not send verification code.';}
+  finally{setBtn(btn,false,'Send verification code');}
+}
+async function resendRecoveryOtp(){
+  var btn=$('resendOtpBtn');if(btn.disabled||!pendingRecoveryEmail)return;
+  btn.disabled=true;
+  try{
+    var r=await recoveryCall({action:'send',email:pendingRecoveryEmail});
+    if(!r.res.ok)throw new Error(r.data.error||'Could not resend code.');
+    $('recoveryOtpOk').textContent='A new code has been sent.';$('recoveryOtpErr').textContent='';
+    clearOtpInputs();startOtpExpiryCountdown(r.data.expires_in_seconds||600);startResendCooldown(60);
+  }catch(e){$('recoveryOtpErr').textContent=e.message||'Could not resend code.';btn.disabled=false;}
+}
+function startResendCooldown(seconds){
+  var btn=$('resendOtpBtn');clearInterval(resendCooldownTimer);var remaining=seconds;
+  btn.disabled=true;btn.textContent='Resend code ('+remaining+'s)';
+  resendCooldownTimer=setInterval(function(){
+    remaining--;
+    if(remaining<=0){clearInterval(resendCooldownTimer);btn.disabled=false;btn.textContent='Resend code';return;}
+    btn.textContent='Resend code ('+remaining+'s)';
+  },1000);
+}
+function startOtpExpiryCountdown(seconds){
+  var label=$('otpExpiryLabel');clearInterval(otpExpiryTimer);var remaining=seconds;
+  function render(){var m=Math.floor(remaining/60),s=remaining%60;label.textContent='Code expires in '+m+':'+String(s).padStart(2,'0');}
+  render();
+  otpExpiryTimer=setInterval(function(){
+    remaining--;
+    if(remaining<=0){clearInterval(otpExpiryTimer);label.textContent='Code expired \u2014 request a new one.';return;}
+    render();
+  },1000);
+}
+function clearOtpInputs(){var inputs=document.querySelectorAll('#otpInputs input');inputs.forEach(function(i){i.value='';});if(inputs[0])inputs[0].focus();}
+(function wireOtpInputs(){
+  document.addEventListener('input',function(e){
+    if(!e.target.matches('#otpInputs input'))return;
+    var inputs=Array.prototype.slice.call(document.querySelectorAll('#otpInputs input')),i=inputs.indexOf(e.target);
+    var digits=e.target.value.replace(/\D/g,'');
+    e.target.value=digits.slice(0,1);
+    if(e.target.value&&i<inputs.length-1)inputs[i+1].focus();
+  });
+  document.addEventListener('keydown',function(e){
+    if(!e.target.matches('#otpInputs input'))return;
+    if(e.key==='Backspace'&&!e.target.value){
+      var inputs=Array.prototype.slice.call(document.querySelectorAll('#otpInputs input')),i=inputs.indexOf(e.target);
+      if(i>0)inputs[i-1].focus();
+    }
+  });
+  document.addEventListener('paste',function(e){ // paste / autofill a full 6-digit code
+    if(!e.target.matches||!e.target.matches('#otpInputs input'))return;
+    var t=((e.clipboardData||window.clipboardData).getData('text')||'').replace(/\D/g,'').slice(0,6);
+    if(t.length<2)return;e.preventDefault();
+    var inputs=document.querySelectorAll('#otpInputs input');
+    for(var k=0;k<inputs.length;k++)inputs[k].value=t[k]||'';
+    inputs[Math.min(t.length,inputs.length)-1].focus();
+  });
+})();
+async function verifyRecoveryOtp(){
+  var inputs=document.querySelectorAll('#otpInputs input');
+  var code=Array.prototype.map.call(inputs,function(i){return i.value;}).join('');
+  var err=$('recoveryOtpErr'),ok=$('recoveryOtpOk'),btn=$('recoveryVerifyBtn');
+  err.textContent='';ok.textContent='';
+  if(!/^\d{6}$/.test(code)){err.textContent='Enter all 6 digits.';return;}
+  setBtn(btn,true,'Verifying…');
+  try{
+    var r=await recoveryCall({action:'verify',code:code});
+    if(!r.res.ok)throw new Error(r.data.error||'Verification failed.');
+    // Only the server's confirmation marks the email as verified.
+    currentUser.recovery_email=r.data.recovery_email;currentUser.recovery_email_verified=true;
+    clearInterval(otpExpiryTimer);clearInterval(resendCooldownTimer);
+    ok.textContent='Recovery email verified.';toast('Recovery email verified');renderDashboardStatus();
+    setTimeout(function(){if(currentView==='recovery')loadRecoveryState();},900);
+  }catch(e){console.error('verify otp failed:',e&&e.message);err.textContent=e.message||'Verification failed.';}
+  finally{setBtn(btn,false,'Verify code');}
+}
+
+/* ── Deactivate ── */
+function confirmDeactivate(){
+  showModal('<div class="dIcon t-red">'+ic('pause',26)+'</div><h3 id="dlgTitle">Deactivate your account?</h3>'+
+   '<p class="lead">Your account will be disabled and you’ll be signed out everywhere.</p>'+
+   '<ul class="cons"><li>'+ic('alert',16)+'<span>You won’t be able to use Global Digits until it is reactivated.</span></li><li>'+ic('info',16)+'<span>Contact support to reactivate it later. Your data is not deleted.</span></li></ul>'+
+   '<div class="msg err" id="deactErr" role="alert"></div>'+
+   '<div class="btnRow two"><button type="button" class="btn ghost" data-autofocus onclick="closeModal()">Cancel</button><button type="button" class="btn danger" id="deactBtn" onclick="doDeactivate()">Deactivate</button></div>');
+}
+async function doDeactivate(){
+  var btn=$('deactBtn'),msg=$('deactErr');if(btn.disabled)return;
+  msg.textContent='';setBtn(btn,true,'Deactivating…');modalLocked=true;
+  try{
+    var res=await sb.from('profiles').update({status:'deactivated'}).eq('id',currentUser.id);
+    if(res.error)throw res.error;
+    await sb.auth.signOut({scope:'global'});
+    window.location.href='index.html';
+  }catch(e){
+    // Typically the database rejecting the new status value (e.g. a CHECK constraint on profiles.status).
+    console.error('confirmDeactivate failed:',e&&e.code,e&&e.message);
+    modalLocked=false;setBtn(btn,false,'Try again');
+    msg.textContent='Could not deactivate your account. Please try again or contact support.';
+  }
+}
+
+/* ── Delete Account: warning → confirm (re-authenticate) → processing → result ── */
+var del={step:1,busy:false,err:''};
+function openDelete(){del={step:1,busy:false,err:''};renderDel();}
+function delErrMsg(code,fallback){
+  return ({
+    invalid_password:'That password isn\u2019t correct. Please try again.',
+    rate_limited:'Too many attempts. Please wait a few minutes and try again.',
+    invalid_session:'Your session has expired. Please sign in again, then retry.',
+    password_required:'Enter your password to continue.',
+    blocked:'We couldn\u2019t delete your account because some of your records need our team\u2019s help. Nothing was deleted \u2014 please contact support.',
+    cleanup_failed:'We hit a problem while removing your data. You can try again; it is safe to retry.',
+    auth_delete_failed:'Your data was removed but we couldn\u2019t finish closing the account. Please try again \u2014 it is safe to retry.',
+    server_error:'Something went wrong on our side. Please try again.'
+  })[code]||fallback||'Could not delete your account. Please try again or contact support.';
+}
+function renderDel(){
+  var h='';
+  var dots='<div class="steps" aria-hidden="true"><i class="on"></i><i class="'+(del.step>=2?'on':'')+'"></i><i class="'+(del.step>=3?'on':'')+'"></i></div>';
+  if(del.step===1){
+    h=dots+'<div class="dIcon t-red">'+ic('trash',26)+'</div><h3 id="dlgTitle">Delete your account?</h3>'+
+     '<p class="lead">This is permanent. Please read what will happen.</p>'+
+     '<ul class="cons"><li>'+ic('alert',16)+'<span>Your login and profile are permanently removed and can’t be restored.</span></li>'+
+     '<li>'+ic('alert',16)+'<span>Any remaining wallet balance and pending orders can’t be recovered. Use or withdraw them first.</span></li>'+
+     '<li>'+ic('info',16)+'<span>Payment and transaction records may be kept without your personal link where needed for financial record-keeping.</span></li></ul>'+
+     '<div class="btnRow two"><button type="button" class="btn ghost" data-autofocus onclick="closeModal()">Cancel</button><button type="button" class="btn danger" onclick="del.step=2;renderDel()">Continue</button></div>';
+  }else if(del.step===2){
+    h=dots+'<div class="dIcon t-red">'+ic('key',26)+'</div><h3 id="dlgTitle">Confirm it’s you</h3>'+
+     '<p class="lead">Enter your password and type <b>DELETE</b> to confirm.</p>'+
+     '<div class="fG" style="margin-top:14px"><label for="delPw">Password</label><input id="delPw" class="fI" type="password" autocomplete="current-password" data-autofocus oninput="delCheck()"/></div>'+
+     '<div class="fG"><label for="delPhrase">Type DELETE</label><input id="delPhrase" class="fI" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" oninput="delCheck()"/></div>'+
+     '<div class="msg err" id="delErr" role="alert">'+esc(del.err)+'</div>'+
+     '<div class="btnRow two"><button type="button" class="btn ghost" onclick="closeModal()">Cancel</button><button type="button" class="btn danger" id="delGo" disabled onclick="submitDelete()">Delete my account</button></div>';
+  }else if(del.step===3){
+    h=dots+'<div class="big"><span class="spin" style="width:38px;height:38px;border-width:4px;border-color:#f7c9cd;border-top-color:var(--bad)"></span></div><h3 id="dlgTitle" style="text-align:center">Deleting your account…</h3><p class="lead" style="text-align:center">Please keep this page open. This can take a few seconds.</p>';
+  }else{
+    h='<div class="big"><div class="dIcon t-teal" style="width:64px;height:64px">'+ic('check',32)+'</div></div><h3 id="dlgTitle" style="text-align:center">Account deleted</h3><p class="lead" style="text-align:center">Your account has been permanently deleted. Taking you back…</p>'+
+     '<div class="btnRow"><button type="button" class="btn primary" data-autofocus onclick="window.location.href=\'index.html\'">Continue</button></div>';
+  }
+  showModal(h);
+  modalLocked=(del.step===3||del.step===4);
+}
+function delCheck(){
+  var ok=($('delPw').value.length>0)&&($('delPhrase').value.trim()==='DELETE');
+  $('delGo').disabled=!ok||del.busy;
+}
+async function accountGone(){ // after a lost response: ask the auth server whether this user still exists
+  try{
+    var r=await sb.auth.getUser();
+    if(r.data&&r.data.user)return'exists';
+    var m=String((r.error&&r.error.message)||'');
+    if(r.error&&(r.error.status===403||r.error.status===404||/does not exist|not found|sub claim/i.test(m)))return'gone';
+  }catch(e){}
+  return'unknown';
+}
+function delFinish(){
+  del.step=4;del.busy=false;renderDel();
+  try{sb.auth.signOut({scope:'local'});}catch(e){}
+  setTimeout(function(){window.location.href='index.html';},3500);
+}
+function delFail(msg){del.step=2;del.busy=false;del.err=msg;modalLocked=false;renderDel();var p=$('delPw');if(p){p.value='';p.focus();}}
+async function submitDelete(){
+  if(del.busy)return;
+  var pw=$('delPw').value,phrase=$('delPhrase').value.trim();
+  if(!pw||phrase!=='DELETE')return;
+  del.busy=true;del.err='';del.step=3;renderDel();
+  window.onbeforeunload=function(e){e.preventDefault();e.returnValue='';return '';};
+  var ctrl=new AbortController(),to=setTimeout(function(){ctrl.abort();},45000);
+  try{
+    var sess=await sb.auth.getSession();
+    var jwt=sess.data&&sess.data.session&&sess.data.session.access_token;
+    if(!jwt){delFail(delErrMsg('invalid_session'));return;}
+    var res=await fetch(SUPA_URL+'/functions/v1/delete-account',{
+      method:'POST',signal:ctrl.signal,
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+jwt,'apikey':SUPA_KEY},
+      body:JSON.stringify({password:pw,confirm:'DELETE'})
+    });
+    var raw=await res.text(),data={};
+    try{data=raw?JSON.parse(raw):{};}catch(pe){}
+    if(res.ok&&data.ok===true){delFinish();return;}   // success is shown ONLY on explicit server confirmation
+    console.error('delete-account failed:',res.status,data&&data.code);
+    if(res.status>=500&&(await accountGone())==='gone'){delFinish();return;}
+    delFail(delErrMsg(data&&data.code,res.status===404?'Account deletion isn\u2019t available right now. Please contact support.':null));
+  }catch(e){
+    console.error('delete-account request error:',e&&e.name);
+    var st=await accountGone();   // response may have been lost after the server finished
+    if(st==='gone')delFinish();
+    else if(st==='exists')delFail('We couldn\u2019t reach the server, so your account was not deleted. Check your connection and try again.');
+    else delFail('We couldn\u2019t confirm whether your account was deleted. Check your connection and try again.');
+  }finally{clearTimeout(to);window.onbeforeunload=null;del.busy=false;}
+}
+</script>
+</body>
+</html>
