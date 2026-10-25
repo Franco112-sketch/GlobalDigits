@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#ffffff"/>
+<title>Create Account — Global Digits</title>
+<meta name="description" content="Create your Global Digits account — your trusted digital services platform."/>
+<meta name="robots" content="noindex"/>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;--ink:#0f1b33;--ink2:#5b6a86;--ink3:#93a0b8;--line:#dbe3f1;--danger:#d92d43;--ok:#12805c;font-synthesis:none}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);background:#fff;min-height:100vh;min-height:100dvh;-webkit-font-smoothing:antialiased}
+.shell{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;max-width:1080px;width:100%;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand img{width:34px;height:34px;border-radius:10px;object-fit:contain}
+.brand b{font-size:19px;font-weight:800;letter-spacing:-.02em}.brand b span{color:var(--brand)}
+.top .alt{font-size:13.5px;color:var(--ink2)}
+.top .alt a{color:var(--brand);font-weight:700;text-decoration:none}.top .alt a:hover{text-decoration:underline}
+main{flex:1;width:100%;max-width:440px;margin:0 auto;padding:clamp(20px,6vh,56px) 20px 40px}
+/* progress */
+.stepLabel{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 10px}
+.bar{height:4px;border-radius:4px;background:#e9eefa;overflow:hidden}
+.bar i{display:block;height:100%;width:25%;border-radius:4px;background:var(--brand);transition:width .4s cubic-bezier(.3,.7,.2,1)}
+/* panels */
+.panel{padding-top:28px;animation:inF .32s cubic-bezier(.3,.7,.2,1)}
+.panel.back{animation-name:inB}
+@keyframes inF{from{opacity:0;transform:translateX(18px)}}
+@keyframes inB{from{opacity:0;transform:translateX(-18px)}}
+h1{font-size:clamp(28px,7vw,34px);line-height:1.12;font-weight:800;letter-spacing:-.03em;margin:0 0 8px;outline:none}
+.sub{font-size:15px;line-height:1.5;color:var(--ink2);margin:0 0 26px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:380px){.row2{grid-template-columns:1fr}}
+.f{margin-bottom:16px}
+.f label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+.f label .opt{font-weight:500;color:var(--ink3)}
+.in{position:relative}
+.in input{width:100%;height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;padding:0 14px;font-size:16px;font-weight:500;font-family:inherit;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+.in input::placeholder{color:var(--ink3);font-weight:400}
+.in input:hover{border-color:#c5d1e8}
+.in input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(26,86,219,.12)}
+.in.pre input{padding-left:30px}
+.in .at{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink3);font-weight:600;pointer-events:none}
+.in.tog input{padding-right:46px}
+.f.bad input{border-color:var(--danger)}.f.bad input:focus{box-shadow:0 0 0 4px rgba(217,45,67,.12)}
+.in input.up{text-transform:uppercase;letter-spacing:.06em}.in input.up::placeholder{text-transform:none;letter-spacing:0}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;border-radius:9px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.eye:hover{color:var(--ink2);background:#f3f6fc}.eye svg{width:18px;height:18px}
+.err{display:none;font-size:12.5px;color:var(--danger);margin:6px 0 0;line-height:1.4}
+.f.bad .err{display:block}
+.help{font-size:12.5px;color:var(--ink2);margin:6px 0 0;line-height:1.4;min-height:18px}
+.help.ok{color:var(--ok)}
+/* strength */
+.meter{display:flex;gap:5px;margin-top:10px}
+.meter i{flex:1;height:4px;border-radius:4px;background:#e9eefa;transition:background .2s}
+.meter[data-s="1"] i:nth-child(-n+1){background:var(--danger)}
+.meter[data-s="2"] i:nth-child(-n+2){background:#e08a1e}
+.meter[data-s="3"] i:nth-child(-n+3){background:var(--brand)}
+.meter[data-s="4"] i{background:var(--ok)}
+.mtxt{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);margin-top:7px}
+.mtxt .rule.ok{color:var(--ok);font-weight:600}
+/* review */
+.review{border-top:1px solid var(--line);margin:0 0 22px}
+.rv{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.rv dt{width:84px;font-size:13px;color:var(--ink2)}
+.rv dd{flex:1;margin:0;font-size:14.5px;font-weight:600;word-break:break-word;min-width:0}
+.rv button{border:0;background:none;color:var(--brand);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;padding:4px 2px}
+.rv button:hover{text-decoration:underline}
+.terms{display:flex;gap:11px;align-items:flex-start;margin:0 0 6px}
+.terms input{appearance:none;-webkit-appearance:none;width:21px;height:21px;min-width:21px;border:1.5px solid #c5d1e8;border-radius:6px;margin:1px 0 0;cursor:pointer;background:#fff;position:relative;transition:.15s}
+.terms input:checked{background:var(--brand);border-color:var(--brand)}
+.terms input:checked::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(40deg)}
+.terms input:focus-visible{box-shadow:0 0 0 4px rgba(26,86,219,.2)}
+.terms label{font-size:14px;line-height:1.55;color:var(--ink2);cursor:pointer}
+.terms a{color:var(--brand);font-weight:600;text-decoration:none}.terms a:hover{text-decoration:underline}
+.f.bad.tc .err{margin-left:32px}
+/* buttons */
+.actions{display:flex;gap:10px;margin-top:26px}
+.btn{height:50px;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,background .15s,box-shadow .15s,opacity .15s}
+.btn svg{width:18px;height:18px}
+.btn:active{transform:scale(.985)}
+.btn:focus-visible,.eye:focus-visible,.g:focus-visible,.rv button:focus-visible{outline:3px solid rgba(26,86,219,.35);outline-offset:2px}
+.primary{flex:1;border:0;color:#fff;background:var(--brand);box-shadow:0 10px 22px -12px rgba(26,86,219,.7)}
+.primary:hover{background:var(--brand-dk)}
+.primary:disabled{opacity:.7;cursor:not-allowed;transform:none}
+.ghost{padding:0 20px;border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+.ghost:hover{background:#f6f8fd;border-color:#c5d1e8}
+.ghost:disabled{opacity:.5;cursor:not-allowed}
+.spin{width:17px;height:17px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.divider{display:flex;align-items:center;gap:12px;margin:24px 0 18px;font-size:12.5px;color:var(--ink3)}
+.divider:before,.divider:after{content:'';flex:1;height:1px;background:var(--line)}
+.g{width:100%;height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:14.5px;font-weight:700;font-family:inherit;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:.15s}
+.g:hover{background:#f6f8fd;border-color:#c5d1e8}.g:disabled{opacity:.6;cursor:not-allowed}.g svg{width:19px;height:19px}
+.formErr{display:none;margin:0 0 16px;padding:12px 14px;border-radius:12px;background:#fdecef;color:#a11d30;font-size:13.5px;line-height:1.45}
+.formErr.show{display:block}
+/* success */
+.done{text-align:center;padding:56px 0 20px;animation:inF .4s}
+.tick{width:68px;height:68px;border-radius:50%;background:var(--brand);color:#fff;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;animation:pop .45s cubic-bezier(.3,1.5,.5,1)}
+.tick svg{width:32px;height:32px}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.done p{color:var(--ink2);font-size:15px;margin:0}
+#toast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#1a2333;color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:600;max-width:88vw;text-align:center;box-shadow:0 12px 30px -10px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:999}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+@media(min-width:640px){.top{padding:24px 32px}}
+.split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);min-height:100vh;min-height:100dvh}
+.aside{position:relative;overflow:hidden;color:#fff;background:linear-gradient(155deg,#0f1b33 0%,#12306b 58%,#1a56db 130%);padding:44px clamp(36px,5vw,72px);display:flex;flex-direction:column;justify-content:space-between;gap:40px}
+.aside .deco{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.aside>:not(.deco){position:relative}
+.aside .brand{color:#fff}.aside .brand b span{color:#8fb3ff}
+.aside h2{font-size:clamp(30px,3.3vw,46px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:0 0 14px;max-width:440px}
+.aside .lead{color:#c3d3f5;font-size:16px;line-height:1.55;max-width:410px;margin:0 0 34px}
+.feat{display:flex;gap:14px;align-items:center;margin-bottom:16px}
+.feat i{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;flex:none}
+.feat svg{width:20px;height:20px}
+.feat b{display:block;font-size:14.5px}.feat span{font-size:13px;color:#b5c7ee}
+.aside .foot{font-size:12.5px;color:#9db4e6}
+.pane{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.pane:before{content:'';position:absolute;top:-140px;right:-120px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(26,86,219,.14),rgba(26,86,219,0) 70%);pointer-events:none}
+.pane:after{content:'';position:absolute;left:-60px;bottom:70px;width:180px;height:180px;background-image:radial-gradient(circle,rgba(26,86,219,.22) 1.6px,transparent 1.6px);background-size:18px 18px;pointer-events:none;-webkit-mask-image:linear-gradient(135deg,#000,transparent 75%);mask-image:linear-gradient(135deg,#000,transparent 75%)}
+.pane>*{position:relative;z-index:1}
+.pane .top{max-width:none;padding:20px 24px}
+.pane main{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:420px;width:100%;margin:0 auto;padding:16px 24px 24px}
+.gs{display:flex;align-items:center;justify-content:center;gap:8px;padding:18px 20px 22px;font-size:13px;font-weight:600;color:var(--ink2)}
+.gs svg{width:18px;height:18px;color:var(--brand)}
+.in.ico input{padding-left:44px}
+.in .li{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink3);pointer-events:none;display:flex}
+.in .li svg{width:18px;height:18px}
+.in input:focus~.li,.in:focus-within .li{color:var(--brand)}
+.forgot a{display:inline-flex;align-items:center;gap:5px}.forgot a svg{width:14px;height:14px}
+.back{margin-top:14px}.back .btn{width:100%}
+@media(min-width:960px){.pane .top .brand{display:none}.pane .top{justify-content:flex-end;padding:28px 40px}.pane main{max-width:440px}}
+@media(max-width:959px){.split{grid-template-columns:1fr}.aside{display:none}}
+</style>
+</head>
+<body>
+<div class="split">
+  <aside class="aside" aria-hidden="false">
+    <svg class="deco" viewBox="0 0 600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs><pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.4" fill="#fff" opacity=".16"/></pattern>
+      <linearGradient id="glow" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f86f7" stop-opacity=".55"/><stop offset="1" stop-color="#1a56db" stop-opacity="0"/></linearGradient></defs>
+      <rect width="600" height="800" fill="url(#dots)" opacity=".7"/>
+      <circle cx="520" cy="640" r="260" fill="url(#glow)"/>
+      <g fill="none" stroke="#fff" stroke-opacity=".12"><circle cx="520" cy="640" r="120"/><circle cx="520" cy="640" r="200"/><circle cx="520" cy="640" r="290"/><circle cx="520" cy="640" r="390"/></g>
+      <path d="M-20 210 C140 150 260 300 430 230 S600 120 640 150" fill="none" stroke="#8fb3ff" stroke-opacity=".28" stroke-width="1.5"/>
+    </svg>
+    <a class="brand" href="index.html"><img src="android-chrome-192x192.png" alt="" width="34" height="34"/><b>Global<span>Digits</span></b></a>
+    <div>
+      <h2>Create your account in minutes.</h2>
+      <p class="lead">Join Global Digits for virtual numbers, boosting, airtime and data, all from one secure wallet.</p>
+      <div class="feat"><i data-icon="lock"></i><div><b>Secure &amp; Safe</b><span>Your data is always protected</span></div></div>
+      <div class="feat"><i data-icon="bolt"></i><div><b>Quick setup</b><span>Four short steps and you're in</span></div></div>
+      <div class="feat"><i data-icon="headset"></i><div><b>24/7 Support</b><span>We're here to help</span></div></div>
+    </div>
+    <div class="foot">Protected by Global Secure</div>
+  </aside>
+
+  <div class="pane">
+    <header class="top">
+      <a class="brand" href="index.html"><img src="android-chrome-192x192.png" alt="" width="34" height="34"/><b>Global<span>Digits</span></b></a>
+      <div class="alt">Have an account? <a href="login.html">Sign in</a></div>
+    </header>
+    <main>
+    <div id="flow">
+      <p class="stepLabel" id="stepLabel" aria-live="polite"></p>
+      <div class="bar" role="progressbar" aria-valuemin="1" aria-valuemax="4" id="bar"><i id="barFill"></i></div>
+
+      <form id="regForm" novalidate>
+        <div class="formErr" id="formErr" role="alert"></div>
+
+        <!-- Step 1 -->
+        <section class="panel" data-step="1" aria-labelledby="h1">
+          <h1 id="h1" tabindex="-1">Let's set up your account</h1>
+          <p class="sub">Tell us who you are and pick a username.</p>
+          <div class="row2">
+            <div class="f"><label for="regFirst">First name</label><div class="in"><input type="text" id="regFirst" placeholder="Ada" autocomplete="given-name" maxlength="40"/></div><p class="err"></p></div>
+            <div class="f"><label for="regLast">Last name <span class="opt">(optional)</span></label><div class="in"><input type="text" id="regLast" placeholder="Obi" autocomplete="family-name" maxlength="40"/></div><p class="err"></p></div>
+          </div>
+          <div class="f"><label for="regUser">Username</label><div class="in pre tog"><span class="at">@</span><input type="text" id="regUser" placeholder="ada_obi" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="20"/><button type="button" class="eye" id="userSuggest" data-icon="refresh" aria-label="Suggest another username" title="Suggest another"></button></div><p class="help" id="userTxt">We'll suggest one from your name, or type your own.</p><p class="err"></p></div>
+        </section>
+
+        <!-- Step 2 -->
+        <section class="panel" data-step="2" aria-labelledby="h2" hidden>
+          <h1 id="h2" tabindex="-1">How can we reach you?</h1>
+          <p class="sub">We use these to secure your account and send order updates.</p>
+          <div class="f"><label for="regEmail">Email address</label><div class="in"><input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"/></div><p class="err"></p></div>
+          <div class="f"><label for="regPhone">Phone number <span class="opt">(optional)</span></label><div class="in"><input type="tel" id="regPhone" placeholder="080 1234 5678" autocomplete="tel" inputmode="tel"/></div><p class="err"></p></div>
+        </section>
+
+        <!-- Step 3 -->
+        <section class="panel" data-step="3" aria-labelledby="h3" hidden>
+          <h1 id="h3" tabindex="-1">Secure your account</h1>
+          <p class="sub">Create a password you don't use anywhere else.</p>
+          <div class="f"><label for="regPass">Password</label><div class="in tog"><input type="password" id="regPass" placeholder="Create a password" autocomplete="new-password"/><button type="button" class="eye" data-toggle-for="regPass" data-icon="eye" aria-label="Show or hide password" onclick="gdTogglePassword(this)"></button></div>
+            <div class="meter" id="meter" data-s="0"><i></i><i></i><i></i><i></i></div>
+            <div class="mtxt"><span class="rule" id="ruleLen">At least 8 characters</span><span id="strTxt"></span></div><p class="err"></p></div>
+          <div class="f"><label for="regPass2">Confirm password</label><div class="in tog"><input type="password" id="regPass2" placeholder="Re-enter your password" autocomplete="new-password"/><button type="button" class="eye" data-toggle-for="regPass2" data-icon="eye" aria-label="Show or hide password" onclick="gdTogglePassword(this)"></button></div><p class="help" id="matchTxt"></p><p class="err"></p></div>
+          <div class="f"><label for="regRefCode">Referral code <span class="opt">(optional)</span></label><div class="in"><input type="text" class="up" id="regRefCode" placeholder="Enter a friend's code" autocomplete="off" autocapitalize="characters" spellcheck="false"/></div><p class="help" id="refTxt"></p></div>
+        </section>
+
+        <!-- Step 4 -->
+        <section class="panel" data-step="4" aria-labelledby="h4" hidden>
+          <h1 id="h4" tabindex="-1">Review and agree</h1>
+          <p class="sub">Check your details, then create your account.</p>
+          <dl class="review" id="review"></dl>
+          <div class="f tc" style="margin:0"><div class="terms"><input type="checkbox" id="regAgree"/><label for="regAgree">I agree to the <a href="policy.html" target="_blank" rel="noopener">Terms of Service</a> and <a href="policy.html" target="_blank" rel="noopener">Privacy Policy</a>.</label></div><p class="err"></p></div>
+        </section>
+
+        <div class="actions">
+          <button type="button" class="btn ghost" id="backBtn" hidden><span data-icon="arrowLeft"></span>Back</button>
+          <button type="submit" class="btn primary" id="nextBtn">Continue<span data-icon="arrowRight"></span></button>
+          <button type="submit" class="btn primary" id="registerBtn" hidden>Create account</button>
+        </div>
+      </form>
+
+      <div id="alt1">
+        <div class="divider">or continue with</div>
+        <button type="button" class="g" id="googleBtn"><span data-icon="google" style="display:inline-flex"></span>Continue with Google</button>
+      </div>
+    </div>
+
+    <div class="done" id="done" hidden role="status">
+      <div class="tick" data-icon="check"></div>
+      <h1 id="doneH">Account created</h1>
+      <p id="doneP">Taking you to your dashboard…</p>
+    </div>
+  </main>
+    <div class="gs"><span data-icon="shield" style="display:inline-flex"></span>Protected by Global Secure</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ── Shared auth config (unchanged — same Supabase project/anon key as index.html and login.html) ── */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+var gdToastTimer=null;
+function toast(msg){
+  var el=document.getElementById('toast');
+  if(!el){el=document.createElement('div');el.id='toast';document.body.appendChild(el);}
+  clearTimeout(gdToastTimer);el.textContent=msg;el.classList.add('show');
+  gdToastTimer=setTimeout(function(){el.classList.remove('show');},3200);
+}
+const S='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+const GD_ICONS={
+  shield:S+'<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9.5 12l1.8 1.8L14.7 10"/></svg>',
+  lock:S+'<rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>',
+  bolt:S+'<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>',
+  headset:S+'<path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4.2" height="6" rx="1.6"/><rect x="16.8" y="13" width="4.2" height="6" rx="1.6"/><path d="M19 19.5c0 1.9-1.8 2.5-4.5 2.5"/></svg>',
+  eye:S+'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  eyeOff:S+'<path d="M3 3l18 18"/><path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a15.6 15.6 0 0 1-3.4 4.2M6.6 6.6C4 8.3 2.5 12 2.5 12s3.5 6.5 9.5 6.5c1.3 0 2.5-.3 3.6-.8"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg>',
+  arrowRight:S+'<path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  refresh:S+'<path d="M20 11a8 8 0 0 0-14.5-4.5M4 4v4h4M4 13a8 8 0 0 0 14.5 4.5M20 20v-4h-4"/></svg>',
+  arrowLeft:S+'<path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  google:'<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.27c0-.79-.07-1.54-.2-2.27H12v4.3h6.47c-.28 1.5-1.13 2.77-2.4 3.62v3h3.87c2.27-2.09 3.56-5.17 3.56-8.65Z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.94-2.92l-3.87-3c-1.07.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.09C3.25 21.3 7.31 24 12 24Z"/><path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54v-3.1H1.27a12 12 0 0 0 0 10.73l4-3.09Z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.94 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.27 6.63l4 3.1C6.22 6.86 8.87 4.75 12 4.75Z"/></svg>'
+};
+function gdRenderIcons(root){(root||document).querySelectorAll('[data-icon]').forEach(function(el){var n=el.getAttribute('data-icon');if(GD_ICONS[n])el.innerHTML=GD_ICONS[n];});}
+function gdTogglePassword(btn){
+  var input=document.getElementById(btn.getAttribute('data-toggle-for'));if(!input)return;
+  var showing=input.type==='text';input.type=showing?'password':'text';
+  btn.innerHTML=GD_ICONS[showing?'eye':'eyeOff'];
+}
+/* Google OAuth — unchanged; redirectTo stays pinned to index.html where checkSession() owns profile/status handling */
+async function signInWithGoogle(){
+  try{
+    var r=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/index.html'}});
+    if(r.error){toast('Google sign-in failed: '+r.error.message);return false;}
+    return true;
+  }catch(e){toast('Google sign-in failed: '+(e.message||'please try again'));return false;}
+}
+async function gdRedirectIfAlreadyLoggedIn(){
+  try{var s=await sb.auth.getSession();if(s.data&&s.data.session)window.location.replace('index.html');}catch(e){}
+}
+/* Referral capture — same localStorage key as refer-earn.js */
+function gdCaptureReferralCode(){
+  try{var c=new URLSearchParams(window.location.search).get('ref');if(c&&c.trim())localStorage.setItem('gd_pending_ref_code',c.trim().toUpperCase());}catch(e){}
+}
+function gdPrefillReferralField(id){
+  try{var p=localStorage.getItem('gd_pending_ref_code'),i=document.getElementById(id);if(p&&i&&!i.value)i.value=p;}catch(e){}
+}
+function gdSetBtnLoading(btn,loading,idleHTML,loadingText){
+  if(!btn)return;btn.disabled=loading;
+  btn.innerHTML=loading?'<span class="spin"></span><span>'+loadingText+'</span>':idleHTML;
+}
+document.addEventListener('DOMContentLoaded',function(){gdRenderIcons();gdCaptureReferralCode();gdRedirectIfAlreadyLoggedIn();});
+</script>
+
+<script>
+/* ══ Multi-step registration ══
+   All fields live in ONE form; steps only show/hide panels, so values
+   persist across Back/Continue with no state copying. */
+var $=function(i){return document.getElementById(i)};
+var STEPS=[null,'About you','Contact details','Account security','Review & agree'];
+var step=1,submitting=false;
+gdPrefillReferralField('regRefCode');
+
+function fieldOf(id){return $(id).closest('.f');}
+function setErr(id,msg){var f=fieldOf(id),e=f.querySelector('.err');f.classList.add('bad');e.textContent=msg;$(id).setAttribute('aria-invalid','true');}
+function clearErr(id){var f=fieldOf(id);f.classList.remove('bad');$(id).removeAttribute('aria-invalid');}
+function val(id){return ($(id).value||'');}
+
+/* Returns [fieldId,message] of the first problem on a step, or null.
+   Rules mirror the original doRegister(): name + email + password required,
+   8+ char password, matching passwords, terms accepted. */
+function check(n){
+  if(n===1){
+    if(!val('regFirst').trim())return['regFirst','Enter your first name.'];
+    var u=val('regUser').trim();
+    if(!u)return['regUser','Choose a username.'];
+    if(!/^[A-Za-z0-9_]{3,20}$/.test(u))return['regUser','Use 3–20 letters, numbers or underscores.'];
+  }
+  if(n===2){
+    var em=val('regEmail').trim();
+    if(!em)return['regEmail','Enter your email address.'];
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(em))return['regEmail','Enter a valid email address.'];
+    var ph=val('regPhone').replace(/[\s\-().]/g,'');
+    if(ph&&!/^\+?\d{10,15}$/.test(ph))return['regPhone','Enter a valid phone number, e.g. 080 1234 5678.'];
+  }
+  if(n===3){
+    var p=val('regPass'),p2=val('regPass2');
+    if(!p)return['regPass','Create a password.'];
+    if(p.length<8)return['regPass','Password must be at least 8 characters.'];
+    if(!p2)return['regPass2','Confirm your password.'];
+    if(p!==p2)return['regPass2','Passwords do not match.'];
+  }
+  if(n===4&&!$('regAgree').checked)return['regAgree','Please agree to the Terms of Service.'];
+  return null;
+}
+function validate(n){
+  document.querySelectorAll('[data-step="'+n+'"] .f').forEach(function(f){f.classList.remove('bad');});
+  var r=check(n);
+  if(r){setErr(r[0],r[1]);$(r[0]).focus();return false;}
+  return true;
+}
+
+function show(n,dir){
+  step=n;
+  document.querySelectorAll('.panel').forEach(function(p){
+    var on=+p.dataset.step===n;p.hidden=!on;
+    if(on){p.classList.toggle('back',dir==='back');p.style.animation='none';void p.offsetWidth;p.style.animation='';}
+  });
+  $('stepLabel').textContent='Step '+n+' of 4 — '+STEPS[n];
+  $('barFill').style.width=(n*25)+'%';$('bar').setAttribute('aria-valuenow',n);
+  $('backBtn').hidden=n===1;$('nextBtn').hidden=n===4;$('registerBtn').hidden=n!==4;
+  $('alt1').hidden=n!==1;$('formErr').classList.remove('show');
+  if(n===4)buildReview();
+  var first=document.querySelector('[data-step="'+n+'"] input');
+  if(window.matchMedia('(hover:hover) and (pointer:fine)').matches&&n<4)first.focus();
+  else document.querySelector('[data-step="'+n+'"] h1').focus({preventScroll:true});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildReview(){
+  var rows=[['Name',(val('regFirst').trim()+' '+val('regLast').trim()).trim(),1],['Username','@'+val('regUser').trim(),1],['Email',val('regEmail').trim(),2]];
+  if(val('regPhone').trim())rows.push(['Phone',val('regPhone').trim(),2]);
+  if(val('regRefCode').trim())rows.push(['Referral',val('regRefCode').trim().toUpperCase(),3]);
+  var dl=$('review');dl.innerHTML='';
+  rows.forEach(function(r){
+    var d=document.createElement('div');d.className='rv';
+    var dt=document.createElement('dt');dt.textContent=r[0];
+    var dd=document.createElement('dd');dd.textContent=r[1];
+    var b=document.createElement('button');b.type='button';b.textContent='Edit';b.setAttribute('aria-label','Edit '+r[0].toLowerCase());
+    b.onclick=function(){show(r[2],'back');};
+    d.appendChild(dt);d.appendChild(dd);d.appendChild(b);dl.appendChild(d);
+  });
+}
+
+/* Live feedback: clear errors as people type, strength + match hints */
+document.querySelectorAll('.in input,.terms input').forEach(function(i){
+  i.addEventListener('input',function(){clearErr(i.id);});
+  i.addEventListener('change',function(){clearErr(i.id);});
+});
+function strength(p){
+  var s=0;if(p.length>=8)s++;if(/[a-z]/.test(p)&&/[A-Z]/.test(p))s++;if(/\d/.test(p))s++;if(/[^A-Za-z0-9]/.test(p)&&p.length>=10)s++;
+  return p?Math.max(1,s):0;
+}
+function updatePass(){
+  var p=val('regPass'),s=strength(p);
+  $('meter').dataset.s=s;
+  $('strTxt').textContent=['','Weak','Fair','Good','Strong'][s];
+  $('ruleLen').classList.toggle('ok',p.length>=8);
+  var p2=val('regPass2'),m=$('matchTxt');
+  if(!p2){m.textContent='';m.className='help';}
+  else if(p===p2){m.textContent='Passwords match.';m.className='help ok';}
+  else{m.textContent='';m.className='help';}
+}
+$('regPass').addEventListener('input',updatePass);$('regPass2').addEventListener('input',updatePass);
+if(val('regRefCode'))$('refTxt').textContent='Code applied from your invite link.';
+/* Username: suggested from the name until the person types their own.
+   Clearing the field hands control back to the suggestion. */
+var userTouched=false,userTimer=null,userSeq=0,USER_HELP='3–20 letters, numbers or underscores.';
+function slug(v){return v.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');}
+function baseName(){var f=slug(val('regFirst')),l=slug(val('regLast'));return(f&&l?f+'_'+l:f||l).slice(0,20);}
+function rnd(n){return String(Math.floor(Math.random()*Math.pow(10,n))).padStart(n,'0');}
+function setUserHint(t,ok){var h=$('userTxt');h.textContent=t;h.className='help'+(ok?' ok':'');}
+async function pickUsername(bump){
+  var seq=++userSeq,b=baseName();
+  if(!b){if(!userTouched){$('regUser').value='';setUserHint(USER_HELP,false);}return;}
+  var cand=b.length<3?b+rnd(3-b.length):b;
+  if(bump)cand=b.slice(0,17)+rnd(3);
+  var free=false;
+  for(var i=0;i<5;i++){
+    var taken=await usernameTaken(cand);
+    if(seq!==userSeq)return;
+    if(!taken){free=true;break;}
+    cand=b.slice(0,17)+rnd(3);
+  }
+  $('regUser').value=cand;userTouched=false;clearErr('regUser');
+  setUserHint(free?'Suggested from your name. Edit it anytime.':USER_HELP,free);
+}
+['regFirst','regLast'].forEach(function(id){$(id).addEventListener('input',function(){
+  if(userTouched)return;clearTimeout(userTimer);userTimer=setTimeout(pickUsername,400);});});
+$('regUser').addEventListener('input',function(){
+  this.value=this.value.replace(/\s/g,'').toLowerCase();
+  var v=this.value,seq=++userSeq;clearTimeout(userTimer);
+  userTouched=v.length>0;
+  if(!userTouched){userTimer=setTimeout(pickUsername,300);return;}
+  setUserHint(USER_HELP,false);
+  if(/^[a-z0-9_]{3,20}$/.test(v))userTimer=setTimeout(async function(){
+    var t=await usernameTaken(v);if(seq===userSeq&&t)setErr('regUser','That username is taken. Try another.');},500);
+});
+$('userSuggest').addEventListener('click',function(){
+  if(!baseName()){setErr('regFirst','Enter your name first.');$('regFirst').focus();return;}
+  userTouched=false;pickUsername(true);
+});
+
+$('backBtn').addEventListener('click',function(){if(!submitting&&step>1)show(step-1,'back');});
+$('regForm').addEventListener('submit',function(e){
+  e.preventDefault();if(submitting)return;
+  if(step<4){nextStep();}else doRegister();
+});
+/* Username availability via is_username_available() (see username-setup.sql).
+   Fails open: if the function isn't installed or the call errors, signup continues. */
+async function usernameTaken(u){
+  try{var r=await sb.rpc('is_username_available',{p_username:u.toLowerCase()});return !r.error&&r.data===false;}catch(e){return false;}
+}
+async function nextStep(){
+  if(!validate(step))return;
+  if(step===1){
+    var b=$('nextBtn'),idle=b.innerHTML;submitting=true;gdSetBtnLoading(b,true,idle,'Checking…');
+    var taken=await usernameTaken(val('regUser').trim());
+    submitting=false;gdSetBtnLoading(b,false,idle,'');gdRenderIcons(b);
+    if(taken){setErr('regUser','That username is taken. Try another.');$('regUser').focus();return;}
+  }
+  show(step+1,'fwd');
+}
+
+/* Duplicate-submit guarded. Same signUp call, metadata, referral handling and
+   redirects as before; username is carried in auth user metadata only (no
+   schema change). */
+async function doRegister(){
+  if(submitting)return;
+  for(var n=1;n<=4;n++){if(check(n)){if(n!==step)show(n,'back');validate(n);return;}}
+  var first=val('regFirst'),last=val('regLast'),email=val('regEmail').trim(),phone=val('regPhone').trim();
+  var pass=val('regPass'),refCode=val('regRefCode'),username=val('regUser').trim().toLowerCase();
+  var name=(first.trim()+' '+last.trim()).trim()||email.split('@')[0];
+  var btn=$('registerBtn'),idle=btn.innerHTML;
+  submitting=true;$('backBtn').disabled=true;$('formErr').classList.remove('show');
+  gdSetBtnLoading(btn,true,idle,'Creating account…');
+  try{
+    if(await usernameTaken(username)){
+      submitting=false;$('backBtn').disabled=false;gdSetBtnLoading(btn,false,idle,'');
+      show(1,'back');setErr('regUser','That username is taken. Try another.');$('regUser').focus();return;
+    }
+    if(refCode.trim()){try{localStorage.setItem('gd_pending_ref_code',refCode.trim().toUpperCase());}catch(e){}}
+    var r=await sb.auth.signUp({email:email,password:pass,options:{data:{name:name,phone:phone,username:username}}});
+    var dup=r.error&&/already registered|already exists/i.test(r.error.message||'');
+    /* With email confirmation on, Supabase returns an empty identities list for an existing email instead of an error */
+    if(!dup&&!r.error&&r.data&&r.data.user&&r.data.user.identities&&r.data.user.identities.length===0)dup=true;
+    if(dup){
+      toast('This email is already registered. Please log in.');
+      setTimeout(function(){window.location.href='login.html?email='+encodeURIComponent(email);},1400);
+      return;
+    }
+    if(r.error)throw r.error;
+    var live=!!(r.data&&r.data.session&&r.data.user);
+    $('flow').hidden=true;$('done').hidden=false;
+    $('doneP').textContent=live?'Taking you to your dashboard…':'Please sign in with your new details.';
+    window.scrollTo({top:0});
+    setTimeout(function(){window.location.href=live?'index.html':'login.html?email='+encodeURIComponent(email);},live?900:1500);
+  }catch(e){
+    submitting=false;$('backBtn').disabled=false;gdSetBtnLoading(btn,false,idle,'');
+    var m=$('formErr');m.textContent=e.message||'Registration failed. Try again.';m.classList.add('show');
+  }
+}
+
+$('googleBtn').addEventListener('click',async function(){
+  var b=this;if(b.disabled||submitting)return;
+  b.disabled=true;var ok=await signInWithGoogle();
+  if(!ok)b.disabled=false;
+});
+show(1);
+</script>
+</body>
+</html>
