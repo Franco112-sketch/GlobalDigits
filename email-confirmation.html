@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#f3f7ff"/>
+<meta name="robots" content="noindex"/>
+<title>Email Confirmation — Global Digits</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="manifest" href="site.webmanifest"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--brand:#1a56db;--brand-2:#3b82f6;--brand-dk:#123fa8;--ink:#0f1b33;--ink2:#5b6a86;--ink3:#93a0b8;--line:#dbe3f1;--bg:#f3f7ff;--danger:#d92d43;--danger-bg:#fff0f2;--ok:#0e9f6e;--ok-bg:#e6f8f0;--warn-bg:#fff4dc}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{min-height:100%}
+body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;
+  background:radial-gradient(760px 420px at 85% -120px,#d6e5ff 0,transparent 70%),radial-gradient(620px 380px at -10% 100%,#e4eeff 0,transparent 70%),var(--bg)}
+button,input{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:3px solid rgba(59,130,246,.5);outline-offset:2px;border-radius:12px}
+.shell{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 16px env(safe-area-inset-bottom)}
+.top{max-width:960px;width:100%;margin:0 auto;padding:18px 4px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand img{width:34px;height:34px;border-radius:10px;object-fit:contain}
+.brand b{font-size:19px;font-weight:800;letter-spacing:-.02em}.brand b span{color:var(--brand)}
+.top .alt{font-size:13.5px;color:var(--ink2)}.top .alt a{color:var(--brand);font-weight:700;text-decoration:none}
+main{flex:1;display:grid;place-items:center;padding:12px 0 40px}
+.card{width:100%;max-width:440px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid #e3ecfb;border-radius:28px;padding:30px 24px 24px;box-shadow:0 1px 2px rgba(16,42,100,.05),0 24px 60px -24px rgba(16,42,100,.28);text-align:center;animation:rise .35s cubic-bezier(.3,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+.badge{width:68px;height:68px;border-radius:22px;margin:0 auto 18px;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,var(--brand-2),var(--brand));box-shadow:0 14px 28px -10px rgba(26,86,219,.65),inset 0 1px 0 rgba(255,255,255,.35);position:relative}
+.badge::after{content:"";position:absolute;inset:-7px;border-radius:28px;border:1px solid rgba(59,130,246,.22)}
+.badge.ok{background:linear-gradient(145deg,#2fd08f,var(--ok));box-shadow:0 14px 28px -10px rgba(14,159,110,.6)}.badge.ok::after{border-color:rgba(14,159,110,.25)}
+.badge.warn{background:linear-gradient(145deg,#f6b73c,#d98a06);box-shadow:0 14px 28px -10px rgba(217,138,6,.55)}.badge.warn::after{border-color:rgba(217,138,6,.25)}
+h1{font-size:clamp(24px,6.4vw,29px);font-weight:800;letter-spacing:-.03em;line-height:1.15;outline:none}
+.sub{font-size:14.5px;line-height:1.55;color:var(--ink2);margin-top:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;margin-top:12px;max-width:100%;background:#eaf1ff;color:var(--brand-dk);font-weight:700;font-size:13.5px;padding:8px 14px;border-radius:999px}
+.chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slots{display:flex;justify-content:center;gap:12px;margin:26px 0 14px}
+.slots input{width:clamp(54px,17vw,66px);height:clamp(62px,19vw,76px);border-radius:18px;border:1.5px solid var(--line);background:#fff;text-align:center;font-size:30px;font-weight:800;letter-spacing:0;caret-color:var(--brand);outline:none;transition:border-color .15s,box-shadow .15s,transform .15s,background .15s}
+.slots input:hover{border-color:#c5d1e8}
+.slots input:focus{border-color:var(--brand);box-shadow:0 0 0 5px rgba(26,86,219,.13);transform:translateY(-1px)}
+.slots input.filled{background:#f3f8ff;border-color:#b9cff7}
+.slots input.bad{border-color:var(--danger);background:var(--danger-bg);animation:shake .36s}
+.slots input.good{border-color:var(--ok);background:var(--ok-bg)}
+@keyframes shake{20%{transform:translateX(-5px)}60%{transform:translateX(5px)}}
+.timer{display:flex;align-items:center;justify-content:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink2)}
+.timer.low{color:#b7791f}.timer.dead{color:var(--danger)}
+.track{height:4px;border-radius:4px;background:#e8eefb;overflow:hidden;margin:10px auto 0;max-width:260px}.track i{display:block;height:100%;width:100%;background:linear-gradient(90deg,var(--brand-2),var(--brand));border-radius:4px;transition:width 1s linear}
+.msg{min-height:22px;margin-top:14px;font-size:13.5px;font-weight:600;line-height:1.45}
+.msg.err{color:var(--danger)}.msg.ok{color:var(--ok)}.msg.info{color:var(--ink2);font-weight:500}
+.btn{width:100%;min-height:54px;margin-top:6px;border-radius:16px;font-weight:800;font-size:16px;display:inline-flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;transition:transform .12s,opacity .15s,box-shadow .15s}
+.btn:active{transform:scale(.985)}
+.btn.primary{color:#fff;background:linear-gradient(135deg,var(--brand-2),var(--brand));box-shadow:0 14px 26px -12px rgba(26,86,219,.8)}
+.btn.primary[disabled]{opacity:.5;box-shadow:none;cursor:not-allowed;transform:none}
+.btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--brand-dk);font-size:15px;min-height:50px}
+.btn.okb{color:#fff;background:linear-gradient(135deg,#2fd08f,var(--ok))}
+.spin{width:18px;height:18px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.row{display:flex;flex-direction:column;align-items:center;gap:2px;margin-top:14px}
+.link{color:var(--brand);font-weight:700;font-size:14px;padding:10px 12px;min-height:44px;border-radius:12px}
+.link[disabled]{color:var(--ink3);cursor:default}
+.link.mute{color:var(--ink2);font-weight:600;font-size:13.5px}
+.safe{display:flex;gap:9px;align-items:flex-start;text-align:left;background:#f4f8ff;border:1px solid #e3ecfb;border-radius:14px;padding:11px 13px;margin-top:18px;font-size:12.5px;color:var(--ink2);line-height:1.5}
+.safe svg{flex:none;margin-top:2px;color:var(--brand)}
+.tick{width:84px;height:84px;margin:0 auto 18px;position:relative}
+.tick svg{width:84px;height:84px}
+.tick circle{stroke:var(--ok);stroke-width:4;fill:var(--ok-bg);stroke-dasharray:252;stroke-dashoffset:252;animation:draw .6s ease forwards}
+.tick path{stroke:var(--ok);stroke-width:5;stroke-linecap:round;stroke-linejoin:round;fill:none;stroke-dasharray:50;stroke-dashoffset:50;animation:draw .4s .45s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <a class="brand" href="index.html"><img src="android-chrome-192x192.png" alt="" width="34" height="34"/><b>Global<span>Digits</span></b></a>
+    <div class="alt">Have an account? <a href="login.html">Sign in</a></div>
+  </header>
+  <main>
+    <!-- ══ CONFIRM ══ -->
+    <section class="card" id="stConfirm" aria-labelledby="hConfirm" hidden>
+      <div class="badge" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="15" rx="3.5"/><path d="m3.5 7.5 8.5 6 8.5-6"/></svg></div>
+      <h1 id="hConfirm" tabindex="-1">Email Confirmation</h1>
+      <p class="sub">Enter the 4-digit code we sent to confirm your email and finish creating your account.</p>
+      <div class="chip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m3 8 9 6 9-6"/></svg><span id="emailChip">your email</span></div>
+
+      <form id="codeForm" novalidate autocomplete="off">
+        <div class="slots" id="slots" role="group" aria-label="4-digit confirmation code">
+          <input inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="one-time-code" aria-label="Digit 1" autofocus/>
+          <input inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Digit 2"/>
+          <input inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Digit 3"/>
+          <input inputmode="numeric" pattern="[0-9]*" maxlength="1" autocomplete="off" aria-label="Digit 4"/>
+        </div>
+        <div class="timer" id="timer" aria-live="off"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="timerTxt">Checking…</span></div>
+        <div class="track" aria-hidden="true"><i id="trackBar"></i></div>
+        <div class="msg" id="msg" role="alert" aria-live="assertive"></div>
+        <button type="submit" class="btn primary" id="confirmBtn" disabled>Confirm Email</button>
+      </form>
+      <div class="row">
+        <button type="button" class="link" id="resendBtn" disabled>Resend code</button>
+        <button type="button" class="link mute" id="changeBtn">Wrong email? Change it</button>
+      </div>
+      <div class="safe"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9.5 12l1.8 1.8L14.7 10"/></svg><span>Your account is created only after your email is confirmed. Never share this code — Global Digits will never ask for it.</span></div>
+    </section>
+
+    <!-- ══ SUCCESS ══ -->
+    <section class="card" id="stSuccess" aria-live="polite" hidden>
+      <div class="tick" aria-hidden="true"><svg viewBox="0 0 84 84"><circle cx="42" cy="42" r="40"/><path d="M26 43l11 11 21-23"/></svg></div>
+      <h1 tabindex="-1" id="hOk">Email confirmed</h1>
+      <p class="sub" id="okSub">Your Global Digits account is ready. Taking you to your dashboard…</p>
+      <a class="btn primary" id="okBtn" href="index.html" style="margin-top:22px">Continue</a>
+    </section>
+
+    <!-- ══ NO / INVALID SESSION ══ -->
+    <section class="card" id="stNone" hidden>
+      <div class="badge warn" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.01"/></svg></div>
+      <h1 tabindex="-1" id="hNone">Nothing to confirm yet</h1>
+      <p class="sub" id="noneSub">We couldn't find a registration waiting for confirmation on this device. Create your account to receive a code.</p>
+      <a class="btn primary" href="register.html" style="margin-top:22px">Create account</a>
+      <a class="btn ghost" href="login.html" style="margin-top:10px">Sign in</a>
+    </section>
+  </main>
+</div>
+
+<script>
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+const FN=SUPA_URL+'/functions/v1/email-confirmation',KEY='gd_ec';
+var $=function(i){return document.getElementById(i);};
+var ch=null,busy=false,finished=false,expiryAt=0,resendAt=0,totalSecs=300,tick=null,codeLocked=false;
+
+/* Pending-confirmation handle (random id + secret). It is NOT a password and cannot confirm anything on its own:
+   the emailed code is still required, and the server enforces every rule. */
+function loadCh(){try{var o=JSON.parse(localStorage.getItem(KEY)||'null');if(o&&/^[0-9a-f-]{36}$/i.test(o.id)&&/^[A-Za-z0-9_-]{43}$/.test(o.secret)&&o.email)return o;}catch(e){}return null;}
+function clearCh(){try{localStorage.removeItem(KEY);}catch(e){}ch=null;}
+function show(id){['stConfirm','stSuccess','stNone'].forEach(function(s){$(s).hidden=s!==id;});var h=$(id).querySelector('h1');if(h)h.focus({preventScroll:true});}
+function setMsg(t,cls){var m=$('msg');m.textContent=t||'';m.className='msg '+(cls||'');}
+
+async function api(action,extra){
+  var res;
+  try{
+    res=await fetch(FN,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+SUPA_KEY,'apikey':SUPA_KEY},
+      body:JSON.stringify(Object.assign({action:action,challenge_id:ch&&ch.id,challenge_secret:ch&&ch.secret},extra||{}))});
+  }catch(e){try{console.warn('[email-confirmation]',action,'network error (offline, CORS rejection, or function unavailable)');}catch(_){}return{network:true,status:0,data:{}};}
+  var data={};try{data=await res.json();}catch(e){}
+  if(!res.ok||!data||!data.ok){try{console.warn('[email-confirmation]',action,'failed',{status:res.status,code:(data&&data.code)||null,request_id:res.headers.get('sb-request-id')||res.headers.get('x-sb-request-id')||null});}catch(e){}}
+  return{status:res.status,data:data};
+}
+
+/* ── slots ── */
+function slots(){return Array.prototype.slice.call(document.querySelectorAll('#slots input'));}
+function getCode(){return slots().map(function(i){return i.value;}).join('');}
+function paint(){slots().forEach(function(i){i.classList.toggle('filled',!!i.value);});updateBtn();}
+function clearSlots(focus){slots().forEach(function(i){i.value='';i.classList.remove('bad','good','filled');});updateBtn();if(focus!==false)slots()[0].focus();}
+function updateBtn(){$('confirmBtn').disabled=busy||finished||getCode().length!==4||(Date.now()>=expiryAt&&expiryAt>0);}
+function fill(digits,from){var s=slots(),d=digits.replace(/\D/g,'');for(var k=0;k<d.length&&from+k<4;k++)s[from+k].value=d[k];paint();s[Math.min(from+d.length,3)].focus();}
+(function wire(){
+  var s=slots();
+  s.forEach(function(inp,i){
+    inp.addEventListener('input',function(){
+      inp.classList.remove('bad');setMsg('');
+      var v=inp.value.replace(/\D/g,'');
+      if(v.length>1){inp.value='';fill(v,i);return;}   // autofill / multi-char input
+      inp.value=v;paint();if(v&&i<3)s[i+1].focus();
+    });
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace'){if(!inp.value&&i>0){s[i-1].value='';s[i-1].focus();paint();e.preventDefault();}}
+      else if(e.key==='ArrowLeft'&&i>0){s[i-1].focus();e.preventDefault();}
+      else if(e.key==='ArrowRight'&&i<3){s[i+1].focus();e.preventDefault();}
+    });
+    inp.addEventListener('paste',function(e){e.preventDefault();var t=((e.clipboardData||window.clipboardData).getData('text')||'');fill(t,t.replace(/\D/g,'').length>=4?0:i);});
+    inp.addEventListener('focus',function(){inp.select();});
+  });
+})();
+
+/* ── timers (all values come from the server; refresh restores them without sending anything) ── */
+function startTimers(expiresIn,resendAfter){
+  expiryAt=Date.now()+expiresIn*1000;resendAt=Date.now()+resendAfter*1000;totalSecs=Math.max(expiresIn,1);
+  clearInterval(tick);render();tick=setInterval(render,500);
+}
+function render(){
+  var left=Math.max(0,Math.ceil((expiryAt-Date.now())/1000)),t=$('timer'),txt=$('timerTxt');
+  t.className='timer'+(left===0?' dead':left<=60?' low':'');
+  txt.textContent=left>0?'Code expires in '+Math.floor(left/60)+':'+String(left%60).padStart(2,'0'):'Code expired. Request a new one.';
+  $('trackBar').style.width=(left/Math.max(totalSecs,1)*100)+'%';
+  var rl=Math.max(0,Math.ceil((resendAt-Date.now())/1000)),b=$('resendBtn');
+  b.disabled=rl>0||busy;b.textContent=rl>0?'Resend code in '+rl+'s':'Resend code';
+  updateBtn();
+}
+
+/* ── boot ── */
+async function boot(){
+  finished=false;busy=false;
+  try{var s=await sb.auth.getSession();if(s.data&&s.data.session){window.location.replace('index.html');return;}}catch(e){}
+  ch=loadCh();
+  if(!ch){show('stNone');return;}
+  $('emailChip').textContent=ch.email;show('stConfirm');slots()[0].focus({preventScroll:true});
+  var r=await api('status');
+  if(r.network){setMsg('Can’t reach the server. Check your connection and refresh.','err');startTimers(0,0);return;}
+  var d=r.data;
+  if(d.ok){
+    $('emailChip').textContent=d.email_masked||ch.email;startTimers(d.expires_in,d.resend_after);
+    if(d.locked){codeLocked=true;setMsg('Too many incorrect attempts. Request a new code.','err');}
+    if(d.session_expired)endSession('This confirmation session has expired. Please start again.');
+    else setTimeout(function(){slots()[0].focus();},50);
+    return;
+  }
+  if(d.code==='already_used'){clearCh();endSession('This email was already confirmed. Please sign in.',true);return;}
+  endSession(d.message||'This confirmation session is no longer valid. Please start again.');
+}
+function endSession(text,signin){
+  clearCh();show('stNone');$('hNone').textContent=signin?'Already confirmed':'Confirmation session ended';$('noneSub').textContent=text;
+}
+
+/* ── verify ── */
+$('codeForm').addEventListener('submit',async function(e){
+  e.preventDefault();if(busy||finished)return;
+  var code=getCode();if(code.length!==4){setMsg('Enter all 4 digits.','err');return;}
+  busy=true;var btn=$('confirmBtn');btn.disabled=true;btn.innerHTML='<span class="spin"></span>Confirming…';setMsg('');
+  var r=await api('verify',{code:code}),d=r.data||{};
+  if(d.ok){await finish(d);return;}
+  busy=false;btn.innerHTML='Confirm Email';
+  if(r.network){setMsg('Can’t reach the server. Check your connection and try again.','err');updateBtn();return;}
+  var c=d.code;
+  if(c==='wrong_code'){var n=d.attempts_left;slots().forEach(function(i){i.classList.add('bad');});setMsg('That code isn’t correct.'+(typeof n==='number'?(n>0?' '+n+' attempt'+(n===1?'':'s')+' left.':' No attempts left — request a new code.'):''),'err');setTimeout(function(){clearSlots(true);},420);}
+  else if(c==='expired'){setMsg('This code has expired. Request a new one below.','err');clearSlots(false);expiryAt=Date.now();render();}
+  else if(c==='locked'){codeLocked=true;setMsg('Too many incorrect attempts. Request a new code, or start again.','err');clearSlots(false);}
+  else if(c==='already_used'){clearCh();endSession('This code was already used. If you confirmed your email, please sign in.',true);}
+  else if(c==='invalid_challenge'||c==='session_expired'){endSession(d.message||'This confirmation session is no longer valid. Please start again.');}
+  else if(c==='finalize_failed'){setMsg(d.message||'We couldn’t finish creating your account. Please try again.','err');}
+  else setMsg(d.message||'Something went wrong. Please try again.','err');
+  updateBtn();
+});
+async function finish(d){
+  finished=true;clearInterval(tick);slots().forEach(function(i){i.classList.add('good');});
+  var email=ch.email;clearCh();
+  var signedIn=false;
+  if(d.token_hash){
+    try{var v=await sb.auth.verifyOtp({token_hash:d.token_hash,type:d.type||'magiclink'});signedIn=!v.error&&!!(v.data&&v.data.session);if(v.error)console.warn('[email-confirmation] verifyOtp failed',{status:v.error.status||null,name:v.error.name||null});}catch(e){console.warn('[email-confirmation] verifyOtp threw');}
+  }
+  show('stSuccess');
+  if(signedIn){setTimeout(function(){window.location.replace('index.html');},1400);}
+  else{$('hOk').textContent='Email confirmed';$('okSub').textContent='Your email is confirmed. Please sign in with your password.';$('okBtn').textContent='Sign in';$('okBtn').href='login.html?email='+encodeURIComponent(email);}
+}
+
+/* ── resend ── */
+$('resendBtn').addEventListener('click',async function(){
+  if(busy||finished)return;busy=true;var b=this;b.disabled=true;b.textContent='Sending…';setMsg('');
+  var r=await api('resend'),d=r.data||{};busy=false;
+  if(r.network){setMsg('Can’t reach the server. Check your connection and try again.','err');render();return;}
+  if(d.ok){codeLocked=false;clearSlots(true);startTimers(d.expires_in,d.resend_after);setMsg('A new code has been sent. The previous code no longer works.','ok');return;}
+  if(d.code==='cooldown'){resendAt=Date.now()+(d.retry_after||60)*1000;setMsg(d.message,'info');}
+  else if(d.code==='email_failed'){resendAt=Date.now()+(d.retry_after||30)*1000;setMsg(d.message||'We couldn\u2019t send a new code just now. Please try again in a moment.','err');}
+  else if(d.code==='resend_limit'||d.code==='invalid_challenge'||d.code==='session_expired'){endSession(d.message||'Please start again.');return;}
+  else setMsg(d.message||'Could not send a new code.','err');
+  render();
+});
+$('changeBtn').addEventListener('click',function(){clearCh();window.location.href='register.html';});
+
+/* multiple tabs: if another tab finished or restarted, follow it */
+window.addEventListener('storage',function(e){
+  if(e.key!==KEY||finished)return;
+  if(e.newValue===null){sb.auth.getSession().then(function(s){window.location.replace(s.data&&s.data.session?'index.html':'register.html');});}
+  else window.location.reload();
+});
+window.addEventListener('pageshow',function(e){if(e.persisted)boot();});   // back/forward cache
+boot();
+</script>
+</body>
+</html>
