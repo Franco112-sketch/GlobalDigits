@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#ffffff"/>
+<title>Sign In — Global Digits</title>
+<meta name="description" content="Sign in to your Global Digits account."/>
+<meta name="robots" content="noindex"/>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{--brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;--ink:#0f1b33;--ink2:#5b6a86;--ink3:#93a0b8;--line:#dbe3f1;--danger:#d92d43;--ok:#12805c;font-synthesis:none}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:var(--ink);background:#fff;min-height:100vh;min-height:100dvh;-webkit-font-smoothing:antialiased}
+.shell{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;max-width:1080px;width:100%;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand img{width:34px;height:34px;border-radius:10px;object-fit:contain}
+.brand b{font-size:19px;font-weight:800;letter-spacing:-.02em}.brand b span{color:var(--brand)}
+.top .alt{font-size:13.5px;color:var(--ink2)}
+.top .alt a{color:var(--brand);font-weight:700;text-decoration:none}.top .alt a:hover{text-decoration:underline}
+main{flex:1;width:100%;max-width:440px;margin:0 auto;padding:clamp(20px,6vh,56px) 20px 40px}
+/* progress */
+.stepLabel{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--brand);margin:0 0 10px}
+.bar{height:4px;border-radius:4px;background:#e9eefa;overflow:hidden}
+.bar i{display:block;height:100%;width:25%;border-radius:4px;background:var(--brand);transition:width .4s cubic-bezier(.3,.7,.2,1)}
+/* panels */
+.panel{padding-top:8px;animation:inF .32s cubic-bezier(.3,.7,.2,1)}
+.panel.back{animation-name:inB}
+@keyframes inF{from{opacity:0;transform:translateX(18px)}}
+@keyframes inB{from{opacity:0;transform:translateX(-18px)}}
+h1{font-size:clamp(28px,7vw,34px);line-height:1.12;font-weight:800;letter-spacing:-.03em;margin:0 0 8px;outline:none}
+.sub{font-size:15px;line-height:1.5;color:var(--ink2);margin:0 0 26px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:380px){.row2{grid-template-columns:1fr}}
+.f{margin-bottom:16px}
+.f label{display:block;font-size:13px;font-weight:600;margin-bottom:7px}
+.f label .opt{font-weight:500;color:var(--ink3)}
+.in{position:relative}
+.in input{width:100%;height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;padding:0 14px;font-size:16px;font-weight:500;font-family:inherit;color:var(--ink);outline:none;transition:border-color .15s,box-shadow .15s}
+.in input::placeholder{color:var(--ink3);font-weight:400}
+.in input:hover{border-color:#c5d1e8}
+.in input:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(26,86,219,.12)}
+.in.pre input{padding-left:30px}
+.in .at{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--ink3);font-weight:600;pointer-events:none}
+.in.tog input{padding-right:46px}
+.f.bad input{border-color:var(--danger)}.f.bad input:focus{box-shadow:0 0 0 4px rgba(217,45,67,.12)}
+.in input.up{text-transform:uppercase;letter-spacing:.06em}.in input.up::placeholder{text-transform:none;letter-spacing:0}
+.eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;background:none;border-radius:9px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;justify-content:center}
+.eye:hover{color:var(--ink2);background:#f3f6fc}.eye svg{width:18px;height:18px}
+.err{display:none;font-size:12.5px;color:var(--danger);margin:6px 0 0;line-height:1.4}
+.f.bad .err{display:block}
+.help{font-size:12.5px;color:var(--ink2);margin:6px 0 0;line-height:1.4;min-height:18px}
+.help.ok{color:var(--ok)}
+/* strength */
+.meter{display:flex;gap:5px;margin-top:10px}
+.meter i{flex:1;height:4px;border-radius:4px;background:#e9eefa;transition:background .2s}
+.meter[data-s="1"] i:nth-child(-n+1){background:var(--danger)}
+.meter[data-s="2"] i:nth-child(-n+2){background:#e08a1e}
+.meter[data-s="3"] i:nth-child(-n+3){background:var(--brand)}
+.meter[data-s="4"] i{background:var(--ok)}
+.mtxt{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink2);margin-top:7px}
+.mtxt .rule.ok{color:var(--ok);font-weight:600}
+/* review */
+.review{border-top:1px solid var(--line);margin:0 0 22px}
+.rv{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.rv dt{width:84px;font-size:13px;color:var(--ink2)}
+.rv dd{flex:1;margin:0;font-size:14.5px;font-weight:600;word-break:break-word;min-width:0}
+.rv button{border:0;background:none;color:var(--brand);font-size:13px;font-weight:700;font-family:inherit;cursor:pointer;padding:4px 2px}
+.rv button:hover{text-decoration:underline}
+.terms{display:flex;gap:11px;align-items:flex-start;margin:0 0 6px}
+.terms input{appearance:none;-webkit-appearance:none;width:21px;height:21px;min-width:21px;border:1.5px solid #c5d1e8;border-radius:6px;margin:1px 0 0;cursor:pointer;background:#fff;position:relative;transition:.15s}
+.terms input:checked{background:var(--brand);border-color:var(--brand)}
+.terms input:checked::after{content:'';position:absolute;left:6px;top:2px;width:5px;height:10px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(40deg)}
+.terms input:focus-visible{box-shadow:0 0 0 4px rgba(26,86,219,.2)}
+.terms label{font-size:14px;line-height:1.55;color:var(--ink2);cursor:pointer}
+.terms a{color:var(--brand);font-weight:600;text-decoration:none}.terms a:hover{text-decoration:underline}
+.f.bad.tc .err{margin-left:32px}
+/* buttons */
+.actions{display:flex;gap:10px;margin-top:26px}
+.btn{height:50px;border-radius:12px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,background .15s,box-shadow .15s,opacity .15s}
+.btn svg{width:18px;height:18px}
+.btn:active{transform:scale(.985)}
+.btn:focus-visible,.eye:focus-visible,.g:focus-visible,.rv button:focus-visible{outline:3px solid rgba(26,86,219,.35);outline-offset:2px}
+.primary{flex:1;border:0;color:#fff;background:var(--brand);box-shadow:0 10px 22px -12px rgba(26,86,219,.7)}
+.primary:hover{background:var(--brand-dk)}
+.primary:disabled{opacity:.7;cursor:not-allowed;transform:none}
+.ghost{padding:0 20px;border:1.5px solid var(--line);background:#fff;color:var(--ink)}
+.ghost:hover{background:#f6f8fd;border-color:#c5d1e8}
+.ghost:disabled{opacity:.5;cursor:not-allowed}
+.spin{width:17px;height:17px;border-radius:50%;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.divider{display:flex;align-items:center;gap:12px;margin:24px 0 18px;font-size:12.5px;color:var(--ink3)}
+.divider:before,.divider:after{content:'';flex:1;height:1px;background:var(--line)}
+.g{width:100%;height:48px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-size:14.5px;font-weight:700;font-family:inherit;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:.15s}
+.g:hover{background:#f6f8fd;border-color:#c5d1e8}.g:disabled{opacity:.6;cursor:not-allowed}.g svg{width:19px;height:19px}
+.formErr{display:none;margin:0 0 16px;padding:12px 14px;border-radius:12px;background:#fdecef;color:#a11d30;font-size:13.5px;line-height:1.45}
+.formErr.show{display:block}
+/* success */
+.done{text-align:center;padding:56px 0 20px;animation:inF .4s}
+.tick{width:68px;height:68px;border-radius:50%;background:var(--brand);color:#fff;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;animation:pop .45s cubic-bezier(.3,1.5,.5,1)}
+.tick svg{width:32px;height:32px}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+.done p{color:var(--ink2);font-size:15px;margin:0}
+#toast{position:fixed;left:50%;bottom:calc(26px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);background:#1a2333;color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;font-weight:600;max-width:88vw;text-align:center;box-shadow:0 12px 30px -10px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:999}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important}}
+@media(min-width:640px){.top{padding:24px 32px}}
+.forgot{text-align:right;margin:-6px 0 0}.forgot a,.back a{color:var(--brand);font-size:13.5px;font-weight:700;text-decoration:none;cursor:pointer}.forgot a:hover,.back a:hover{text-decoration:underline}.back{text-align:center;margin-top:20px}
+
+.split{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);min-height:100vh;min-height:100dvh}
+.aside{position:relative;overflow:hidden;color:#fff;background:linear-gradient(155deg,#0f1b33 0%,#12306b 58%,#1a56db 130%);padding:44px clamp(36px,5vw,72px);display:flex;flex-direction:column;justify-content:space-between;gap:40px}
+.aside .deco{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.aside>:not(.deco){position:relative}
+.aside .brand{color:#fff}.aside .brand b span{color:#8fb3ff}
+.aside h2{font-size:clamp(30px,3.3vw,46px);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:0 0 14px;max-width:440px}
+.aside .lead{color:#c3d3f5;font-size:16px;line-height:1.55;max-width:410px;margin:0 0 34px}
+.feat{display:flex;gap:14px;align-items:center;margin-bottom:16px}
+.feat i{width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;flex:none}
+.feat svg{width:20px;height:20px}
+.feat b{display:block;font-size:14.5px}.feat span{font-size:13px;color:#b5c7ee}
+.aside .foot{font-size:12.5px;color:#9db4e6}
+.pane{position:relative;overflow:hidden;display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+.pane:before{content:'';position:absolute;top:-140px;right:-120px;width:340px;height:340px;border-radius:50%;background:radial-gradient(circle,rgba(26,86,219,.14),rgba(26,86,219,0) 70%);pointer-events:none}
+.pane:after{content:'';position:absolute;left:-60px;bottom:70px;width:180px;height:180px;background-image:radial-gradient(circle,rgba(26,86,219,.22) 1.6px,transparent 1.6px);background-size:18px 18px;pointer-events:none;-webkit-mask-image:linear-gradient(135deg,#000,transparent 75%);mask-image:linear-gradient(135deg,#000,transparent 75%)}
+.pane>*{position:relative;z-index:1}
+.pane .top{max-width:none;padding:20px 24px}
+.pane main{flex:1;display:flex;flex-direction:column;justify-content:center;max-width:420px;width:100%;margin:0 auto;padding:16px 24px 24px}
+.gs{display:flex;align-items:center;justify-content:center;gap:8px;padding:18px 20px 22px;font-size:13px;font-weight:600;color:var(--ink2)}
+.gs svg{width:18px;height:18px;color:var(--brand)}
+.in.ico input{padding-left:44px}
+.in .li{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--ink3);pointer-events:none;display:flex}
+.in .li svg{width:18px;height:18px}
+.in input:focus~.li,.in:focus-within .li{color:var(--brand)}
+.forgot a{display:inline-flex;align-items:center;gap:5px}.forgot a svg{width:14px;height:14px}
+.back{margin-top:14px}.back .btn{width:100%}
+@media(min-width:960px){.pane .top .brand{display:none}.pane .top{justify-content:flex-end;padding:28px 40px}.pane main{max-width:440px}}
+@media(max-width:959px){.split{grid-template-columns:1fr}.aside{display:none}}
+/* ═ GD SKIN — blue premium look (appended; overrides above, logic/markup hooks unchanged) ═ */
+html,body{background:#f3f8ff}
+body{min-height:100dvh;background:radial-gradient(90% 40% at 100% 0,#dbe9ff 0,transparent 70%),linear-gradient(#fbfdff,#eef5ff);color:#0b1b4d;font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;position:relative;overflow-x:hidden}
+body:after{content:"";position:fixed;left:-20%;right:-20%;bottom:-120px;height:230px;border-radius:50%;background:linear-gradient(#e3eeff,#cfe1ff);opacity:.7;pointer-events:none;z-index:0}
+.split{display:block!important;min-height:100dvh}
+.aside,.gs,.pane:before,.pane:after,.top .alt{display:none!important}
+.pane{max-width:480px!important;width:100%;margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 18px) 20px calc(env(safe-area-inset-bottom,0px) + 28px)!important;background:none!important;position:relative;z-index:1;display:block!important;min-height:0!important}
+.pane .top{padding:0!important;margin:0 0 6px!important;border:0!important;background:none!important}
+.pane .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#0b1b4d}
+.pane .brand img{width:52px;height:52px;border-radius:15px;box-shadow:0 8px 20px rgba(19,102,255,.3)}
+.pane .brand .bt b{display:block;font-size:21px;font-weight:800;color:#0b1b4d;letter-spacing:-.01em}
+.pane .brand .bt small{display:block;font-size:12.5px;color:#5b6b8c;margin-top:1px}
+.hero{position:relative;padding:22px 0 22px;min-height:178px}
+.hero h1{font-size:clamp(30px,9vw,38px)!important;line-height:1.08;font-weight:800;letter-spacing:-.02em;color:#0b1b4d;margin:14px 0 10px!important;max-width:75%}
+.hero.wide h1{max-width:100%;font-size:clamp(28px,8.2vw,36px)!important}
+.hero p{font-size:16px;line-height:1.5;color:#5b6b8c;max-width:78%}
+.hero.wide p{max-width:82%}
+.hero .art{position:absolute;right:-6px;top:-6px;width:42%;max-width:170px;pointer-events:none}
+.pane main{background:#fff;border:1px solid #dbe8ff;border-radius:28px;padding:22px 18px 20px;box-shadow:0 18px 44px rgba(19,102,255,.12);max-width:none!important;margin:0!important;width:auto!important}
+#panelLogin h1,#panelLogin .sub{display:none}
+body:has(#panelForgot:not([hidden])) .hero{display:none}
+.pane main .panel h1{font-size:18px!important;color:#0b1b4d;margin:0 0 4px!important}
+.pane main .sub{font-size:13.5px;color:#5b6b8c;margin-bottom:14px}
+.f label{font-size:14px;font-weight:700;color:#0b1b4d;margin-bottom:8px}
+.in{position:relative}
+.in input{height:54px!important;border:1.5px solid #d3e3ff!important;border-radius:16px!important;background:#fbfdff!important;font-size:15px;color:#0b1b4d;box-shadow:none!important}
+.in input::placeholder{color:#8fa0c0}
+.in input:focus{border-color:#1366ff!important;box-shadow:0 0 0 4px rgba(19,102,255,.12)!important;background:#fff!important}
+.in .li,.in .li svg{color:#3b5a99}
+.eye{color:#3b5a99}
+.pane .row1{display:flex;align-items:center;justify-content:space-between;margin:2px 0 18px}
+.rem{display:flex;align-items:center;gap:9px;font-size:14px;color:#0b1b4d;cursor:pointer}
+.rem input{appearance:none;-webkit-appearance:none;width:22px;height:22px;border-radius:7px;background:#fff;border:1.5px solid #b9d0ff;display:grid;place-items:center;margin:0;cursor:pointer}
+.rem input:checked{background:#1366ff;border-color:#1366ff}
+.rem input:checked:after{content:"";width:5px;height:10px;border:solid #fff;border-width:0 2.2px 2.2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.row1 .forgot{margin:0!important;padding:0!important}
+.row1 .forgot a{color:#1366ff;font-weight:700;font-size:14px;cursor:pointer}
+.row1 .forgot a span{display:none!important}
+.btn.primary{min-height:58px;border-radius:99px!important;background:linear-gradient(180deg,#2d7dff,#0b55e6)!important;color:#fff;font-size:17px;font-weight:700;border:0;box-shadow:0 12px 26px rgba(19,102,255,.38);width:100%;display:flex;align-items:center;justify-content:center;gap:10px}
+.btn.primary:disabled{opacity:.7}
+.btn.ghost{border-radius:99px!important;min-height:58px;border:1.5px solid #cfe0ff;background:#fff;color:#1366ff;font-weight:700}
+.actions{gap:10px}
+.divider{display:flex;align-items:center;gap:12px;color:#5b6b8c;font-size:14px;margin:22px 0 16px;text-align:center}
+.divider:before,.divider:after{content:"";flex:1;height:1px;background:#cfe0ff;position:static;width:auto}
+.soc{display:flex;justify-content:center;gap:16px}
+.soc button{width:68px;height:60px;border-radius:18px;border:1.5px solid #d3e3ff;background:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 14px rgba(19,102,255,.08);padding:0;margin:0;color:#0b1b4d}
+.soc button svg{width:26px;height:26px}
+.newhere{display:flex;align-items:center;gap:12px;background:#eef4ff;border-radius:16px;padding:14px;margin-top:22px;text-decoration:none;color:#0b1b4d}
+.newhere svg{flex:none;width:26px;height:26px;color:#1366ff}
+.newhere div{flex:1;font-size:15px;font-weight:700}
+.newhere small{display:block;font-weight:500;color:#5b6b8c;font-size:12.5px;margin-top:2px}
+.have{text-align:center;font-size:14.5px;color:#0b1b4d;margin-top:18px}
+.have a{color:#1366ff;font-weight:700;text-decoration:none}
+.bar{height:6px;border-radius:9px;background:#e2ecff}.bar i{background:linear-gradient(90deg,#4b94ff,#1366ff);border-radius:9px}
+.stepLabel{color:#5b6b8c;font-size:12.5px;font-weight:600}
+.terms input:checked{background:#1366ff;border-color:#1366ff}
+.f label .opt{font-weight:500;font-size:11.5px;color:#8fa0c0;white-space:nowrap}.row2{align-items:start}
+@media(min-width:768px){.pane{padding-top:44px!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+/* ═ SIZE/OVERLAP FIX ═ */
+.hero{display:grid!important;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px;padding:14px 0 18px!important;min-height:0!important}
+.hero h1{grid-column:1;font-size:clamp(24px,7.2vw,32px)!important;line-height:1.12!important;margin:0 0 8px!important;max-width:none!important;overflow-wrap:anywhere}
+.hero p{grid-column:1;font-size:clamp(13.5px,3.8vw,15px)!important;line-height:1.45!important;max-width:none!important;margin:0}
+.hero .art{grid-column:2;grid-row:1/span 2;position:static!important;width:clamp(84px,26vw,120px)!important;max-width:none!important;height:auto;align-self:center}
+.hero.wide h1,.hero.wide p{max-width:none!important}
+.pane .brand img{width:44px!important;height:44px!important;border-radius:13px}
+.pane .brand .bt b{font-size:clamp(17px,5vw,20px)!important}
+.pane .brand .bt small{font-size:clamp(10.5px,3vw,12px)!important}
+.pane main{padding:18px 16px!important}
+.f label{font-size:13.5px!important}
+.in input{height:50px!important;font-size:14.5px!important}
+.pane main .panel h1{font-size:17px!important}
+.btn.primary{min-height:54px!important;font-size:16px!important}
+.soc button{width:60px!important;height:54px!important}
+.soc button svg{width:24px!important;height:24px!important}
+.newhere div{font-size:14px!important}
+@media(max-width:340px){.pane{padding-left:14px!important;padding-right:14px!important}.hero .art{width:70px!important}}
+.rem,.row1 .forgot a{white-space:nowrap;font-size:13px!important}.row1{gap:8px}
+.hc{display:flex;justify-content:center;margin-top:18px;min-height:78px}.hcMsg{display:none;margin:8px 0 0;font-size:12.5px;color:var(--danger,#c62839);text-align:center;line-height:1.4}.hcMsg.show{display:block}.btn.primary:disabled{cursor:not-allowed}
+</style>
+</head>
+<body>
+<div class="split">
+  <div class="pane">
+    <header class="top"><a class="brand" href="index.html"><img src="android-chrome-192x192.png" alt="" width="52" height="52"/><span class="bt"><b>Global Digits</b><small>Your Trusted Plug for Online Services</small></span></a></header>
+    <section class="hero" aria-labelledby="hl0"><h1 id="hl0">Welcome Back</h1><p>Log in to your account and continue your digital journey.</p><svg class="art" viewBox="0 0 200 200" aria-hidden="true"><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5aa5ff"/><stop offset="1" stop-color="#0b4fe0"/></linearGradient></defs><ellipse cx="100" cy="102" rx="92" ry="62" fill="none" stroke="#bcd5ff" transform="rotate(-25 100 100)"/><circle cx="168" cy="52" r="5" fill="#1366ff"/><circle cx="34" cy="150" r="8" fill="#1366ff"/><rect x="44" y="30" width="112" height="132" rx="38" fill="url(#g1)"/><rect x="52" y="38" width="96" height="116" rx="32" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="3"/><path d="M82 92V78a18 18 0 0 1 36 0v14" fill="none" stroke="#e9f2ff" stroke-width="9" stroke-linecap="round"/><rect x="72" y="90" width="56" height="44" rx="12" fill="#fff"/><circle cx="100" cy="108" r="6" fill="#1366ff"/><rect x="97" y="110" width="6" height="14" rx="3" fill="#1366ff"/></svg></section>
+    <main>
+      <section class="panel" id="panelLogin" aria-labelledby="hl">
+        <h1 id="hl">Welcome back</h1>
+        <p class="sub">Sign in to continue to your account.</p>
+        <form id="loginForm" novalidate>
+          <div class="f"><label for="loginEmail">Email Address</label><div class="in ico"><input type="email" id="loginEmail" placeholder="Enter your email address" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"/><span class="li" data-icon="mail"></span></div><p class="err"></p></div>
+          <div class="f" style="margin-bottom:10px"><label for="loginPass">Password</label><div class="in ico tog"><input type="password" id="loginPass" placeholder="Enter your password" autocomplete="current-password"/><span class="li" data-icon="lock"></span><button type="button" class="eye" data-toggle-for="loginPass" data-icon="eye" aria-label="Show or hide password" onclick="gdTogglePassword(this)"></button></div><p class="err"></p></div>
+          <div class="row1"><label class="rem"><input type="checkbox" id="rememberMe" checked/>Remember me</label><div class="forgot"><a onclick="showForgotPanel()" role="button" tabindex="0"><span data-icon="lock" style="display:inline-flex"></span>Forgot password?</a></div></div>
+          <div class="hc" id="hcLogin"></div><p class="hcMsg" id="hcMsgLogin" role="alert"></p>
+          <div class="actions" style="margin-top:14px"><button type="submit" class="btn primary" id="loginBtn" disabled>Log In<span data-icon="arrowRight"></span></button></div>
+        </form>
+        <div class="divider">Or continue with</div>
+        <div class="soc"><button type="button" onclick="signInWithGoogle()" aria-label="Continue with Google"><span data-icon="google" style="display:inline-flex"></span></button><button type="button" onclick="signInWithX()" aria-label="Continue with X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.8 3h3.2l-7 8 8.2 10.9h-6.4l-5-6.6L5 21H1.8l7.5-8.6L1.4 3H8l4.5 6 5.3-6zm-1.1 16.9h1.8L7.1 4.9H5.2z"/></svg></button><button type="button" onclick="toast('Telegram sign-in is coming soon')" aria-label="Telegram"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#1d8bff"/><path d="M5.6 11.8 17.5 7c.6-.2 1 .1.8.9l-2 9.5c-.1.6-.5.8-1 .5l-3-2.2-1.4 1.4c-.2.2-.3.3-.6.3l.2-3 5.5-5c.2-.2 0-.3-.3-.1l-6.800 4.300-2.900-.9c-.6-.2-.6-.6.1-.9z" fill="#fff"/></svg></button></div>
+      <a class="newhere" href="register.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3 4 6v6c0 5 3.500 8 8 9 4.500-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><div>New here?<small>Create your account and unlock more features.</small></div><span aria-hidden="true">›</span></a></section>
+      <section class="panel" id="panelForgot" aria-labelledby="hf" hidden>
+        <h1 id="hf">Reset your password</h1>
+        <p class="sub">We'll email you a secure link to set a new one.</p>
+        <form id="forgotForm" novalidate>
+          <div class="f"><label for="forgotEmail">Email address</label><div class="in ico"><input type="email" id="forgotEmail" placeholder="you@example.com" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false"/><span class="li" data-icon="mail"></span></div><p class="err"></p></div>
+          <div class="hc" id="hcForgot"></div><p class="hcMsg" id="hcMsgForgot" role="alert"></p>
+          <div class="actions" style="margin-top:14px"><button type="submit" class="btn primary" id="forgotBtn" disabled><span data-icon="send"></span>Send reset link</button></div>
+        </form>
+        <div class="back"><button type="button" class="btn ghost" onclick="showLoginPanel()"><span data-icon="arrowLeft"></span>Back to sign in</button></div>
+      </section>
+    </main>
+    <div class="gs"><span data-icon="shield" style="display:inline-flex"></span>Protected by Global Secure</div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ── hCaptcha ──
+   The site key below is PUBLIC by design. The hCaptcha SECRET key is never placed in frontend code:
+   it lives only in Supabase Dashboard → Authentication → Attack Protection (CAPTCHA provider: hCaptcha),
+   and Supabase verifies every token server-side. */
+var GD_HCAPTCHA_SITEKEY='fd2690d0-f2ec-4b24-aa08-f5a0fc3e4bfc';
+var gdHcCfg={login:{box:'hcLogin',btn:'loginBtn',msg:'hcMsgLogin'},forgot:{box:'hcForgot',btn:'forgotBtn',msg:'hcMsgForgot'}};
+var gdHc={};
+function gdHcMsg(k,t){var m=document.getElementById(gdHcCfg[k].msg);if(!m)return;m.textContent=t||'';m.classList.toggle('show',!!t);}
+function gdHcSync(k){var b=document.getElementById(gdHcCfg[k].btn);if(b)b.disabled=!(gdHc[k]&&gdHc[k].token);}
+function gdHcRender(k){
+  var c=gdHcCfg[k],box=document.getElementById(c.box);
+  if(!c||!box||!window.hcaptcha||box.closest('[hidden]'))return;
+  var s=gdHc[k]||(gdHc[k]={id:null,token:null});
+  if(s.id!==null){gdHcSync(k);return;}
+  s.id=hcaptcha.render(c.box,{
+    sitekey:GD_HCAPTCHA_SITEKEY,
+    size:window.innerWidth<350?'compact':'normal',
+    callback:function(t){s.token=t;gdHcMsg(k,'');gdHcSync(k);},
+    'expired-callback':function(){gdHcReset(k);},
+    'chalexpired-callback':function(){gdHcReset(k);},
+    'error-callback':function(){s.token=null;gdHcSync(k);gdHcMsg(k,'Security check failed. Please try again.');}
+  });
+  gdHcSync(k);
+}
+/* Tokens are single-use: reset after every attempt, failed or expired, so a fresh check is required. */
+function gdHcReset(k){
+  var s=gdHc[k];if(!s)return;
+  s.token=null;
+  try{if(s.id!==null&&window.hcaptcha)hcaptcha.reset(s.id);}catch(e){}
+  gdHcSync(k);
+}
+function gdHcToken(k){return gdHc[k]&&gdHc[k].token||null;}
+function gdIsCaptchaErr(e){return /captcha/i.test((e&&e.message)||'');}
+function gdHcReady(){Object.keys(gdHcCfg).forEach(gdHcRender);}
+function gdHcLoadFail(){Object.keys(gdHcCfg).forEach(function(k){gdHcMsg(k,'Security check could not load. Check your connection and refresh the page.');});}
+</script>
+<script src="https://js.hcaptcha.com/1/api.js?render=explicit&onload=gdHcReady" async defer onerror="gdHcLoadFail()"></script>
+<script>
+/* ── Shared auth config (unchanged — same Supabase project/anon key as index.html and login.html) ── */
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+var gdToastTimer=null;
+function toast(msg){
+  var el=document.getElementById('toast');
+  if(!el){el=document.createElement('div');el.id='toast';document.body.appendChild(el);}
+  clearTimeout(gdToastTimer);el.textContent=msg;el.classList.add('show');
+  gdToastTimer=setTimeout(function(){el.classList.remove('show');},3200);
+}
+const S='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">';
+const GD_ICONS={
+  shield:S+'<path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3Z"/><path d="M9.5 12l1.8 1.8L14.7 10"/></svg>',
+  mail:S+'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></svg>',
+  lock:S+'<rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>',
+  login:S+'<path d="M13 4h5a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-5"/><path d="M3 12h13M12 7l5 5-5 5"/></svg>',
+  bolt:S+'<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/></svg>',
+  headset:S+'<path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="3" y="13" width="4.2" height="6" rx="1.6"/><rect x="16.8" y="13" width="4.2" height="6" rx="1.6"/><path d="M19 19.5c0 1.9-1.8 2.5-4.5 2.5"/></svg>',
+  send:S+'<path d="M21 3 10 14M21 3l-7 18-4-7-7-4 18-7Z"/></svg>',
+  eye:S+'<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/></svg>',
+  eyeOff:S+'<path d="M3 3l18 18"/><path d="M10.6 5.7A10.6 10.6 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a15.6 15.6 0 0 1-3.4 4.2M6.6 6.6C4 8.3 2.5 12 2.5 12s3.5 6.5 9.5 6.5c1.3 0 2.5-.3 3.6-.8"/><path d="M9.9 10a3 3 0 0 0 4.1 4.1"/></svg>',
+  arrowRight:S+'<path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+  arrowLeft:S+'<path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
+  check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  google:'<svg viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.27c0-.79-.07-1.54-.2-2.27H12v4.3h6.47c-.28 1.5-1.13 2.77-2.4 3.62v3h3.87c2.27-2.09 3.56-5.17 3.56-8.65Z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.94-2.92l-3.87-3c-1.07.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.27v3.09C3.25 21.3 7.31 24 12 24Z"/><path fill="#FBBC05" d="M5.27 14.27a7.2 7.2 0 0 1 0-4.54v-3.1H1.27a12 12 0 0 0 0 10.73l4-3.09Z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.94 1.19 15.24 0 12 0 7.31 0 3.25 2.7 1.27 6.63l4 3.1C6.22 6.86 8.87 4.75 12 4.75Z"/></svg>'
+};
+function gdRenderIcons(root){(root||document).querySelectorAll('[data-icon]').forEach(function(el){var n=el.getAttribute('data-icon');if(GD_ICONS[n])el.innerHTML=GD_ICONS[n];});}
+function gdTogglePassword(btn){
+  var input=document.getElementById(btn.getAttribute('data-toggle-for'));if(!input)return;
+  var showing=input.type==='text';input.type=showing?'password':'text';
+  btn.innerHTML=GD_ICONS[showing?'eye':'eyeOff'];
+}
+/* Google OAuth — unchanged; redirectTo stays pinned to index.html where checkSession() owns profile/status handling */
+async function signInWithGoogle(){
+  try{
+    var r=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.origin+'/index.html'}});
+    if(r.error){toast('Google sign-in failed: '+r.error.message);return false;}
+    return true;
+  }catch(e){toast('Google sign-in failed: '+(e.message||'please try again'));return false;}
+}
+/* ── X (Twitter) OAuth 2.0 via the existing Supabase provider "x" ──
+   No keys live in this file: the X Client ID/Secret are stored only in the Supabase dashboard.
+   Flow: signInWithOAuth → X → Supabase callback → back to THIS page → session detected →
+   metadata normalised for brand-new X users → index.html (checkSession() owns profile/status, same as Google). */
+var gdXBusy=false;
+function gdSetSocialDisabled(d){document.querySelectorAll('.soc button').forEach(function(b){b.disabled=d;});}
+async function signInWithX(){
+  if(gdXBusy)return false;
+  gdXBusy=true;gdSetSocialDisabled(true);
+  try{
+    try{sessionStorage.setItem('gd_oauth_pending','x');}catch(e){}
+    var r=await sb.auth.signInWithOAuth({provider:'x',options:{redirectTo:window.location.origin+window.location.pathname}});
+    if(r.error){throw r.error;}
+    return true; /* browser is now navigating to X */
+  }catch(e){
+    try{sessionStorage.removeItem('gd_oauth_pending');}catch(_){}
+    gdXBusy=false;gdSetSocialDisabled(false);
+    toast('X sign-in failed: '+((e&&e.message)||'please try again'));
+    return false;
+  }
+}
+/* Supabase/X report failures (cancelled consent, misconfig, email already used…) as error params on the redirect URL */
+function gdHandleOAuthReturn(){
+  try{
+    var q=new URLSearchParams(window.location.search),h=new URLSearchParams((window.location.hash||'').replace(/^#/,''));
+    var code=q.get('error_code')||h.get('error_code')||'',err=q.get('error')||h.get('error')||'';
+    var desc=q.get('error_description')||h.get('error_description')||'';
+    if(!err&&!code&&!desc)return false;
+    var msg;
+    if(err==='access_denied'&&!/email/i.test(desc))msg='X sign-in was cancelled.';
+    else if(/email/i.test(desc)&&/(exist|already|registered|taken)/i.test(desc))msg='That email is already linked to another account. Log in with your original method.';
+    else if(/email/i.test(desc))msg='X did not share an email address. Please allow email access or use another sign-in method.';
+    else msg=desc?('X sign-in failed: '+desc.replace(/\+/g,' ')):'X sign-in failed. Please try again.';
+    try{sessionStorage.removeItem('gd_oauth_pending');}catch(e){}
+    ['error','error_code','error_description','error_uri'].forEach(function(k){q.delete(k);h.delete(k);});
+    var qs=q.toString(),hs=h.toString();
+    history.replaceState(null,'',window.location.pathname+(qs?'?'+qs:'')+(hs?'#'+hs:''));
+    setTimeout(function(){toast(msg);},150);
+    return true;
+  }catch(e){return false;}
+}
+/* New X users arrive with X-style metadata (user_name / name) but none of the fields email signup stores.
+   Fill name + username ONCE (existing users already have a username, so they are left untouched). Fails open. */
+async function gdPrepareXUser(user){
+  try{
+    var m=user.user_metadata||{},patch={};
+    var handle=String(m.user_name||m.preferred_username||'').toLowerCase().replace(/[^a-z0-9_]/g,'').slice(0,20);
+    if(!m.name){var n=m.full_name||handle||(user.email?user.email.split('@')[0]:'');if(n)patch.name=n;}
+    if(!m.username){
+      var base=handle||'user',cand=base,ok=false;
+      for(var i=0;i<5&&!ok;i++){
+        try{var rr=await sb.rpc('is_username_available',{p_username:cand});ok=!(!rr.error&&rr.data===false);}catch(e){ok=true;}
+        if(!ok)cand=base.slice(0,16)+String(Math.floor(Math.random()*9000)+1000);
+      }
+      patch.username=cand;
+    }
+    if(Object.keys(patch).length)await sb.auth.updateUser({data:patch});
+  }catch(e){}
+}
+function gdIsXUser(u){
+  try{
+    if(u.app_metadata&&(u.app_metadata.provider==='x'||u.app_metadata.provider==='twitter'))return true;
+    return (u.identities||[]).some(function(i){return i.provider==='x'||i.provider==='twitter';});
+  }catch(e){return false;}
+}
+window.addEventListener('pageshow',function(e){if(e.persisted){gdXBusy=false;gdSetSocialDisabled(false);}});
+async function gdRedirectIfAlreadyLoggedIn(){
+  try{
+    var s=await sb.auth.getSession();
+    if(s.data&&s.data.session){
+      var u=s.data.session.user,pending=null;
+      try{pending=sessionStorage.getItem('gd_oauth_pending');sessionStorage.removeItem('gd_oauth_pending');}catch(e){}
+      if(pending==='x'&&u&&gdIsXUser(u))await gdPrepareXUser(u);
+      window.location.replace('index.html');
+    }
+  }catch(e){}
+}
+/* Referral capture — same localStorage key as refer-earn.js */
+function gdCaptureReferralCode(){
+  try{var c=new URLSearchParams(window.location.search).get('ref');if(c&&c.trim())localStorage.setItem('gd_pending_ref_code',c.trim().toUpperCase());}catch(e){}
+}
+function gdPrefillReferralField(id){
+  try{var p=localStorage.getItem('gd_pending_ref_code'),i=document.getElementById(id);if(p&&i&&!i.value)i.value=p;}catch(e){}
+}
+function gdSetBtnLoading(btn,loading,idleHTML,loadingText){
+  if(!btn)return;btn.disabled=loading;
+  btn.innerHTML=loading?'<span class="spin"></span><span>'+loadingText+'</span>':idleHTML;
+}
+document.addEventListener('DOMContentLoaded',function(){gdRenderIcons();gdCaptureReferralCode();if(!gdHandleOAuthReturn())gdRedirectIfAlreadyLoggedIn();});
+</script>
+<script>
+var $=function(i){return document.getElementById(i)};
+function setErr(id,m){var f=$(id).closest('.f');f.classList.add('bad');f.querySelector('.err').textContent=m;$(id).setAttribute('aria-invalid','true');$(id).focus();}
+document.querySelectorAll('.in input').forEach(function(i){i.addEventListener('input',function(){i.closest('.f').classList.remove('bad');i.removeAttribute('aria-invalid');});});
+document.querySelectorAll('.back a,.forgot a').forEach(function(a){a.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();a.click();}});});
+function showForgotPanel(){
+  $('panelLogin').hidden=true;$('panelForgot').hidden=false;
+  var f=$('forgotEmail');if(!f.value)f.value=$('loginEmail').value||'';f.focus();
+  gdHcRender('forgot');
+}
+function showLoginPanel(){$('panelForgot').hidden=true;$('panelLogin').hidden=false;$('loginEmail').focus();}
+
+/* Unchanged behaviour: plain password sign-in, then index.html's checkSession()
+   owns the profile-status / deactivated-account check. */
+var signingIn=false;
+async function doLogin(){
+  if(signingIn)return;
+  var email=$('loginEmail').value||'',pass=$('loginPass').value||'';
+  if(!email.trim()){setErr('loginEmail','Enter your email address.');return;}
+  if(!pass){setErr('loginPass','Enter your password.');return;}
+  var capToken=gdHcToken('login');
+  if(!capToken){gdHcMsg('login','Please complete the security check.');return;}
+  var btn=$('loginBtn'),idle=btn.innerHTML;
+  signingIn=true;gdSetBtnLoading(btn,true,idle,'Signing in…');
+  try{
+    var r=await sb.auth.signInWithPassword({email:email.trim(),password:pass,options:{captchaToken:capToken}});
+    if(r.error)throw r.error;
+    window.location.href='index.html';
+  }catch(e){
+    toast(gdIsCaptchaErr(e)?'Security check failed. Please complete it again.':(e.message||'Sign in failed. Please try again.'));
+    signingIn=false;gdSetBtnLoading(btn,false,idle,'');
+    gdHcReset('login'); /* token is single-use: require a fresh check */
+  }
+}
+var sendingReset=false;
+async function doForgot(){
+  if(sendingReset)return;
+  var email=$('forgotEmail').value||'';
+  if(!email.trim()){setErr('forgotEmail','Enter your email address.');return;}
+  var capToken=gdHcToken('forgot');
+  if(!capToken){gdHcMsg('forgot','Please complete the security check.');return;}
+  var btn=$('forgotBtn'),idle=btn.innerHTML;
+  sendingReset=true;gdSetBtnLoading(btn,true,idle,'Sending…');
+  try{
+    var r=await sb.auth.resetPasswordForEmail(email.trim(),{redirectTo:'https://globaldigits.shop/reset-password.html',captchaToken:capToken});
+    if(r.error)throw r.error;
+    toast('Reset link sent! Check your inbox.');
+    showLoginPanel();
+  }catch(e){toast(gdIsCaptchaErr(e)?'Security check failed. Please complete it again.':(e.message||'Failed to send reset link.'));}
+  sendingReset=false;gdSetBtnLoading(btn,false,idle,'');
+  gdHcReset('forgot');
+}
+$('loginForm').addEventListener('submit',function(e){e.preventDefault();doLogin();});
+$('forgotForm').addEventListener('submit',function(e){e.preventDefault();doForgot();});
+/* register.html sends people here with ?email= when the address is already registered */
+try{var pre=new URLSearchParams(window.location.search).get('email');if(pre)$('loginEmail').value=pre;}catch(e){}
+</script>
+</body>
+</html>
