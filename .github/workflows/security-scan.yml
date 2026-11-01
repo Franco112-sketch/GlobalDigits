@@ -1,0 +1,32 @@
+# Repo secret:    SECURITY_INGEST_SECRET  (same value as the Edge Function secret)
+# Repo variables: SECURITY_INGEST_URL  = https://<project-ref>.supabase.co/functions/v1/security-center/ingest
+#                 SCAN_TARGET          = your OWN site origin, e.g. https://example.com
+#                 SCAN_SUPABASE_URL    = https://<project-ref>.supabase.co
+#                 SCAN_ALLOWED_HOSTS   = optional comma list; scanning is refused for any host not in it
+#                                        (defaults to the SCAN_TARGET host + the Supabase host)
+name: security-scan
+on:
+  workflow_dispatch:
+  schedule: [{ cron: "17 3 * * *" }]
+permissions: { contents: read }
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }   # full history so Gitleaks can inspect past commits
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Install Gitleaks (pin the release checksum per your org policy)
+        run: |
+          curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz | tar xz gitleaks
+          sudo mv gitleaks /usr/local/bin/
+      - name: Run scanners (read-only; never installs, upgrades or modifies anything)
+        env:
+          SECURITY_INGEST_SECRET: ${{ secrets.SECURITY_INGEST_SECRET }}
+          SECURITY_INGEST_URL: ${{ vars.SECURITY_INGEST_URL }}
+          SCAN_TARGET: ${{ vars.SCAN_TARGET }}
+          SCAN_SUPABASE_URL: ${{ vars.SCAN_SUPABASE_URL }}
+          SCAN_ALLOWED_HOSTS: ${{ vars.SCAN_ALLOWED_HOSTS }}
+        run: node scripts/security/scan.mjs
