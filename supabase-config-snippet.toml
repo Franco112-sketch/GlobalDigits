@@ -1,0 +1,4 @@
+# Add to supabase/config.toml. /ingest authenticates with an HMAC signature and /scan-now verifies the admin JWT itself,
+# so the platform JWT gate must be off — otherwise the browser's CORS preflight (OPTIONS) is rejected and Full scan fails.
+[functions.security-center]
+verify_jwt = false
