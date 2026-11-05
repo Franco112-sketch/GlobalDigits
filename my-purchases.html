@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#1a56db"/><meta name="robots" content="noindex"/>
+<title>My Purchases — Global Digits</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--brand:#1a56db;--brand-lt:#e8f0ff;--bg:#f6f9ff;--surface:#fff;--surface2:#f1f5fc;--border:#dbe9fd;--text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;--green:#16a34a;--green-lt:#e7f7ed;--red:#d1293d;--red-lt:#fdecee;--amber:#b7791f;--amber-lt:#fdf5e4;--font:'Plus Jakarta Sans',system-ui,sans-serif;--font-d:'Syne',sans-serif;--grad:linear-gradient(135deg,#2f6feb,#1a56db);color-scheme:light}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;overflow-x:hidden}
+button,select{font:inherit;color:inherit}button{cursor:pointer;border:0;background:none}a{text-decoration:none;color:inherit}svg{display:block;flex-shrink:0}
+.top{position:sticky;top:0;z-index:20;background:rgba(246,249,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);padding-top:env(safe-area-inset-top,0)}
+.topIn{max-width:860px;margin:0 auto;padding:11px 16px;display:flex;align-items:center;gap:10px}
+.back{width:34px;height:34px;border-radius:50%;background:#fff;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center}
+.brand{font-family:var(--font-d);font-weight:800;font-size:14px;flex:1}
+main{max-width:860px;margin:0 auto;padding:16px 16px 60px}
+.card,.pan{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px}
+.pan h2{font-family:var(--font-d);font-size:15px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card h3{font-size:14px;font-weight:800}.meta{font-size:11.5px;color:var(--text2)}
+.tag{display:inline-flex;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:99px;background:var(--surface2);color:var(--text2)}
+.tag.paid,.tag.delivered{background:var(--green-lt);color:var(--green)}.tag.pending,.tag.pending_payment,.tag.processing{background:var(--amber-lt);color:var(--amber)}.tag.failed,.tag.cancelled,.tag.abandoned{background:var(--red-lt);color:var(--red)}
+.btn{padding:10px 14px;border-radius:11px;font-weight:700;font-size:12px;display:inline-flex;align-items:center;justify-content:center;gap:6px}.bp{background:var(--grad);color:#fff}.bg{background:#fff;border:1.5px solid var(--border)}.bd{background:#fff;border:1.5px solid #f3c2c9;color:var(--red)}
+.sum{display:grid;gap:8px}.sum div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--surface2);padding-bottom:7px}.sum span:first-child{color:var(--text2)}.sum b{text-align:right;word-break:break-word;white-space:pre-line}
+.tl{list-style:none;display:grid;gap:0}.tl li{display:flex;gap:12px;position:relative;padding-bottom:16px}
+.tl li:not(:last-child)::before{content:'';position:absolute;left:8px;top:18px;bottom:0;width:2px;background:var(--border)}
+.dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);background:#fff;flex-shrink:0;margin-top:1px}.on .dot{background:var(--brand);border-color:var(--brand)}.on b{color:var(--text)}.tl b{color:var(--text3);font-size:12.5px}
+.sk{background:linear-gradient(90deg,#eaf0fb 25%,#f6f9ff 50%,#eaf0fb 75%);background-size:200% 100%;animation:s 1.2s infinite;border-radius:12px;height:84px;margin-bottom:12px}@keyframes s{to{background-position:-200% 0}}
+.empty{text-align:center;padding:44px 16px;color:var(--text2);background:#fff;border:1.5px dashed var(--border);border-radius:16px}.empty b{display:block;color:var(--text);font-size:14px;margin:8px 0 3px}
+.note{padding:11px 13px;border-radius:12px;font-size:12px;margin-bottom:12px;background:var(--brand-lt);color:#1342b0;white-space:pre-line}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0));transform:translateX(-50%);background:#0d1321;color:#fff;padding:11px 16px;border-radius:12px;font-weight:600;z-index:50;font-size:12.5px}.toast[hidden]{display:none}
+.fl{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="top"><div class="topIn"><button class="back" id="back" aria-label="Back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><div class="brand">My Purchases</div></div></div>
+<main id="app"></main><div class="toast" id="toast" hidden></div>
+<script>
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co',SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const SUPPORT_URL='support.html';   // existing support page; it receives ?order=<reference>&category=Website%20Purchase
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+const $=s=>document.querySelector(s),app=$('#app');
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=(n,c)=>(c==='USDT'||c==='USD'?'$':'₦')+Number(n||0).toLocaleString('en-NG',{maximumFractionDigits:2});
+const dt=t=>t?new Date(t).toLocaleString('en-NG',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}):'—';
+const LBL={pending_payment:'Pending Payment',paid:'Paid',processing:'Processing',delivered:'Delivered',cancelled:'Cancelled',pending:'Pending',failed:'Failed',abandoned:'Abandoned'};
+let tt;function toast(m){const t=$('#toast');t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,3200)}
+$('#back').onclick=()=>{if(new URLSearchParams(location.search).get('o'))location.href='my-purchases.html';else location.href='index.html'};
+async function init(){
+  const s=await sb.auth.getSession();if(!s.data.session){location.href='login.html?next=my-purchases.html'+encodeURIComponent(location.search);return}
+  const o=new URLSearchParams(location.search).get('o');o?detail(o):list();
+}
+async function list(){
+  app.innerHTML='<div class="sk"></div><div class="sk"></div><div class="sk"></div>';
+  const r=await sb.from('wm_my_orders').select('id,reference,listing_name,site_name,amount,currency,payment_status,delivery_status,created_at').order('created_at',{ascending:false});
+  if(r.error){app.innerHTML='<div class="empty"><b>Couldn’t load your purchases</b><button class="btn bp" style="margin-top:12px" onclick="list()">Retry</button></div>';return}
+  if(!r.data.length){app.innerHTML='<div class="empty"><b>No website purchases yet</b>Browse ready-made websites and get yours today.<div><a class="btn bp" style="margin-top:12px" href="marketplace.html">Browse marketplace</a></div></div>';return}
+  app.innerHTML=r.data.map(o=>`<div class="card"><div class="row"><h3>${esc(o.listing_name)}</h3><span class="tag ${o.delivery_status}">${LBL[o.delivery_status]||o.delivery_status}</span></div>
+  <div class="meta" style="margin:4px 0 10px">${esc(o.site_name)} · ${esc(o.reference)} · ${dt(o.created_at)}</div>
+  <div class="row"><div><b>${money(o.amount,o.currency)}</b> <span class="tag ${o.payment_status}" style="margin-left:6px">Payment: ${LBL[o.payment_status]||o.payment_status}</span></div><a class="btn bg" href="my-purchases.html?o=${esc(o.reference)}">View Details</a></div></div>`).join('');
+}
+async function detail(ref){
+  app.innerHTML='<div class="sk"></div><div class="sk" style="height:220px"></div>';
+  const r=await sb.from('wm_my_orders').select('*').eq('reference',ref).maybeSingle();
+  if(r.error){app.innerHTML='<div class="empty"><b>Couldn’t load this order</b><button class="btn bp" style="margin-top:12px" onclick="detail(\''+esc(ref)+'\')">Retry</button></div>';return}
+  const o=r.data;if(!o){app.innerHTML='<div class="empty"><b>Order not found</b></div>';return}
+  const [rq,at]=await Promise.all([sb.from('wm_requirements').select('answers,questions_snapshot').eq('order_id',o.id).maybeSingle(),sb.from('wm_attachments').select('question_id,file_name').eq('order_id',o.id)]);
+  const snap=o.listing_snapshot||{},qs=(rq.data&&rq.data.questions_snapshot)||[],an=(rq.data&&rq.data.answers)||{};
+  const rows=qs.map(q=>{let v=an[q.id];if(q.qtype==='file')v=(at.data||[]).filter(a=>a.question_id===q.id).map(a=>a.file_name).join(', ');else if(Array.isArray(v))v=v.join(', ');return v?`<div><span>${esc(q.label)}</span><b>${esc(v)}</b></div>`:''}).join('');
+  const steps=[['paid','Payment confirmed'],['processing','Website being built'],['delivered','Delivered']],ord={pending_payment:0,paid:1,processing:2,delivered:3,cancelled:0},cur=ord[o.delivery_status]||0;
+  const unpaid=['pending','failed','abandoned'].includes(o.payment_status);
+  app.innerHTML=`<div class="pan"><div class="row"><h2 style="margin:0">${esc(o.listing_name)}</h2><span class="tag ${o.delivery_status}">${LBL[o.delivery_status]}</span></div>
+  <div class="sum" style="margin-top:12px"><div><span>Order reference</span><b style="font-family:monospace">${esc(o.reference)}</b></div><div><span>Website name</span><b>${esc(o.site_name)}</b></div><div><span>Purchased</span><b>${dt(o.created_at)}</b></div></div>
+  <div class="fl">${unpaid?`<a class="btn bp" href="marketplace.html?w=${encodeURIComponent((snap.slug||''))}&checkout=${esc(o.reference)}" id="retry">Complete payment</a><button class="btn bd" onclick="cancel('${esc(o.id)}')">Cancel order</button>`:''}<a class="btn bg" href="${SUPPORT_URL}?order=${encodeURIComponent(o.reference)}&category=${encodeURIComponent('Website Purchase')}">Contact support</a></div></div>
+  ${o.delivery_status==='cancelled'?'':`<div class="pan"><h2>Delivery progress</h2><ul class="tl">${steps.map(([k,t],i)=>`<li class="${cur>i?'on':''}"><span class="dot"></span><b>${t}</b></li>`).join('')}</ul></div>`}
+  ${o.admin_instructions?`<div class="pan"><h2>Message from our team</h2><div class="note" style="margin:0">${esc(o.admin_instructions)}</div></div>`:''}
+  ${(o.domain_name||o.hosting_details||o.access_details)?`<div class="pan"><h2>Website access</h2><div class="sum">${o.domain_name?`<div><span>Domain</span><b>${esc(o.domain_name)}</b></div>`:''}${o.hosting_details?`<div><span>Hosting</span><b>${esc(o.hosting_details)}</b></div>`:''}${o.access_details?`<div><span>Access details</span><b>${esc(o.access_details)}</b></div>`:''}</div></div>`:''}
+  <div class="pan"><h2>Payment</h2><div class="sum"><div><span>Amount</span><b>${money(o.amount,o.currency)}</b></div><div><span>Status</span><b>${LBL[o.payment_status]||o.payment_status}</b></div><div><span>Payment reference</span><b style="font-family:monospace">${esc(o.payment_reference||'—')}</b></div><div><span>Paid on</span><b>${dt(o.paid_at)}</b></div></div></div>
+  <div class="pan"><h2>Package details</h2>${(snap.inclusions||[]).length?`<div class="sum">${snap.inclusions.map(x=>`<div><span>Included</span><b>${esc(x)}</b></div>`).join('')}</div>`:''}${snap.domain_hosting?`<p class="meta" style="margin-top:10px">${esc(snap.domain_hosting)}</p>`:''}${snap.delivery_info?`<p class="meta" style="margin-top:6px">${esc(snap.delivery_info)}</p>`:''}</div>
+  <div class="pan"><h2>Your submitted requirements</h2><div class="sum">${rows||'<div><span>No answers recorded</span><b>—</b></div>'}</div></div>`;
+}
+async function cancel(id){
+  if(!confirm('Cancel this order? This cannot be undone.'))return;
+  const r=await sb.rpc('wm_cancel_order',{p_order:id});
+  if(r.error){toast(r.error.message.replace(/^.*?:\s*/,''));return}toast('Order cancelled');init();
+}
+init();
+</script>
+</body>
+</html>
