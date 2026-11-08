@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="robots" content="noindex"/>
+<meta name="theme-color" content="#1a56db"/>
+<title>Identity Check — Global Digits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{--brand:#1a56db;--brand-dk:#1342b0;--brand-lt:#e8f0ff;--bg:#f6f9ff;--surface:#fff;--border:#dbe9fd;--border2:#c9dcfa;
+--text:#0d1321;--text2:#5a6580;--text3:#9aa3b8;--danger:#dc2626;--danger-bg:#fef2f2;--warn:#b45309;--warn-bg:#fff7ed;--ok:#15803d;--ok-bg:#ecfdf3;
+--r:10px;--r-lg:14px;--shadow:0 1px 2px rgba(15,25,50,.04),0 4px 16px rgba(15,25,50,.05);--font:'Plus Jakarta Sans',system-ui,-apple-system,Segoe UI,sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{font-family:var(--font);font-size:13px;line-height:1.5;color:var(--text);background:var(--bg);min-height:100vh;-webkit-font-smoothing:antialiased}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:14px;color:var(--text)}
+.hidden{display:none!important}
+svg{flex-shrink:0}
+.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.92);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--border)}
+.top-in{max-width:880px;margin:0 auto;padding:10px 16px;display:flex;align-items:center;gap:10px}
+.brand{display:flex;align-items:center;gap:8px;font-weight:600;font-size:14px;letter-spacing:-.01em}
+.brand .mark{width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#2f6feb,#1a56db);display:grid;place-items:center;color:#fff}
+.top .back{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:500;color:var(--text2);padding:6px 8px;border-radius:8px;transition:background .15s}
+.top .back:hover{background:var(--brand-lt);color:var(--brand)}
+main{max-width:880px;margin:0 auto;padding:18px 16px 56px}
+h1{font-size:18px;font-weight:600;letter-spacing:-.015em}
+h2{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.sub{color:var(--text2);font-size:12.5px;margin-top:2px}
+.lede{margin-bottom:14px}
+/* stepper */
+.steps{display:flex;align-items:center;gap:6px;margin:14px 0 16px}
+.stp{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--text3);white-space:nowrap}
+.stp i{width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border2);display:grid;place-items:center;font-style:normal;font-size:11px;font-weight:600;background:#fff;transition:all .2s}
+.stp.on{color:var(--text)}.stp.on i{border-color:var(--brand);color:var(--brand)}
+.stp.done{color:var(--text2)}.stp.done i{background:var(--brand);border-color:var(--brand);color:#fff}
+.stp-line{flex:1;height:2px;background:var(--border);border-radius:2px;position:relative;overflow:hidden;min-width:12px}
+.stp-line b{position:absolute;inset:0;width:0;background:var(--brand);transition:width .35s ease}
+.stp-line.done b{width:100%}
+@media(max-width:480px){.stp span{display:none}.stp.on span{display:inline}}
+/* cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow);padding:16px;animation:fade .25s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.card+.card{margin-top:12px}
+.card-h{display:flex;align-items:center;gap:9px;margin-bottom:12px}
+.ico{width:30px;height:30px;border-radius:9px;background:var(--brand-lt);color:var(--brand);display:grid;place-items:center}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 12px}
+.span2{grid-column:1/-1}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+.f label{display:block;font-size:12px;font-weight:500;color:var(--text2);margin-bottom:5px}
+.f label em{color:var(--danger);font-style:normal}
+.f label small{color:var(--text3);font-weight:400}
+.inp,.sel,.txa{width:100%;height:38px;border:1px solid var(--border2);border-radius:9px;padding:0 11px;background:#fff;outline:0;transition:border-color .15s,box-shadow .15s}
+.txa{height:auto;min-height:64px;padding:9px 11px;resize:vertical}
+.sel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%235a6580' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 11px center;padding-right:30px}
+.inp:focus,.sel:focus,.txa:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(26,86,219,.12)}
+.inp[readonly],.inp:disabled,.sel:disabled{background:#f3f6fc;color:var(--text2);cursor:not-allowed}
+.f.bad .inp,.f.bad .sel,.f.bad .txa{border-color:var(--danger)}
+.err{display:none;color:var(--danger);font-size:11.5px;margin-top:4px}
+.f.bad .err{display:block}
+.hint{font-size:11.5px;color:var(--text3);margin-top:4px}
+.fld-ico{position:relative}.fld-ico svg{position:absolute;right:11px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none}
+.phone{display:grid;grid-template-columns:104px 1fr;gap:8px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 16px;border-radius:9px;font-size:13px;font-weight:600;transition:background .15s,transform .05s,opacity .15s}
+.btn:active{transform:scale(.985)}
+.btn.p{background:var(--brand);color:#fff}.btn.p:hover{background:var(--brand-dk)}
+.btn.g{background:#fff;color:var(--text);border:1px solid var(--border2)}.btn.g:hover{background:var(--brand-lt)}
+.btn.sm{height:32px;padding:0 12px;font-size:12px}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;align-items:center}
+.actions .sp{flex:1}
+.spin{width:14px;height:14px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:rot .7s linear infinite}
+@keyframes rot{to{transform:rotate(360deg)}}
+.note{display:flex;gap:9px;align-items:flex-start;padding:10px 12px;border-radius:10px;font-size:12px;border:1px solid var(--border);background:var(--brand-lt);color:#1e3a8a}
+.note.warn{background:var(--warn-bg);border-color:#fed7aa;color:#92400e}
+.note.bad{background:var(--danger-bg);border-color:#fecaca;color:#991b1b}
+.note.ok{background:var(--ok-bg);border-color:#bbf7d0;color:#166534}
+.note svg{margin-top:1px}
+.pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:99px;font-size:11px;font-weight:600;border:1px solid transparent}
+.pill.blue{background:var(--brand-lt);color:var(--brand);border-color:var(--border2)}
+.pill.ok{background:var(--ok-bg);color:var(--ok);border-color:#bbf7d0}
+.pill.warn{background:var(--warn-bg);color:var(--warn);border-color:#fed7aa}
+.pill.bad{background:var(--danger-bg);color:var(--danger);border-color:#fecaca}
+.pill.gray{background:#f1f4fa;color:var(--text2);border-color:var(--border)}
+/* face */
+.face-wrap{display:grid;grid-template-columns:minmax(0,320px) 1fr;gap:18px;align-items:start}
+@media(max-width:700px){.face-wrap{grid-template-columns:1fr}}
+.cam{position:relative;width:100%;max-width:340px;margin:0 auto;aspect-ratio:3/4;border-radius:16px;overflow:hidden;background:#0b1530;border:1px solid var(--border2)}
+.cam video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam svg.guide{position:absolute;inset:0;width:100%;height:100%}
+.cam .shade{fill:rgba(8,16,40,.55)}
+.oval{fill:none;stroke:#fff;stroke-width:2.2;stroke-dasharray:6 5;transition:stroke .2s}
+.oval.good{stroke:#34d399;stroke-dasharray:none}.oval.warn{stroke:#fbbf24}.oval.bad{stroke:#f87171}
+.cam .badge{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);max-width:90%;background:rgba(8,16,40,.72);color:#fff;font-size:12px;font-weight:500;padding:6px 12px;border-radius:99px;text-align:center;backdrop-filter:blur(6px)}
+.cam .dir{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:7px;background:var(--brand);color:#fff;font-weight:600;font-size:13px;letter-spacing:.04em;padding:7px 13px;border-radius:99px;box-shadow:0 4px 14px rgba(26,86,219,.4);transition:opacity .2s}
+.cam .idle{position:absolute;inset:0;display:grid;place-items:center;color:#9db4e6;text-align:center;font-size:12px;padding:20px}
+.chal{display:flex;gap:6px;margin:10px 0}
+.chal span{flex:1;height:5px;border-radius:5px;background:var(--border);transition:background .25s}
+.chal span.on{background:#93c5fd}.chal span.done{background:var(--brand)}
+.list{list-style:none;display:grid;gap:7px;margin-top:8px}
+.list li{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--text2)}
+.list svg{color:var(--brand);margin-top:2px}
+.chk{display:flex;gap:9px;align-items:flex-start;margin:12px 0 2px;font-size:12.5px;color:var(--text2);cursor:pointer}
+.chk input{width:16px;height:16px;margin-top:2px;accent-color:var(--brand)}
+/* review */
+.dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 18px}
+@media(max-width:560px){.dl{grid-template-columns:1fr}}
+.dl div{padding:8px 0;border-bottom:1px solid #eef3fc}
+.dl dt{font-size:11px;color:var(--text3);font-weight:500}.dl dd{font-size:13px;margin-top:1px;word-break:break-word}
+.status-hero{display:flex;gap:12px;align-items:flex-start}
+.status-hero .ico{width:38px;height:38px;border-radius:11px}
+.ico.ok{background:var(--ok-bg);color:var(--ok)}.ico.warn{background:var(--warn-bg);color:var(--warn)}.ico.bad{background:var(--danger-bg);color:var(--danger)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);background:#0d1321;color:#fff;font-size:12.5px;padding:9px 14px;border-radius:10px;opacity:0;transition:all .25s;z-index:50;max-width:92vw;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media(max-width:560px){input,select,textarea{font-size:16px}}
+</style>
+</head>
+<body>
+<header class="top"><div class="top-in">
+  <div class="brand"><span class="mark"><i data-i="shield" data-s="15"></i></span>Global Digits</div>
+  <a class="back" href="/" id="backLink"><i data-i="arrowLeft" data-s="14"></i>Back to app</a>
+</div></header>
+
+<main>
+  <div id="vLoad" class="card" style="display:flex;gap:10px;align-items:center"><span class="spin" style="color:var(--brand)"></span><span class="sub" style="margin:0">Loading your application…</span></div>
+
+  <div id="vAuth" class="card hidden">
+    <div class="status-hero"><span class="ico warn"><i data-i="lock" data-s="18"></i></span>
+      <div><h2>Sign in to continue</h2><p class="sub">You need to be signed in to your Global Digits account to complete the identity check.</p>
+      <div class="actions"><a class="btn p" href="/">Go to Global Digits</a></div></div></div>
+  </div>
+
+  <div id="vFlow" class="hidden">
+    <h1>Identity check</h1>
+    <p class="sub lede">Tell us about yourself and complete a short live face check. No documents are required.</p>
+
+    <div id="infoReq" class="note warn hidden" style="margin-bottom:12px"><i data-i="info" data-s="16"></i><div><b>Additional information requested.</b><div id="infoReqText" style="margin-top:2px"></div></div></div>
+
+    <div class="steps" id="steps">
+      <div class="stp" data-n="1"><i>1</i><span>Your details</span></div><div class="stp-line"><b></b></div>
+      <div class="stp" data-n="2"><i>2</i><span>Face check</span></div><div class="stp-line"><b></b></div>
+      <div class="stp" data-n="3"><i>3</i><span>Review</span></div>
+    </div>
+
+    <!-- STEP 1 -->
+    <section id="s1" class="card hidden">
+      <div class="card-h"><span class="ico"><i data-i="user" data-s="16"></i></span><div><h2>Personal information</h2><p class="sub" style="margin:0">Fields marked * are required.</p></div></div>
+      <div class="grid">
+        <div class="f" data-f="first"><label for="fFirst">First name <em>*</em></label><input class="inp" id="fFirst" autocomplete="given-name" maxlength="60"/><div class="err">Enter your first name.</div></div>
+        <div class="f" data-f="middle"><label for="fMiddle">Middle name <small>(optional)</small></label><input class="inp" id="fMiddle" autocomplete="additional-name" maxlength="60"/></div>
+        <div class="f" data-f="last"><label for="fLast">Last name <em>*</em></label><input class="inp" id="fLast" autocomplete="family-name" maxlength="60"/><div class="err">Enter your last name.</div></div>
+        <div class="f" data-f="dob"><label for="fDob">Date of birth <em>*</em></label><input class="inp" type="date" id="fDob" autocomplete="bday"/><div class="err" id="dobErr">Enter a valid date of birth.</div></div>
+        <div class="f" data-f="gender"><label for="fGender">Gender <em>*</em></label>
+          <select class="sel" id="fGender"><option value="">Select</option><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select><div class="err">Select a gender.</div></div>
+        <div class="f" data-f="nat"><label for="fNat">Nationality <em>*</em></label><select class="sel" id="fNat"></select><div class="err">Select your nationality.</div></div>
+        <div class="f" data-f="country"><label for="fCountry">Country of residence <em>*</em></label><select class="sel" id="fCountry"></select><div class="err">Select your country of residence.</div></div>
+        <div class="f" data-f="state"><label for="fState">State / region <em>*</em></label><input class="inp" id="fState" autocomplete="address-level1" maxlength="80"/><div class="err">Enter your state or region.</div></div>
+        <div class="f" data-f="city"><label for="fCity">City <em>*</em></label><input class="inp" id="fCity" autocomplete="address-level2" maxlength="80"/><div class="err">Enter your city.</div></div>
+        <div class="f span2" data-f="addr"><label for="fAddr">Residential address <em>*</em></label><input class="inp" id="fAddr" autocomplete="street-address" maxlength="240"/><div class="err">Enter your residential address.</div></div>
+        <div class="f" data-f="email"><label for="fEmail">Registered email</label>
+          <div class="fld-ico"><input class="inp" id="fEmail" type="email" readonly tabindex="-1" aria-readonly="true"/><i data-i="lock" data-s="14"></i></div>
+          <div class="hint">Taken from your account. It can't be changed here.</div></div>
+        <div class="f" data-f="phone"><label for="fPhone">Phone number <em>*</em></label>
+          <div class="phone"><select class="sel" id="fDial" aria-label="Country code"></select><input class="inp" id="fPhone" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="8012345678" maxlength="16"/></div>
+          <div class="err" id="phoneErr">Enter a valid phone number.</div>
+          <div class="hint" id="phoneHint">This number is locked once you continue and can't be edited afterwards.</div></div>
+        <div class="f" data-f="occ"><label for="fOcc">Occupation <small>(optional)</small></label><input class="inp" id="fOcc" maxlength="100" autocomplete="organization-title"/></div>
+        <div class="f" data-f="purpose"><label for="fPurpose">Purpose of using Global Digits <small>(optional)</small></label><input class="inp" id="fPurpose" maxlength="300"/></div>
+      </div>
+      <div id="lockConfirm" class="note warn hidden" style="margin-top:14px"><i data-i="lock" data-s="16"></i>
+        <div><b>Confirm your phone number</b><div style="margin-top:2px">You are about to lock <b id="lockNum"></b> to this application. It can only be corrected later by an administrator.</div>
+        <div class="actions" style="margin-top:8px"><button class="btn g sm" id="lockEdit" type="button">Edit number</button><button class="btn p sm" id="lockOk" type="button">Confirm &amp; continue</button></div></div></div>
+      <div class="actions" id="s1Actions"><button class="btn g" id="btnSave" type="button"><i data-i="save" data-s="15"></i>Save progress</button><span class="sp"></span><button class="btn p" id="btnContinue" type="button">Continue<i data-i="arrowRight" data-s="15"></i></button></div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section id="s2" class="card hidden">
+      <div class="card-h"><span class="ico"><i data-i="scan" data-s="16"></i></span><div style="flex:1"><h2>Live face check</h2><p class="sub" style="margin:0">Confirms a live person is present.</p></div><span class="pill gray" id="faceState">Not Started</span></div>
+
+      <div id="faceConsent">
+        <div class="note"><i data-i="info" data-s="16"></i><div>This check does <b>not</b> verify your legal identity. It only confirms that a live person is using the camera.</div></div>
+        <ul class="list">
+          <li><i data-i="camera" data-s="15"></i><span>We use your camera to follow a few head movements (look up, down, left and right). Face tracking runs on your device.</span></li>
+          <li><i data-i="shield" data-s="15"></i><span>No photos or video are uploaded or stored. Only the numeric result of each movement is sent and kept with your application.</span></li>
+          <li><i data-i="clock" data-s="15"></i><span>It takes about 20 seconds. You have a limited number of attempts per day.</span></li>
+        </ul>
+        <label class="chk"><input type="checkbox" id="faceConsentChk"/><span>I agree to Global Digits using my camera and processing my facial movements for this liveness check.</span></label>
+        <div class="actions"><button class="btn g" id="btnBack1" type="button"><i data-i="arrowLeft" data-s="15"></i>Back</button><span class="sp"></span><button class="btn p" id="btnStartFace" type="button" disabled><i data-i="camera" data-s="15"></i>Start face check</button></div>
+      </div>
+
+      <div id="faceLive" class="hidden">
+        <div class="face-wrap">
+          <div class="cam" id="camBox">
+            <video id="vid" playsinline muted autoplay></video>
+            <svg class="guide" viewBox="0 0 300 400" preserveAspectRatio="none" aria-hidden="true"><path class="shade" fill-rule="evenodd" d="M0 0H300V400H0Z M62 185a88 118 0 1 0 176 0a88 118 0 1 0 -176 0Z"/><ellipse class="oval" id="oval" cx="150" cy="185" rx="88" ry="118"/></svg>
+            <div class="dir hidden" id="dirChip"><span id="dirIco"></span><span id="dirTxt"></span></div>
+            <div class="idle" id="camIdle"><div><span class="spin" style="color:#9db4e6;display:inline-block"></span><div style="margin-top:8px" id="idleTxt">Starting camera…</div></div></div>
+            <div class="badge hidden" id="camBadge"></div>
+          </div>
+          <div>
+            <h2 id="faceTitle">Get ready</h2>
+            <p class="sub" id="faceSub">Allow camera access, then place your face inside the oval.</p>
+            <div class="chal" id="chalBar"><span></span><span></span><span></span><span></span></div>
+            <ul class="list">
+              <li><i data-i="sun" data-s="15"></i><span>Use even lighting, with no strong light behind you.</span></li>
+              <li><i data-i="user" data-s="15"></i><span>Only you should be in view. Remove hats, masks or sunglasses.</span></li>
+              <li><i data-i="move" data-s="15"></i><span>Move your head, not just your eyes, and hold each movement briefly.</span></li>
+            </ul>
+            <div class="actions"><button class="btn g sm" id="btnCancelFace" type="button">Cancel</button></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="faceResult" class="hidden"></div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section id="s3" class="card hidden">
+      <div class="card-h"><span class="ico"><i data-i="clipboard" data-s="16"></i></span><div style="flex:1"><h2>Review and submit</h2><p class="sub" style="margin:0">Check your details before sending them for review.</p></div></div>
+      <dl class="dl" id="reviewDl"></dl>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:12px"><span class="pill ok"><i data-i="check" data-s="12"></i>Liveness Passed</span><span class="pill blue">Information Ready</span></div>
+      <div class="note" style="margin-top:12px"><i data-i="info" data-s="16"></i><div>Passing the face check does not mean your legal identity has been verified. An administrator will review your application.</div></div>
+      <div class="actions"><button class="btn g" id="btnEdit" type="button"><i data-i="edit" data-s="15"></i>Edit details</button><span class="sp"></span><button class="btn p" id="btnSubmit" type="button">Submit for review<i data-i="arrowRight" data-s="15"></i></button></div>
+    </section>
+  </div>
+
+  <!-- STATUS -->
+  <div id="vStatus" class="hidden"></div>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+/*ENGINE_START*/
+/* Liveness challenge engine. Pure logic (no DOM) so it can be unit-tested.
+   Sign convention (must match the kyc-liveness Edge Function):
+   yaw   > 0  => user turned to THEIR LEFT  (nose moves toward image-right in the raw, un-mirrored frame)
+   pitch > 0  => user looked DOWN, pitch < 0 => looked UP (nose-to-eye / eye-to-mouth ratio) */
+const CFG={YAW:0.07,PITCH:0.07,CROSS:1.7,HOLD:5,NEUTRAL_FRAMES:12,NEUTRAL_YAW_RANGE:0.03,NEUTRAL_PITCH_RANGE:0.04,
+  RECOVER_FRAC:0.4,RECOVER_FRAMES:4,CHALLENGE_MS:20000,NEUTRAL_MS:30000,SESSION_MS:150000,MULTI_FRAMES:5,
+  LUMA_DARK:40,LUMA_BRIGHT:240,COVER_STD:4,
+  OVAL:{cx:0.5,cy:0.4625,rx:0.293,ry:0.295}};
+const LABEL={LOOK_UP:'LOOK UP',LOOK_DOWN:'LOOK DOWN',TURN_LEFT:'TURN LEFT',TURN_RIGHT:'TURN RIGHT'};
+
+function computePose(lm){
+  if(!lm||lm.length<468)return null;
+  const nose=lm[1],a=lm[234],b=lm[454];
+  const xl=Math.min(a.x,b.x),xr=Math.max(a.x,b.x),w=xr-xl;
+  if(!(w>0))return null;
+  const eyeY=(lm[33].y+lm[263].y)/2,mouthY=(lm[13].y+lm[14].y)/2,h=mouthY-eyeY;
+  if(!(h>0))return null;
+  return {yaw:(nose.x-(xl+xr)/2)/w,pitch:(nose.y-eyeY)/h,w:w,cx:(xl+xr)/2,cy:(eyeY+mouthY)/2};
+}
+/* g: face centre/width already mapped into the camera box (0..1 each axis) */
+function placement(g){
+  const o=CFG.OVAL,dx=(g.cx-o.cx)/o.rx,dy=(g.cy-o.cy)/o.ry;
+  const ratio=g.w/(2*o.rx);
+  if(ratio<0.6)return 'toofar';
+  if(ratio>1.1)return 'tooclose';
+  if(dx*dx+dy*dy>0.55)return 'offcenter';
+  return 'ok';
+}
+function classifyQuality(mean,std){
+  if(std<2||(std<CFG.COVER_STD&&mean<60))return 'covered';
+  if(mean<CFG.LUMA_DARK)return 'dark';
+  if(mean>CFG.LUMA_BRIGHT)return 'bright';
+  return 'ok';
+}
+const HINTS={covered:'Camera looks blocked. Uncover the lens.',dark:'Too dark. Move somewhere brighter.',bright:'Too bright. Avoid light behind you.',
+  noface:'No face detected. Look at the camera.',multi:'Only one person should be in view.',unclear:'Face not clear. Face the camera.',
+  toofar:'Move closer.',tooclose:'Move back a little.',offcenter:'Center your face in the oval.',hold:'Hold still and face the camera.'};
+
+class Tracker{
+  constructor(challenges){this.ch=challenges.slice();this.reset();}
+  reset(){
+    this.phase='neutral';this.i=0;this.buf=[];this.base=null;this.hold=0;this.rec=0;this.done=[];
+    this.t0=null;this.pStart=null;this.chStart=null;this.multiRun=0;this.maxFaces=0;this.frames=0;this.faceFrames=0;this.minLuma=255;
+    this.peak={maxY:-9,minY:9,maxP:-9,minP:9};this.failed=null;
+  }
+  out(hint,state){return {phase:this.phase,idx:this.i,hint:hint,state:state||'warn',failed:this.failed,
+    done:this.phase==='done',current:this.phase==='challenge'||this.phase==='recover'?this.ch[this.i]:null,completed:this.done.length};}
+  fail(r){this.failed=r;this.phase='failed';return this.out('',  'bad');}
+  /* s: {faces:int, quality:'ok'|'dark'|'bright'|'covered', luma:number, pose:{yaw,pitch,...}|null, place:'ok'|'toofar'|'tooclose'|'offcenter'} */
+  step(s,now){
+    if(this.phase==='done'||this.phase==='failed')return this.out('', this.phase==='done'?'good':'bad');
+    if(this.t0==null){this.t0=now;this.pStart=now;}
+    if(now-this.t0>CFG.SESSION_MS)return this.fail('timeout');
+    if(typeof s.luma==='number')this.minLuma=Math.min(this.minLuma,s.luma);
+    if(s.faces>1){this.multiRun++;if(this.multiRun>=CFG.MULTI_FRAMES){this.maxFaces=2;return this.fail('multiple_faces');}}else this.multiRun=0;
+    if(this.phase!=='neutral'){this.frames++;if(s.faces===1)this.faceFrames++;}
+    if(s.faces===1&&this.maxFaces<1)this.maxFaces=1;
+
+    let block=null;
+    if(s.quality&&s.quality!=='ok')block=HINTS[s.quality];
+    else if(s.faces===0)block=HINTS.noface;
+    else if(s.faces>1)block=HINTS.multi;
+    else if(!s.pose)block=HINTS.unclear;
+    if(block){this.hold=0;this.rec=0;this.buf=[];
+      if(this.phase==='neutral'&&now-this.pStart>CFG.NEUTRAL_MS)return this.fail('no_stable_face');
+      return this.out(block,'bad');}
+
+    const p=s.pose;
+    if(this.phase==='neutral'){
+      if(now-this.pStart>CFG.NEUTRAL_MS)return this.fail('no_stable_face');
+      if(s.place&&s.place!=='ok'){this.buf=[];return this.out(HINTS[s.place],'warn');}
+      this.buf.push(p);if(this.buf.length>CFG.NEUTRAL_FRAMES)this.buf.shift();
+      if(this.buf.length<CFG.NEUTRAL_FRAMES)return this.out(HINTS.hold,'warn');
+      const ys=this.buf.map(x=>x.yaw),ps=this.buf.map(x=>x.pitch);
+      const ry=Math.max.apply(null,ys)-Math.min.apply(null,ys),rp=Math.max.apply(null,ps)-Math.min.apply(null,ps);
+      const my=ys.reduce((a,b)=>a+b,0)/ys.length,mp=ps.reduce((a,b)=>a+b,0)/ps.length;
+      if(ry>CFG.NEUTRAL_YAW_RANGE||rp>CFG.NEUTRAL_PITCH_RANGE||Math.abs(my)>0.12||mp<0.25||mp>0.95)return this.out(HINTS.hold,'warn');
+      this.base={yaw:my,pitch:mp};this.phase='challenge';this.chStart=now;this.hold=0;this.resetPeaks();
+      return this.out(LABEL[this.ch[this.i]],'good');
+    }
+    const dy=p.yaw-this.base.yaw,dp=p.pitch-this.base.pitch;
+    if(this.phase==='challenge'){
+      this.peak.maxY=Math.max(this.peak.maxY,dy);this.peak.minY=Math.min(this.peak.minY,dy);
+      this.peak.maxP=Math.max(this.peak.maxP,dp);this.peak.minP=Math.min(this.peak.minP,dp);
+      const kind=this.ch[this.i],Y=CFG.YAW,P=CFG.PITCH,X=CFG.CROSS;
+      let ok=false,wrong=false;
+      if(kind==='TURN_LEFT'){ok=dy>=Y&&Math.abs(dp)<P*X;wrong=dy<=-Y||Math.abs(dp)>=P*X;}
+      else if(kind==='TURN_RIGHT'){ok=dy<=-Y&&Math.abs(dp)<P*X;wrong=dy>=Y||Math.abs(dp)>=P*X;}
+      else if(kind==='LOOK_UP'){ok=dp<=-P&&Math.abs(dy)<Y*X;wrong=dp>=P||Math.abs(dy)>=Y*X;}
+      else if(kind==='LOOK_DOWN'){ok=dp>=P&&Math.abs(dy)<Y*X;wrong=dp<=-P||Math.abs(dy)>=Y*X;}
+      this.hold=ok?this.hold+1:0;
+      if(now-this.chStart>CFG.CHALLENGE_MS)return this.fail('challenge_timeout');
+      if(this.hold>=CFG.HOLD){
+        const pk=this.peak,mag=(a,b)=>Math.abs(a)>=Math.abs(b)?a:b;
+        this.done.push({challenge:kind,started_ms:Math.round(this.chStart-this.t0),completed_ms:Math.round(now-this.t0),
+          peak_yaw:kind==='TURN_LEFT'?pk.maxY:kind==='TURN_RIGHT'?pk.minY:mag(pk.maxY,pk.minY),
+          peak_pitch:kind==='LOOK_DOWN'?pk.maxP:kind==='LOOK_UP'?pk.minP:mag(pk.maxP,pk.minP)});
+        this.phase='recover';this.rec=0;
+        return this.out('Good. Return to center.','good');
+      }
+      return this.out(wrong?'Other way. '+LABEL[kind]:LABEL[kind],wrong?'warn':(this.hold>0?'good':'warn'));
+    }
+    if(this.phase==='recover'){
+      const near=Math.abs(dy)<CFG.YAW*CFG.RECOVER_FRAC&&Math.abs(dp)<CFG.PITCH*CFG.RECOVER_FRAC;
+      this.rec=near?this.rec+1:0;
+      if(this.rec>=CFG.RECOVER_FRAMES){
+        this.i++;
+        if(this.i>=this.ch.length){this.phase='done';return this.out('All done','good');}
+        this.phase='challenge';this.chStart=now;this.hold=0;this.resetPeaks();
+        return this.out(LABEL[this.ch[this.i]],'good');
+      }
+      return this.out('Good. Return to center.','good');
+    }
+    return this.out('','warn');
+  }
+  resetPeaks(){this.peak={maxY:-9,minY:9,maxP:-9,minP:9};}
+  telemetry(now){
+    const d=this.done,first=d.length?d[0].started_ms:0,last=d.length?d[d.length-1].completed_ms:0;
+    return {challenges:d,total_ms:last-first,frames:this.frames,max_faces:Math.max(this.maxFaces,1),
+      face_frame_ratio:this.frames?this.faceFrames/this.frames:0,min_luma:this.minLuma,client:'mp-landmarks-1'};
+  }
+}
+/*ENGINE_END*/
+
+/*APP_START*/
+const SUPA_URL='https://pzronmbvusjwrcizxwef.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+const LIVENESS_URL=SUPA_URL+'/functions/v1/kyc-liveness';
+const COUNTRIES=[["1","US","United States"],["1","CA","Canada"],["7","RU","Russia"],["20","EG","Egypt"],["27","ZA","South Africa"],["30","GR","Greece"],["31","NL","Netherlands"],["32","BE","Belgium"],["33","FR","France"],["34","ES","Spain"],["36","HU","Hungary"],["39","IT","Italy"],["40","RO","Romania"],["41","CH","Switzerland"],["43","AT","Austria"],["44","GB","United Kingdom"],["45","DK","Denmark"],["46","SE","Sweden"],["47","NO","Norway"],["48","PL","Poland"],["49","DE","Germany"],["51","PE","Peru"],["52","MX","Mexico"],["53","CU","Cuba"],["54","AR","Argentina"],["55","BR","Brazil"],["56","CL","Chile"],["57","CO","Colombia"],["58","VE","Venezuela"],["60","MY","Malaysia"],["61","AU","Australia"],["62","ID","Indonesia"],["63","PH","Philippines"],["64","NZ","New Zealand"],["65","SG","Singapore"],["66","TH","Thailand"],["81","JP","Japan"],["82","KR","South Korea"],["84","VN","Vietnam"],["86","CN","China"],["90","TR","Turkey"],["91","IN","India"],["92","PK","Pakistan"],["93","AF","Afghanistan"],["94","LK","Sri Lanka"],["95","MM","Myanmar"],["98","IR","Iran"],["211","SS","South Sudan"],["212","MA","Morocco"],["213","DZ","Algeria"],["216","TN","Tunisia"],["218","LY","Libya"],["220","GM","Gambia"],["221","SN","Senegal"],["222","MR","Mauritania"],["223","ML","Mali"],["224","GN","Guinea"],["225","CI","Ivory Coast"],["226","BF","Burkina Faso"],["227","NE","Niger"],["228","TG","Togo"],["229","BJ","Benin"],["230","MU","Mauritius"],["231","LR","Liberia"],["232","SL","Sierra Leone"],["233","GH","Ghana"],["234","NG","Nigeria"],["235","TD","Chad"],["236","CF","Central African Republic"],["237","CM","Cameroon"],["238","CV","Cape Verde"],["239","ST","Sao Tome and Principe"],["240","GQ","Equatorial Guinea"],["241","GA","Gabon"],["242","CG","Congo"],["243","CD","DR Congo"],["244","AO","Angola"],["245","GW","Guinea-Bissau"],["248","SC","Seychelles"],["249","SD","Sudan"],["250","RW","Rwanda"],["251","ET","Ethiopia"],["252","SO","Somalia"],["253","DJ","Djibouti"],["254","KE","Kenya"],["255","TZ","Tanzania"],["256","UG","Uganda"],["257","BI","Burundi"],["258","MZ","Mozambique"],["260","ZM","Zambia"],["261","MG","Madagascar"],["263","ZW","Zimbabwe"],["264","NA","Namibia"],["265","MW","Malawi"],["266","LS","Lesotho"],["267","BW","Botswana"],["268","SZ","Eswatini"],["269","KM","Comoros"],["290","SH","Saint Helena"],["291","ER","Eritrea"],["297","AW","Aruba"],["298","FO","Faroe Islands"],["299","GL","Greenland"],["350","GI","Gibraltar"],["351","PT","Portugal"],["352","LU","Luxembourg"],["353","IE","Ireland"],["354","IS","Iceland"],["355","AL","Albania"],["356","MT","Malta"],["357","CY","Cyprus"],["358","FI","Finland"],["359","BG","Bulgaria"],["370","LT","Lithuania"],["371","LV","Latvia"],["372","EE","Estonia"],["373","MD","Moldova"],["374","AM","Armenia"],["375","BY","Belarus"],["376","AD","Andorra"],["377","MC","Monaco"],["378","SM","San Marino"],["380","UA","Ukraine"],["381","RS","Serbia"],["382","ME","Montenegro"],["383","XK","Kosovo"],["385","HR","Croatia"],["386","SI","Slovenia"],["387","BA","Bosnia and Herzegovina"],["389","MK","North Macedonia"],["420","CZ","Czechia"],["421","SK","Slovakia"],["423","LI","Liechtenstein"],["500","FK","Falkland Islands"],["501","BZ","Belize"],["502","GT","Guatemala"],["503","SV","El Salvador"],["504","HN","Honduras"],["505","NI","Nicaragua"],["506","CR","Costa Rica"],["507","PA","Panama"],["509","HT","Haiti"],["590","GP","Guadeloupe"],["591","BO","Bolivia"],["592","GY","Guyana"],["593","EC","Ecuador"],["594","GF","French Guiana"],["595","PY","Paraguay"],["596","MQ","Martinique"],["597","SR","Suriname"],["598","UY","Uruguay"],["599","CW","Curacao"],["670","TL","Timor-Leste"],["672","NF","Norfolk Island"],["673","BN","Brunei"],["674","NR","Nauru"],["675","PG","Papua New Guinea"],["676","TO","Tonga"],["677","SB","Solomon Islands"],["678","VU","Vanuatu"],["679","FJ","Fiji"],["680","PW","Palau"],["681","WF","Wallis and Futuna"],["682","CK","Cook Islands"],["685","WS","Samoa"],["686","KI","Kiribati"],["687","NC","New Caledonia"],["688","TV","Tuvalu"],["689","PF","French Polynesia"],["690","TK","Tokelau"],["691","FM","Micronesia"],["692","MH","Marshall Islands"],["850","KP","North Korea"],["852","HK","Hong Kong"],["853","MO","Macau"],["855","KH","Cambodia"],["856","LA","Laos"],["880","BD","Bangladesh"],["886","TW","Taiwan"],["960","MV","Maldives"],["961","LB","Lebanon"],["962","JO","Jordan"],["963","SY","Syria"],["964","IQ","Iraq"],["965","KW","Kuwait"],["966","SA","Saudi Arabia"],["967","YE","Yemen"],["968","OM","Oman"],["970","PS","Palestine"],["971","AE","United Arab Emirates"],["972","IL","Israel"],["973","BH","Bahrain"],["974","QA","Qatar"],["975","BT","Bhutan"],["976","MN","Mongolia"],["977","NP","Nepal"],["992","TJ","Tajikistan"],["993","TM","Turkmenistan"],["994","AZ","Azerbaijan"],["995","GE","Georgia"],["996","KG","Kyrgyzstan"],["998","UZ","Uzbekistan"]]; // [dial, ISO2, name]
+const MP_VER='0.10.14';
+const MP_BUNDLE='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@'+MP_VER+'/vision_bundle.mjs';
+const MP_WASM='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@'+MP_VER+'/wasm';
+const MP_MODEL='https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task';
+
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const P=(d,s)=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>';
+const ICON={
+ shield:'<path d="M12 2l8 3v6c0 5-3.4 9.3-8 11-4.6-1.7-8-6-8-11V5z"/><path d="M8.5 12l2.5 2.5L16 9.5"/>',
+ arrowLeft:'<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',arrowRight:'<path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>',
+ lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/>',
+ user:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 016-6h4a6 6 0 016 6v1"/>',
+ info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/>',
+ save:'<path d="M5 3h11l4 4v14H5z"/><path d="M8 3v5h7V3"/><path d="M8 21v-7h8v7"/>',
+ scan:'<path d="M4 8V5a1 1 0 011-1h3"/><path d="M16 4h3a1 1 0 011 1v3"/><path d="M20 16v3a1 1 0 01-1 1h-3"/><path d="M8 20H5a1 1 0 01-1-1v-3"/><circle cx="12" cy="11" r="3"/><path d="M7.5 17c.8-2 2.6-3 4.5-3s3.7 1 4.5 3"/>',
+ camera:'<path d="M3 8a2 2 0 012-2h2l1.5-2h7L17 6h2a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><circle cx="12" cy="13" r="3.5"/>',
+ clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+ sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
+ move:'<path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/>',
+ clipboard:'<rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4h6v3H9z"/><path d="M9 12h6M9 16h4"/>',
+ edit:'<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/>',
+ check:'<path d="M20 6L9 17l-5-5"/>',
+ alert:'<path d="M10.3 3.9L1.8 18a2 2 0 001.7 3h17a2 2 0 001.7-3L13.7 3.9a2 2 0 00-3.4 0z"/><path d="M12 9v4M12 17h.01"/>',
+ x:'<circle cx="12" cy="12" r="9"/><path d="M15 9l-6 6M9 9l6 6"/>',
+ up:'<path d="M12 19V5"/><path d="M5 12l7-7 7 7"/>',down:'<path d="M12 5v14"/><path d="M19 12l-7 7-7-7"/>',
+ left:'<path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/>',right:'<path d="M5 12h14"/><path d="M12 5l7 7-7 7"/>',
+ hourglass:'<path d="M6 2h12M6 22h12"/><path d="M7 2v4a5 5 0 002 4l3 2-3 2a5 5 0 00-2 4v4M17 2v4a5 5 0 01-2 4l-3 2 3 2a5 5 0 012 4v4"/>',
+ refresh:'<path d="M21 12a9 9 0 11-3-6.7L21 8"/><path d="M21 3v5h-5"/>'
+};
+function paint(root){(root||document).querySelectorAll('[data-i]').forEach(el=>{el.innerHTML=P(ICON[el.dataset.i]||'',+el.dataset.s||16);el.style.display='inline-flex';el.removeAttribute('data-i');});}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),3200);}
+const show=(id,on)=>$(id).classList.toggle('hidden',!on);
+function btnBusy(b,busy,label){if(busy){b._h=b.innerHTML;b.disabled=true;b.innerHTML='<span class="spin"></span>'+(label?esc(label):'');}else{b.disabled=false;if(b._h)b.innerHTML=b._h;}}
+const cName=iso=>{const c=COUNTRIES.find(x=>x[1]===iso);return c?c[2]:(iso||'');};
+const STATUS_LABEL={draft:'Draft',pending_review:'Pending Review',under_review:'Under Review',info_requested:'Additional Information Needed',approved:'Approved',rejected:'Rejected'};
+
+/* ---------------- state ---------------- */
+const S={user:null,session:null,app:null,step:1,face:'not_started',confirmLock:false,stream:null,raf:null,tracker:null,landmarker:null,sess:null,busy:false};
+
+/* ---------------- boot ---------------- */
+async function boot(){
+  paint();fillCountrySelects();
+  try{
+    const ses=await sb.auth.getSession();
+    if(!ses.data.session){show('vLoad',false);show('vAuth',true);return;}
+    const u=await sb.auth.getUser();                       // validates the token with the server
+    if(u.error||!u.data.user){show('vLoad',false);show('vAuth',true);return;}
+    S.user=u.data.user;S.session=ses.data.session;
+    await loadApp();
+    $('fEmail').value=S.user.email||'';
+    await prefill();
+    route();
+  }catch(e){console.error(e);show('vLoad',false);$('vAuth').classList.remove('hidden');toast('Could not load. Check your connection.');}
+}
+async function loadApp(){
+  const r=await sb.from('kyc_applications').select('*').eq('user_id',S.user.id).maybeSingle();
+  if(r.error)throw r.error;S.app=r.data;
+}
+async function prefill(){
+  const a=S.app;
+  if(a){
+    $('fFirst').value=a.first_name||'';$('fMiddle').value=a.middle_name||'';$('fLast').value=a.last_name||'';
+    $('fDob').value=a.date_of_birth||'';$('fGender').value=a.gender||'';$('fNat').value=a.nationality||'';
+    $('fCountry').value=a.country_of_residence||'';$('fState').value=a.state||'';$('fCity').value=a.city||'';
+    $('fAddr').value=a.address||'';$('fOcc').value=a.occupation||'';$('fPurpose').value=a.purpose||'';
+    if(a.kyc_phone){
+      const iso=a.kyc_phone_country,c=COUNTRIES.find(x=>x[1]===iso&&a.kyc_phone.indexOf('+'+x[0])===0)||COUNTRIES.filter(x=>a.kyc_phone.indexOf('+'+x[0])===0).sort((p,q)=>q[0].length-p[0].length)[0];
+      if(c){$('fDial').value=c[1];$('fPhone').value=a.kyc_phone.slice(c[0].length+1);} else {$('fPhone').value=a.kyc_phone;}
+    }
+    lockPhoneUI(!!a.phone_locked);
+  }
+  if(!a||!a.first_name){ // soft suggestion from profile name; user can change it
+    try{const p=await sb.from('profiles').select('name').eq('id',S.user.id).maybeSingle();
+      const n=(p.data&&p.data.name||'').trim();
+      if(n&&!$('fFirst').value){const parts=n.split(/\s+/);$('fFirst').value=parts[0]||'';if(parts.length>1&&!$('fLast').value)$('fLast').value=parts.slice(1).join(' ');}}catch(e){}
+  }
+  if(!$('fDial').value)$('fDial').value='NG';
+  if(!$('fCountry').value)$('fCountry').value='NG';
+}
+function fillCountrySelects(){
+  const seen={},list=COUNTRIES.filter(c=>!seen[c[1]]&&(seen[c[1]]=1)).sort((a,b)=>a[2].localeCompare(b[2]));
+  const opts='<option value="">Select</option>'+list.map(c=>'<option value="'+c[1]+'">'+esc(c[2])+'</option>').join('');
+  $('fNat').innerHTML=opts;$('fCountry').innerHTML=opts;
+  $('fDial').innerHTML=list.map(c=>'<option value="'+c[1]+'">'+c[1]+' +'+c[0]+'</option>').join('');
+}
+function lockPhoneUI(locked){
+  $('fPhone').disabled=locked;$('fDial').disabled=locked;
+  $('phoneHint').textContent=locked?'Your KYC phone number is locked. Contact support if it needs correcting.':'This number is locked once you continue and can\'t be edited afterwards.';
+}
+
+/* ---------------- routing ---------------- */
+function route(){
+  show('vLoad',false);const a=S.app;
+  if(a&&['pending_review','under_review','approved','rejected'].includes(a.status)){renderStatus();return;}
+  show('vFlow',true);
+  if(a&&a.status==='info_requested'&&a.info_request_message){$('infoReqText').textContent=a.info_request_message;show('infoReq',true);}else show('infoReq',false);
+  let step=1;
+  if(a&&a.phone_locked){step=2;if(livenessFresh(a))step=3;}
+  goStep(step);
+}
+const livenessFresh=a=>a&&a.liveness_status==='passed'&&a.liveness_completed_at&&(Date.now()-new Date(a.liveness_completed_at).getTime())<23*3600*1000;
+function goStep(n){
+  S.step=n;['s1','s2','s3'].forEach((id,i)=>show(id,i+1===n));
+  document.querySelectorAll('#steps .stp').forEach(el=>{const k=+el.dataset.n;el.classList.toggle('on',k===n);el.classList.toggle('done',k<n);const i=el.querySelector('i');i.innerHTML=k<n?P(ICON.check,12):k;});
+  document.querySelectorAll('#steps .stp-line').forEach((el,i)=>el.classList.toggle('done',i+1<n));
+  if(n===2)initFaceStep();if(n===3)renderReview();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ---------------- step 1: form ---------------- */
+function val(id){return $(id).value.trim();}
+function mark(name,bad){const f=document.querySelector('.f[data-f="'+name+'"]');if(f)f.classList.toggle('bad',!!bad);return !bad;}
+function composePhone(){
+  const c=COUNTRIES.find(x=>x[1]===$('fDial').value);let n=$('fPhone').value.replace(/[^\d]/g,'');
+  if(!c||!n)return null;n=n.replace(/^0+/,'');
+  const full='+'+c[0]+n;return /^\+[1-9]\d{7,14}$/.test(full)?full:null;
+}
+function validateStep1(){
+  let ok=true;
+  const req=[['first','fFirst'],['last','fLast'],['state','fState'],['city','fCity'],['addr','fAddr']];
+  req.forEach(([n,id])=>{if(!mark(n,!val(id)))ok=false;});
+  ['gender:fGender','nat:fNat','country:fCountry'].forEach(x=>{const [n,id]=x.split(':');if(!mark(n,!$(id).value))ok=false;});
+  // DOB
+  let dobOk=false;const d=$('fDob').value;
+  if(d){const dt=new Date(d+'T00:00:00'),now=new Date();let age=now.getFullYear()-dt.getFullYear();
+    const m=now.getMonth()-dt.getMonth();if(m<0||(m===0&&now.getDate()<dt.getDate()))age--;
+    if(dt>now||dt.getFullYear()<1900){$('dobErr').textContent='Enter a valid date of birth.';}
+    else if(age<18){$('dobErr').textContent='You must be at least 18 years old.';}
+    else dobOk=true;}
+  else $('dobErr').textContent='Enter your date of birth.';
+  if(!mark('dob',!dobOk))ok=false;
+  // phone
+  const ph=S.app&&S.app.phone_locked?S.app.kyc_phone:composePhone();
+  if(!mark('phone',!ph)){ok=false;$('phoneErr').textContent='Enter a valid phone number (digits only, without the country code).';}
+  if(!ok){const first=document.querySelector('.f.bad');if(first)first.scrollIntoView({behavior:'smooth',block:'center'});}
+  return ok;
+}
+function payload(){
+  const p={first_name:val('fFirst'),middle_name:val('fMiddle'),last_name:val('fLast'),date_of_birth:$('fDob').value||'',gender:$('fGender').value,
+    nationality:$('fNat').value,country_of_residence:$('fCountry').value,state:val('fState'),city:val('fCity'),address:val('fAddr'),
+    occupation:val('fOcc'),purpose:val('fPurpose'),email:S.user.email};
+  if(!(S.app&&S.app.phone_locked)){const ph=composePhone();if(ph){p.phone=ph;p.phone_country=$('fDial').value;}}
+  return p;
+}
+async function rpcSave(final,step){
+  const p=payload();if(step)p.current_step=step;
+  const r=await sb.rpc('kyc_save_draft',{p:p,p_finalize:!!final});
+  if(r.error)throw r.error;S.app=r.data;return r.data;
+}
+function errMsg(e){return (e&&e.message)||'Something went wrong. Please try again.';}
+$('btnSave').onclick=async()=>{
+  const b=$('btnSave');btnBusy(b,true,'Saving');
+  try{await rpcSave(false,S.step);toast('Progress saved');}catch(e){toast(errMsg(e));}finally{btnBusy(b,false);paint(b);}
+};
+$('btnContinue').onclick=async()=>{
+  if(!validateStep1())return;
+  if(!(S.app&&S.app.phone_locked)&&!S.confirmLock){
+    $('lockNum').textContent=composePhone();show('lockConfirm',true);show('s1Actions',false);$('lockConfirm').scrollIntoView({behavior:'smooth',block:'center'});return;}
+  await finalizeStep1($('btnContinue'));
+};
+$('lockEdit').onclick=()=>{show('lockConfirm',false);show('s1Actions',true);$('fPhone').focus();};
+$('lockOk').onclick=async()=>{S.confirmLock=true;await finalizeStep1($('lockOk'));};
+async function finalizeStep1(btn){
+  btnBusy(btn,true,'Saving');
+  try{const a=await rpcSave(true,2);lockPhoneUI(!!a.phone_locked);show('lockConfirm',false);show('s1Actions',true);S.confirmLock=false;goStep(livenessFresh(a)?3:2);}
+  catch(e){toast(errMsg(e));show('lockConfirm',false);show('s1Actions',true);}
+  finally{btnBusy(btn,false);paint(btn);}
+}
+document.addEventListener('input',e=>{const f=e.target.closest&&e.target.closest('.f.bad');if(f)f.classList.remove('bad');});
+
+/* ---------------- step 2: face liveness ---------------- */
+const FACE_PILL={not_started:['Not Started','gray'],initializing:['Initializing','blue'],in_progress:['In Progress','blue'],passed:['Successful','ok'],failed:['Failed','bad']};
+function setFace(st){S.face=st;const [t,c]=FACE_PILL[st];const el=$('faceState');el.textContent=t;el.className='pill '+c;}
+function initFaceStep(){
+  stopCamera();
+  if(livenessFresh(S.app)){setFace('passed');showFaceBlock('result');renderFaceResult(true);return;}
+  setFace('not_started');showFaceBlock('consent');
+  $('btnStartFace').disabled=!$('faceConsentChk').checked;
+}
+function showFaceBlock(b){show('faceConsent',b==='consent');show('faceLive',b==='live');show('faceResult',b==='result');}
+$('faceConsentChk').onchange=e=>{$('btnStartFace').disabled=!e.target.checked;};
+$('btnBack1').onclick=()=>goStep(1);
+$('btnCancelFace').onclick=()=>{stopCamera();setFace('not_started');showFaceBlock('consent');};
+$('btnStartFace').onclick=()=>startFace();
+
+function reasonText(r){return ({
+  multiple_faces:'More than one face was detected. Make sure you are alone in view.',
+  poor_lighting:'The lighting was too low. Move to a brighter place.',
+  challenge_timeout:'The movement wasn\'t completed in time. Move your head clearly and hold it briefly.',
+  timeout:'The check took too long. Please try again.',
+  no_stable_face:'We couldn\'t get a clear, steady view of your face. Check lighting and that nothing covers the camera.',
+  face_not_stable:'Your face left the camera view too often.',
+  challenge_not_met:'We couldn\'t confirm the requested movements.',
+  too_fast:'The check finished too quickly. Please try again.',
+  camera_denied:'Camera access was blocked. Allow camera access for this site in your browser settings, then try again.',
+  no_camera:'No camera was found on this device.',
+  camera_busy:'The camera is in use by another app. Close it and try again.',
+  model_error:'The face-check component could not be loaded. Check your connection and try again.',
+  attempt_limit:'You have reached the daily limit of attempts. Please try again in 24 hours.'
+})[r]||'The face check could not be completed. Please try again.';}
+
+function renderFaceResult(passed,reason,limit){
+  const el=$('faceResult');
+  if(passed){
+    el.innerHTML='<div class="status-hero"><span class="ico ok">'+P(ICON.check,18)+'</span><div><h2>Face check successful</h2><p class="sub">A live person was confirmed. This is not an identity verification.</p></div></div>'+
+      '<div class="actions"><button class="btn g" id="rBack" type="button">'+P(ICON.arrowLeft,15)+'Back</button><span class="sp"></span><button class="btn p" id="rNext" type="button">Continue to review'+P(ICON.arrowRight,15)+'</button></div>';
+    $('rBack').onclick=()=>goStep(1);$('rNext').onclick=()=>goStep(3);
+  }else{
+    el.innerHTML='<div class="status-hero"><span class="ico bad">'+P(ICON.alert,18)+'</span><div><h2>Face check failed</h2><p class="sub">'+esc(reasonText(reason))+'</p></div></div>'+
+      '<div class="actions"><button class="btn g" id="rBack" type="button">'+P(ICON.arrowLeft,15)+'Back</button><span class="sp"></span>'+(limit?'':'<button class="btn p" id="rRetry" type="button">'+P(ICON.refresh,15)+'Try again</button>')+'</div>';
+    $('rBack').onclick=()=>goStep(1);const rr=$('rRetry');if(rr)rr.onclick=()=>startFace();
+  }
+  showFaceBlock('result');
+}
+
+async function edge(body){
+  const ses=(await sb.auth.getSession()).data.session;
+  const r=await fetch(LIVENESS_URL,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPA_KEY,'Authorization':'Bearer '+(ses?ses.access_token:'')},body:JSON.stringify(body)});
+  let j={};try{j=await r.json();}catch(e){}
+  if(!r.ok){const e=new Error(j.error||'Verification service unavailable');e.code=j.code;throw e;}
+  return j;
+}
+async function loadLandmarker(){
+  if(S.landmarker)return S.landmarker;
+  const mod=await import(MP_BUNDLE);
+  const fs=await mod.FilesetResolver.forVisionTasks(MP_WASM);
+  const mk=d=>mod.FaceLandmarker.createFromOptions(fs,{baseOptions:{modelAssetPath:MP_MODEL,delegate:d},runningMode:'VIDEO',numFaces:2,minFaceDetectionConfidence:0.5,minTrackingConfidence:0.5});
+  try{S.landmarker=await mk('GPU');}catch(e){S.landmarker=await mk('CPU');}
+  return S.landmarker;
+}
+function stopCamera(){
+  if(S.raf){cancelAnimationFrame(S.raf);S.raf=null;}
+  if(S.stream){S.stream.getTracks().forEach(t=>t.stop());S.stream=null;}
+  const v=$('vid');if(v){v.srcObject=null;}
+  S.tracker=null;
+}
+window.addEventListener('pagehide',stopCamera);
+function camUI(txt,cls){const b=$('camBadge');b.textContent=txt||'';b.classList.toggle('hidden',!txt);$('oval').setAttribute('class','oval'+(cls?' '+cls:''));}
+
+async function startFace(){
+  if(S.busy)return;S.busy=true;
+  try{
+    setFace('initializing');showFaceBlock('live');
+    $('camIdle').classList.remove('hidden');$('idleTxt').textContent='Starting camera…';$('dirChip').classList.add('hidden');camUI('');
+    $('faceTitle').textContent='Get ready';$('faceSub').textContent='Allow camera access, then place your face inside the oval.';
+    document.querySelectorAll('#chalBar span').forEach(s=>s.className='');
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.isSecureContext)throw {k:'no_camera'};
+    try{S.stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});}
+    catch(e){throw {k:e&&e.name==='NotAllowedError'||e&&e.name==='SecurityError'?'camera_denied':e&&e.name==='NotReadableError'?'camera_busy':'no_camera'};}
+    const v=$('vid');v.srcObject=S.stream;await v.play().catch(()=>{});
+    $('idleTxt').textContent='Loading face tracking…';
+    let lm;try{lm=await loadLandmarker();}catch(e){console.error(e);throw {k:'model_error'};}
+    $('idleTxt').textContent='Starting check…';
+    let sess;
+    try{sess=await edge({action:'start',consent:true});}
+    catch(e){stopCamera();setFace('failed');renderFaceResult(false,e.code==='attempt_limit'?'attempt_limit':null,e.code==='attempt_limit');if(e.code!=='attempt_limit')$('faceResult').querySelector('.sub').textContent=errMsg(e);return;}
+    S.sess=sess;S.tracker=new Tracker(sess.challenges);
+    $('camIdle').classList.add('hidden');setFace('in_progress');
+    $('faceTitle').textContent='Follow the on-screen prompts';$('faceSub').textContent='Look at the camera, then move your head when asked.';
+    runLoop(lm);
+  }catch(e){
+    stopCamera();setFace('failed');
+    const k=e&&e.k||'model_error';renderFaceResult(false,k,false);
+  }finally{S.busy=false;}
+}
+
+function runLoop(lm){
+  const v=$('vid'),box=$('camBox'),cv=document.createElement('canvas');cv.width=32;cv.height=24;const cx=cv.getContext('2d',{willReadFrequently:true});
+  let lastT=-1,quality='ok',luma=120,n=0,lastTick=0;
+  const T=S.tracker;
+  const ICN={LOOK_UP:'up',LOOK_DOWN:'down',TURN_LEFT:'left',TURN_RIGHT:'right'};
+  function sampleQ(){
+    try{cx.drawImage(v,0,0,32,24);const d=cx.getImageData(0,0,32,24).data;let s=0,s2=0,m=d.length/4;
+      for(let i=0;i<d.length;i+=4){const y=0.299*d[i]+0.587*d[i+1]+0.114*d[i+2];s+=y;s2+=y*y;}
+      const mean=s/m,std=Math.sqrt(Math.max(0,s2/m-mean*mean));luma=mean;quality=classifyQuality(mean,std);}catch(e){}
+  }
+  function mapGeom(p){ // video-normalised -> camera-box-normalised (object-fit:cover + mirrored preview)
+    const vw=v.videoWidth||640,vh=v.videoHeight||480,cw=box.clientWidth,ch=box.clientHeight;
+    const sc=Math.max(cw/vw,ch/vh),ox=(cw-vw*sc)/2,oy=(ch-vh*sc)/2;
+    return {cx:(p.cx*vw*sc+ox)/cw,cy:(p.cy*vh*sc+oy)/ch,w:(p.w*vw*sc)/cw};
+  }
+  function tick(ts){
+    if(S.tracker!==T)return;                                  // cancelled
+    S.raf=requestAnimationFrame(tick);
+    if(ts-lastTick<55||v.readyState<2||v.currentTime===lastT)return;
+    lastTick=ts;lastT=v.currentTime;
+    if(n++%4===0)sampleQ();
+    let faces=0,pose=null,place='ok';
+    try{const res=lm.detectForVideo(v,performance.now());faces=res.faceLandmarks?res.faceLandmarks.length:0;
+      if(faces===1){pose=computePose(res.faceLandmarks[0]);if(pose)place=placement(mapGeom(pose));}}catch(e){console.error(e);}
+    const o=T.step({faces:faces,quality:quality,luma:luma,pose:pose,place:place},performance.now());
+    if(o.failed){finish(false,o.failed);return;}
+    if(o.done){finish(true);return;}
+    // UI
+    document.querySelectorAll('#chalBar span').forEach((s,i)=>s.className=i<o.completed?'done':(i===o.idx&&o.phase==='challenge'?'on':''));
+    const chip=$('dirChip');
+    if(o.phase==='challenge'&&o.current){chip.classList.remove('hidden');$('dirIco').innerHTML=P(ICON[ICN[o.current]],16);$('dirTxt').textContent=LABEL[o.current];}
+    else chip.classList.add('hidden');
+    camUI(o.phase==='challenge'?(o.hint===LABEL[o.current]?'':o.hint):o.hint,o.state==='good'?'good':o.state==='bad'?'bad':'warn');
+  }
+  S.raf=requestAnimationFrame(tick);
+}
+
+async function finish(clientOk,reason){
+  const T=S.tracker;stopCamera();
+  $('dirChip').classList.add('hidden');
+  $('faceTitle').textContent='Checking result…';
+  try{
+    const body={action:'finish',session_id:S.sess.session_id};
+    if(clientOk)body.telemetry=T.telemetry();else body.client_failed=reason;
+    const r=await edge(body);
+    if(r.passed){await loadApp();setFace('passed');renderFaceResult(true);toast('Face check successful');}
+    else{await loadApp().catch(()=>{});setFace('failed');renderFaceResult(false,r.reason||reason);}
+  }catch(e){setFace('failed');renderFaceResult(false,null);$('faceResult').querySelector('.sub').textContent=errMsg(e);}
+}
+
+/* ---------------- step 3: review ---------------- */
+function renderReview(){
+  const a=S.app;if(!a){goStep(1);return;}
+  const full=[a.first_name,a.middle_name,a.last_name].filter(Boolean).join(' ');
+  const rows=[['Full name',full],['Date of birth',a.date_of_birth],['Gender',({male:'Male',female:'Female',other:'Other',prefer_not_to_say:'Prefer not to say'})[a.gender]||a.gender],
+    ['Nationality',cName(a.nationality)],['Country of residence',cName(a.country_of_residence)],['State / region',a.state],['City',a.city],['Residential address',a.address],
+    ['Registered email',a.email],['KYC phone',a.kyc_phone],['Occupation',a.occupation||'—'],['Purpose of use',a.purpose||'—']];
+  $('reviewDl').innerHTML=rows.map(r=>'<div><dt>'+esc(r[0])+'</dt><dd>'+esc(r[1]||'—')+'</dd></div>').join('');
+  $('btnSubmit').disabled=!livenessFresh(a);
+}
+$('btnEdit').onclick=()=>goStep(1);
+$('btnSubmit').onclick=async()=>{
+  const b=$('btnSubmit');btnBusy(b,true,'Submitting');
+  try{const r=await sb.rpc('kyc_submit');if(r.error)throw r.error;S.app=r.data;show('vFlow',false);renderStatus();toast('Application submitted');}
+  catch(e){toast(errMsg(e));btnBusy(b,false);paint(b);}
+};
+
+/* ---------------- status screen ---------------- */
+function renderStatus(){
+  const a=S.app,st=a.status,box=$('vStatus');
+  const cfg={pending_review:['hourglass','warn','Pending Review','Your application has been received and is waiting for an administrator to review it.'],
+    under_review:['hourglass','warn','Under Review','An administrator is currently reviewing your application.'],
+    approved:['check','ok','Approved','Your application has been approved by an administrator.'],
+    rejected:['x','bad','Rejected','Your application was reviewed and could not be approved.']}[st];
+  const sub=a.submitted_at?new Date(a.submitted_at).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'}):'—';
+  box.innerHTML='<div class="card"><div class="status-hero"><span class="ico '+cfg[1]+'">'+P(ICON[cfg[0]],18)+'</span><div style="flex:1"><h1 style="font-size:16px">'+cfg[2]+'</h1><p class="sub">'+cfg[3]+'</p></div></div>'+
+    (st==='rejected'&&a.rejection_reason?'<div class="note bad" style="margin-top:12px">'+P(ICON.alert,16)+'<div><b>Reason</b><div style="margin-top:2px">'+esc(a.rejection_reason)+'</div></div></div>':'')+
+    '<dl class="dl" style="margin-top:12px"><div><dt>Application ID</dt><dd>'+esc(a.application_ref)+'</dd></div><div><dt>Submitted</dt><dd>'+esc(sub)+'</dd></div>'+
+    '<div><dt>Status</dt><dd><span class="pill '+cfg[1]+'">'+cfg[2]+'</span></dd></div>'+
+    '<div><dt>Face check</dt><dd>'+(a.liveness_status==='passed'?'<span class="pill ok">Liveness Passed</span>':'<span class="pill gray">Not recorded</span>')+'</dd></div></dl>'+
+    '<div class="note" style="margin-top:12px">'+P(ICON.info,16)+'<div>The face check confirms a live person was present. It is not proof of legal identity.</div></div>'+
+    '<div class="actions"><a class="btn p" href="/">Back to Global Digits</a></div></div>';
+  show('vStatus',true);
+  try{sb.channel('kyc_'+a.id).on('postgres_changes',{event:'UPDATE',schema:'public',table:'kyc_applications',filter:'user_id=eq.'+S.user.id},async()=>{await loadApp();show('vStatus',false);route();}).subscribe();}catch(e){}
+}
+boot();
+/*APP_END*/
+
+</script>
+</body>
+</html>
