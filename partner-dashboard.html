@@ -1,0 +1,204 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/><title>Partner Dashboard — Global Digits</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<style>
+:root{--b:#1a56db;--b2:#1342b0;--s:#eef3ff;--l:#e3e8f2;--i2:#54627c;--i3:#8591a8;--bad:#d64545;--ok:#0e9f6e}
+*{box-sizing:border-box;margin:0}body{font:13px/1.45 system-ui,-apple-system,sans-serif;background:#f5f7fb;color:#0f1a2e;min-height:100dvh}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}a{color:var(--b);text-decoration:none}
+.top{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--l);padding:calc(8px + env(safe-area-inset-top)) 14px 0}
+.top .r{display:flex;align-items:center;gap:10px;height:30px}.top b{font-size:14px;font-weight:600}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;margin-top:4px}.tabs::-webkit-scrollbar{display:none}
+.tabs a{padding:8px 11px;color:var(--i2);font-size:12.5px;border-bottom:2px solid transparent;white-space:nowrap}.tabs a.on{color:var(--b);border-color:var(--b);font-weight:600}
+.w{max-width:860px;margin:auto;padding:12px}
+.g{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}@media(min-width:700px){.g{grid-template-columns:repeat(4,1fr)}}
+.c{background:#fff;border:1px solid var(--l);border-radius:12px;padding:10px}.c>b{display:block;font-size:17px}.c small,.lb{color:var(--i3);font-size:11.5px}
+.n{margin-top:12px;background:var(--s);color:var(--i2);border-radius:12px;padding:12px;font-size:12px}
+.btn{height:30px;padding:0 12px;border-radius:9px;background:var(--b);color:#fff;font-size:12px;font-weight:500;display:inline-flex;align-items:center;justify-content:center}.btn:active{background:var(--b2)}.btn.gh{background:#fff;color:#0f1a2e;border:1px solid var(--l)}.btn:disabled{opacity:.6}
+.fi{width:100%;height:34px;border:1px solid var(--l);background:#fff;border-radius:9px;padding:0 10px;font:inherit;color:inherit;outline:0;margin:3px 0 9px}textarea.fi{height:84px;padding:8px 10px;resize:vertical}.fi:focus{border-color:var(--b)}
+.row{display:flex;gap:6px}.row>*{min-width:0}.f1{flex:1}
+.pi{display:flex;gap:10px;align-items:center}.pi img,.pi .ph{width:48px;height:48px;border-radius:9px;object-fit:cover;background:var(--s);flex-shrink:0}
+.pi .t{flex:1;min-width:0}.pi .t b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bd{font-size:10.5px;padding:1px 7px;border-radius:99px;background:var(--s);color:var(--b)}.bd.active{background:#e3f6ee;color:var(--ok)}.bd.completed,.bd.delivered{background:#e3f6ee;color:var(--ok)}.bd.cancelled,.bd.disputed,.bd.refunded,.bd.rejected,.bd.suspended{background:#fdecec;color:var(--bad)}.bd.draft,.bd.archived{background:#eef0f4;color:var(--i2)}
+.im{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 9px}.im div{position:relative}.im img{width:60px;height:60px;object-fit:cover;border-radius:9px}.im button{position:absolute;top:-5px;right:-5px;width:18px;height:18px;border-radius:50%;background:#0f1a2e;color:#fff;font-size:11px;line-height:18px}
+.msg{padding:9px 11px;border-radius:10px;background:#fdecec;color:var(--bad);font-size:12px;margin-bottom:10px}
+#toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:#1d2740;color:#fff;font-size:12px;padding:7px 12px;border-radius:9px;opacity:0;pointer-events:none;transition:.2s}#toast.on{opacity:1;transform:translate(-50%,0)}
+</style></head><body>
+<div class="top"><div class="r"><a href="marketplace.html">← Marketplace</a><b id="t">Partner dashboard</b></div>
+<nav class="tabs"><a href="#" data-t="">Overview</a><a href="#products" data-t="products">Products</a><a href="#add" data-t="add">Add product</a><a href="#orders" data-t="orders">Orders</a><a href="#payment" data-t="payment">Payment details</a><a href="#reviews" data-t="reviews">Reviews</a><a href="#followers" data-t="followers">Followers</a></nav></div>
+<div class="w" id="w"><div class="c">Checking access…</div></div><div id="toast"></div>
+<script>
+const sb=supabase.createClient('https://pzronmbvusjwrcizxwef.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6cm9ubWJ2dXNqd3JjaXp4d2VmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkwNTE0MjUsImV4cCI6MjA5NDYyNzQyNX0.v6bz5YeLWKzRN4g09QYTY0x-ur5KGfeXupglKfTVKwA');
+const $=s=>document.querySelector(s);
+const e=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money=(n,c)=>(c==='USD'?'$':'₦')+Number(n).toLocaleString(undefined,{maximumFractionDigits:2});
+const ST={pending:'New',processing:'Processing',delivered:'Delivered',completed:'Completed',cancelled:'Cancelled',disputed:'Disputed',refunded:'Refunded',draft:'Draft',pending_review:'Pending review',active:'Active',rejected:'Rejected',out_of_stock:'Out of stock',suspended:'Suspended',archived:'Archived'};
+let P=null,UID=null,CATS=[],IMGS=[],ATTR=[];
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('on'),2200)}
+async function init(){
+  const {data:{session}}=await sb.auth.getSession();if(!session){location.replace('index.html');return}UID=session.user.id;
+  const {data:p}=await sb.rpc('mp_my_partner');if(!p){location.replace('marketplace.html#partner');return}
+  P=p;$('#t').textContent=p.shop_name;
+  const {data:c}=await sb.from('mp_categories').select('id,name').eq('is_active',true).order('sort_order');CATS=c||[];
+  window.addEventListener('hashchange',route);route();
+}
+function route(){
+  const h=location.hash.slice(1),m=h.match(/^edit=([0-9a-f-]{36})$/i);window.scrollTo(0,0);
+  document.querySelectorAll('.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.t===(m?'add':h)));
+  if(h==='products')products();else if(h==='add')form(null);else if(h==='orders')orders();else if(h==='payment')payment();else if(h==='reviews')reviewsV();else if(h==='followers')followersV();else if(m)form(m[1]);else overview();
+}
+async function overview(){
+  $('#w').innerHTML='<div class="g"><div class="c"><b>'+(P.sales_count||0)+'</b><small>Completed sales</small></div><div class="c"><b>'+(P.rating_count>0?Number(P.rating_avg).toFixed(1):'—')+'</b><small>Rating ('+(P.rating_count||0)+')</small></div><div class="c"><b>'+(P.followers_count||0)+'</b><small>Followers</small></div><div class="c"><b>Active</b><small>Shop status</small></div></div><div id="ov"></div>';
+  const [o,pd]=await Promise.all([sb.from('mp_orders').select('status').eq('partner_id',P.id).eq('payment_mode','direct').limit(1000),sb.from('mp_partner_payment').select('partner_id').eq('partner_id',P.id).maybeSingle()]);
+  const n=s=>(o.data||[]).filter(x=>(Array.isArray(s)?s:[s]).includes(x.status)).length;
+  $('#ov').innerHTML=(pd.data?'':'<div class="msg" style="margin-top:10px">Add your bank payment details so customers can pay you. <a href="#payment">Add now</a></div>')
+   +'<div class="g" style="margin-top:8px"><a class="c" href="#orders" style="color:inherit"><b>'+n('payment_submitted')+'</b><small>Payments to verify</small></a><a class="c" href="#orders" style="color:inherit"><b>'+n(['payment_confirmed','processing'])+'</b><small>To deliver</small></a><div class="c"><b>'+n('delivered')+'</b><small>Awaiting buyer</small></div><div class="c"><b>'+n('disputed')+'</b><small>Disputed</small></div></div>';
+}
+async function products(){
+  $('#w').innerHTML='<div class="c">Loading…</div>';
+  const {data,error}=await sb.from('mp_products').select('id,name,price,currency,status,stock,images,admin_note').order('created_at',{ascending:false});
+  if(error){$('#w').innerHTML='<div class="msg">'+e(error.message)+'</div>';return}
+  if(!data.length){$('#w').innerHTML='<div class="c" style="text-align:center;padding:26px"><b>No products yet</b><p class="lb" style="margin:4px 0 10px">Create your first listing.</p><a class="btn" href="#add">Add product</a></div>';return}
+  $('#w').innerHTML=data.map(p=>'<div class="c" style="margin-bottom:8px"><div class="pi">'+(/^https:\/\//.test((p.images||[])[0]||'')?'<img src="'+e(p.images[0])+'" alt=""/>':'<div class="ph"></div>')
+   +'<div class="t"><b>'+e(p.name)+'</b><span class="lb">'+money(p.price,p.currency)+' · '+(p.stock==null?'Unlimited':p.stock+' in stock')+'</span></div><span class="bd '+e(p.status)+'">'+e(ST[p.status]||p.status)+'</span></div>'
+   +(p.admin_note?'<div class="lb" style="margin-top:6px">Admin note: '+e(p.admin_note)+'</div>':'')
+   +'<div class="row" style="margin-top:8px">'+(p.status!=='suspended'?'<a class="btn gh" href="#edit='+e(p.id)+'">Edit</a>':'')
+   +(p.status==='archived'?'<button class="btn gh" data-st="draft" data-id="'+e(p.id)+'">Restore</button>':(p.status!=='suspended'?'<button class="btn gh" data-st="archived" data-id="'+e(p.id)+'">Archive</button>':''))+'</div></div>').join('');
+}
+$('#w').addEventListener('click',async ev=>{
+  const b=ev.target.closest('[data-st]');if(!b)return;b.disabled=true;
+  const r=await sb.rpc('mp_set_my_product_status',{p_id:b.dataset.id,p_status:b.dataset.st});toast(r.error?r.error.message:'Updated');products();
+});
+async function form(id){
+  let p={};IMGS=[];ATTR=[];
+  if(id){const r=await sb.from('mp_products').select('*').eq('id',id).maybeSingle();if(!r.data){$('#w').innerHTML='<div class="msg">Listing not found.</div>';return}p=r.data;IMGS=(p.images||[]).slice();ATTR=Object.entries(p.attributes||{})}
+  const o=(v,t)=>'<option value="'+e(v)+'"'+(p.category_id===v?' selected':'')+'>'+e(t)+'</option>';
+  $('#w').innerHTML='<div class="c"><b style="font-size:15px">'+(id?'Edit product':'Add product')+'</b><div id="err"></div><div style="height:8px"></div>'
+  +'<label class="lb">Product name</label><input class="fi" id="n" maxlength="120" value="'+e(p.name)+'"/>'
+  +'<label class="lb">Category</label><select class="fi" id="cat"><option value="">Select a category</option>'+CATS.map(c=>o(c.id,c.name)).join('')+'</select>'
+  +'<div class="row"><div class="f1"><label class="lb">Price</label><input class="fi" id="pr" type="number" min="0" step="0.01" value="'+e(p.price)+'"/></div><div style="width:92px"><label class="lb">Currency</label><select class="fi" id="cu"><option>NGN</option></select></div><div class="f1"><label class="lb">Stock (blank = unlimited)</label><input class="fi" id="st" type="number" min="0" value="'+e(p.stock)+'"/></div></div>'
+  +'<label class="lb">Description</label><textarea class="fi" id="ds" maxlength="5000">'+e(p.description)+'</textarea>'
+  +'<label class="lb">Images (up to 8)</label><div class="im" id="im"></div><input type="file" id="fl" accept="image/jpeg,image/png,image/webp" multiple class="fi" style="height:auto;padding:6px"/>'
+  +'<div class="row"><div class="f1"><label class="lb">Delivery method</label><input class="fi" id="dm" list="dml" maxlength="60" placeholder="e.g. Manual delivery" value="'+e(p.delivery_method)+'"/><datalist id="dml"><option value="Manual delivery"><option value="Automatic delivery"><option value="Credentials / access"><option value="License key"><option value="Subscription activation"><option value="Vendor instructions"></datalist></div><div class="f1"><label class="lb">Delivery time</label><input class="fi" id="dt" maxlength="60" placeholder="e.g. Within 1 hour" value="'+e(p.delivery_time)+'"/></div></div>'
+  +'<label class="lb">Buyer instructions / requirements</label><textarea class="fi" id="rq" maxlength="2000">'+e(p.requirements)+'</textarea>'
+  +'<label class="lb">Specifications &amp; custom fields (e.g. Duration, Condition, Warranty)</label><div id="at"></div><button class="btn gh" id="aa" type="button" style="margin-bottom:12px">+ Add field</button>'
+  +'<div class="row"><button class="btn gh f1" data-s="draft" style="height:34px">Save draft</button><button class="btn f1" data-s="publish" style="height:34px">Submit / publish</button></div></div>';
+  drawImgs();drawAttr();
+  $('#aa').onclick=()=>{if(ATTR.length>=20)return toast('Up to 20 fields');syncAttr();ATTR.push(['','']);drawAttr()};
+  $('#fl').onchange=async ev=>{
+    for(const f of [...ev.target.files]){if(IMGS.length>=8){toast('Up to 8 images');break}
+      try{const bl=await shrink(f),path=UID+'/'+Date.now()+'_'+Math.random().toString(36).slice(2,8)+'.jpg';
+        const u=await sb.storage.from('mp-products').upload(path,bl,{contentType:'image/jpeg',upsert:false});if(u.error)throw u.error;
+        IMGS.push(sb.storage.from('mp-products').getPublicUrl(path).data.publicUrl);drawImgs()}catch(x){toast(x.message||'Upload failed')}}
+    ev.target.value='';
+  };
+  $('#w').querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>save(id,b.dataset.s,b));
+}
+async function shrink(f){const bm=await createImageBitmap(f),sc=Math.min(1,1200/Math.max(bm.width,bm.height)),c=document.createElement('canvas');c.width=Math.round(bm.width*sc);c.height=Math.round(bm.height*sc);c.getContext('2d').drawImage(bm,0,0,c.width,c.height);return new Promise(r=>c.toBlob(r,'image/jpeg',.85))}
+function drawImgs(){$('#im').innerHTML=IMGS.map((u,i)=>'<div><img src="'+e(u)+'" alt=""/><button type="button" data-rm="'+i+'" aria-label="Remove">×</button></div>').join('');$('#im').querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{IMGS.splice(+b.dataset.rm,1);drawImgs()})}
+function drawAttr(){$('#at').innerHTML=ATTR.map((a,i)=>'<div class="row"><input class="fi" data-k="'+i+'" placeholder="Name" maxlength="40" value="'+e(a[0])+'"/><input class="fi" data-v="'+i+'" placeholder="Value" maxlength="120" value="'+e(a[1])+'"/><button type="button" class="btn gh" data-ra="'+i+'" style="margin-top:3px">×</button></div>').join('');$('#at').querySelectorAll('[data-ra]').forEach(b=>b.onclick=()=>{syncAttr();ATTR.splice(+b.dataset.ra,1);drawAttr()})}
+function syncAttr(){ATTR=ATTR.map((a,i)=>[($('[data-k="'+i+'"]')||{}).value||'',($('[data-v="'+i+'"]')||{}).value||''])}
+async function save(id,action,btn){
+  syncAttr();const at={};ATTR.forEach(a=>{const k=a[0].trim();if(k)at[k]=a[1].trim()});
+  const data={name:$('#n').value,category_id:$('#cat').value,price:$('#pr').value,currency:$('#cu').value,stock:$('#st').value,description:$('#ds').value,images:IMGS,delivery_method:$('#dm').value,delivery_time:$('#dt').value,requirements:$('#rq').value,attributes:at};
+  document.querySelectorAll('[data-s]').forEach(b=>b.disabled=true);
+  const r=await sb.rpc('mp_save_product',{p_id:id,p_data:data,p_action:action});
+  document.querySelectorAll('[data-s]').forEach(b=>b.disabled=false);
+  if(r.error){$('#err').innerHTML='<div class="msg">'+e(r.error.message)+'</div>';window.scrollTo(0,0);return}
+  toast(action==='draft'?'Draft saved':'Submitted');location.hash='products';
+}
+
+let OF='';
+const OS={payment_submitted:'Payment submitted',payment_confirmed:'Payment confirmed',processing:'Processing',delivered:'Delivered',completed:'Completed',cancelled:'Cancelled',disputed:'Disputed',refunded:'Refunded',pending:'Legacy order'};
+async function orders(){
+  $('#w').innerHTML='<div class="c">Loading…</div>';await sb.rpc('mp_sweep_orders');
+  let q=sb.from('mp_orders').select('id,product_name,buyer_username,quantity,amount,status,payment_mode,buyer_note,receipt_path,payment_note,dispute_reason,created_at').eq('partner_id',P.id).order('created_at',{ascending:false}).limit(60);
+  if(OF)q=q.eq('status',OF);const {data,error}=await q;
+  if(error){$('#w').innerHTML='<div class="msg">'+e(error.message)+'</div>';return}
+  const chips='<div class="row" style="overflow-x:auto;margin-bottom:8px">'+[['','All'],['payment_submitted','To verify'],['payment_confirmed','Confirmed'],['processing','Processing'],['delivered','Delivered'],['completed','Completed'],['cancelled','Cancelled']].map(x=>'<button class="btn '+(OF===x[0]?'':'gh')+'" data-of="'+x[0]+'" style="flex-shrink:0">'+x[1]+'</button>').join('')+'</div>';
+  if(!data.length){$('#w').innerHTML=chips+'<div class="c" style="text-align:center;padding:26px"><b>No orders</b></div>';return}
+  $('#w').innerHTML=chips+data.map(o=>{
+    const st=o.status,legacy=o.payment_mode!=='direct';let acts='';
+    if(!legacy){
+      if(st==='payment_submitted')acts='<button class="btn" data-oa="confirm_payment" data-id="'+e(o.id)+'">Confirm payment received</button><button class="btn gh" data-oa="reject_payment" data-id="'+e(o.id)+'">Payment not received</button>';
+      else if(st==='payment_confirmed')acts='<button class="btn gh" data-oa="process" data-id="'+e(o.id)+'">Start processing</button><button class="btn" data-oa="deliver" data-id="'+e(o.id)+'">Deliver</button><button class="btn gh" data-oa="cancel" data-id="'+e(o.id)+'">Cancel</button>';
+      else if(st==='processing')acts='<button class="btn" data-oa="deliver" data-id="'+e(o.id)+'">Deliver</button><button class="btn gh" data-oa="cancel" data-id="'+e(o.id)+'">Cancel</button>';
+      else if(st==='delivered'||st==='completed')acts='<button class="btn gh" data-dv="'+e(o.id)+'">View delivery</button>';
+    }
+    return '<div class="c" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;gap:8px"><b>'+e(o.product_name)+' ×'+o.quantity+'</b><span class="bd '+e(st)+'">'+e(OS[st]||st)+'</span></div>'
+     +'<div class="lb">@'+e(o.buyer_username||'buyer')+' · '+money(o.amount,'NGN')+' · '+new Date(o.created_at).toLocaleString()+'</div>'
+     +(o.buyer_note?'<div class="lb" style="margin-top:4px">Buyer note: '+e(o.buyer_note)+'</div>':'')+(o.payment_note?'<div class="lb" style="margin-top:4px">Note: '+e(o.payment_note)+'</div>':'')+(o.dispute_reason?'<div class="msg" style="margin:6px 0 0">Dispute: '+e(o.dispute_reason)+'</div>':'')
+     +(legacy?'<div class="lb" style="margin-top:4px">This order used the old wallet checkout. Contact support to manage it.</div>':'')
+     +'<div class="row" style="margin-top:8px;flex-wrap:wrap">'+(o.receipt_path?'<button class="btn gh" data-rc="'+e(o.receipt_path)+'">View receipt</button>':'')+acts+'<a class="btn gh" href="marketplace.html#oc='+e(o.id)+'">Message buyer</a></div></div>';
+  }).join('');
+}
+function deliverModal(){return new Promise(res=>{
+  const s=document.createElement('div');s.style.cssText='position:fixed;inset:0;background:rgba(15,26,46,.45);z-index:40;display:flex;align-items:center;justify-content:center;padding:14px';
+  s.innerHTML='<div style="background:#fff;border-radius:14px;padding:14px;width:100%;max-width:460px"><b>Deliver order</b><p class="lb" style="margin:3px 0 8px">Enter what the buyer receives: account details, codes, links, instructions or any other text. Only the buyer can see it.</p><textarea class="fi" id="dvt" maxlength="5000" style="height:150px"></textarea><div class="row"><button class="btn gh f1" id="dvx">Cancel</button><button class="btn f1" id="dvs">Deliver</button></div></div>';
+  document.body.appendChild(s);s.querySelector('#dvx').onclick=()=>{s.remove();res(null)};s.querySelector('#dvs').onclick=()=>{const v=s.querySelector('#dvt').value.trim();if(v.length<3)return toast('Enter the delivery details');s.remove();res(v)};
+})}
+function showText(title,text){const s=document.createElement('div');s.style.cssText='position:fixed;inset:0;background:rgba(15,26,46,.45);z-index:40;display:flex;align-items:center;justify-content:center;padding:14px';
+  s.innerHTML='<div style="background:#fff;border-radius:14px;padding:14px;width:100%;max-width:460px;max-height:80vh;overflow:auto"><b>'+e(title)+'</b><div style="white-space:pre-wrap;word-break:break-word;margin:8px 0;padding:10px;background:#f5f7fb;border-radius:10px">'+e(text)+'</div><div class="row"><button class="btn gh f1" id="tc">Copy</button><button class="btn f1" id="tx2">Close</button></div></div>';
+  document.body.appendChild(s);s.querySelector('#tx2').onclick=()=>s.remove();s.querySelector('#tc').onclick=()=>navigator.clipboard.writeText(text).then(()=>toast('Copied'),()=>toast('Copy failed'))}
+$('#w').addEventListener('click',async ev=>{
+  const f=ev.target.closest('[data-of]');if(f){OF=f.dataset.of;orders();return}
+  const rc=ev.target.closest('[data-rc]');if(rc){const {data}=await sb.storage.from('mp-receipts').createSignedUrl(rc.dataset.rc,300);if(data)window.open(data.signedUrl,'_blank','noopener');else toast('Could not open receipt');return}
+  const dv=ev.target.closest('[data-dv]');if(dv){const r=await sb.rpc('mp_get_delivery',{p_order:dv.dataset.dv});if(r.error)return toast(r.error.message);showText('Delivered to buyer',r.data);return}
+  const b=ev.target.closest('[data-oa]');if(!b)return;const a=b.dataset.oa;let note=null;
+  if(a==='deliver'){note=await deliverModal();if(note===null)return}
+  else if(a==='reject_payment'){note=prompt('Tell the buyer why (for example: payment not received):');if(note===null)return}
+  else if(a==='cancel'){note=prompt('Reason for cancelling (shown to the buyer). Arrange any refund directly with them:');if(note===null)return}
+  else if(a==='confirm_payment'&&!confirm('Confirm that this payment has reached your bank account? Check your bank app — a receipt alone is not proof of payment.'))return;
+  b.disabled=true;const r=await sb.rpc('mp_vendor_order_action',{p_order:b.dataset.id,p_action:a,p_note:note});toast(r.error?r.error.message:'Updated');orders();
+});
+async function payment(){
+  $('#w').innerHTML='<div class="c">Loading…</div>';
+  const {data}=await sb.from('mp_partner_payment').select('*').eq('partner_id',P.id).maybeSingle(),p=data||{};
+  $('#w').innerHTML='<div class="c"><b style="font-size:15px">Bank payment details</b><p class="lb" style="margin:3px 0 10px">Customers pay you directly by bank transfer, then upload their receipt. Global Digits does not hold or move this money. Double-check your details — they are shown to every customer who checks out.</p><div id="perr"></div>'
+   +'<label class="lb">Bank name</label><input class="fi" id="pb" maxlength="60" value="'+e(p.bank_name)+'"/><label class="lb">Account number</label><input class="fi" id="pa" inputmode="numeric" maxlength="20" value="'+e(p.account_number)+'"/><label class="lb">Account name</label><input class="fi" id="pn" maxlength="80" value="'+e(p.account_name)+'"/>'
+   +'<label class="lb">Payment instructions (optional)</label><textarea class="fi" id="pi" maxlength="500" placeholder="e.g. Use your Global Digits username as the transfer narration.">'+e(p.instructions)+'</textarea><button class="btn" id="psv" style="width:100%;height:34px">Save payment details</button></div>';
+  $('#psv').onclick=async()=>{const b=$('#psv');b.disabled=true;const r=await sb.rpc('mp_save_payment_details',{p_bank:$('#pb').value,p_acct:$('#pa').value.trim(),p_name:$('#pn').value,p_instructions:$('#pi').value});b.disabled=false;
+    if(r.error){$('#perr').innerHTML='<div class="msg">'+e(r.error.message)+'</div>';return}toast('Payment details saved');$('#perr').innerHTML=''};
+}
+async function earnings(){
+  $('#w').innerHTML='<div class="c">Loading…</div>';
+  const [er,wr]=await Promise.all([sb.rpc('mp_my_earnings'),sb.from('withdrawals').select('amount,status,created_at').eq('source','marketplace').order('created_at',{ascending:false}).limit(20)]);
+  if(er.error){$('#w').innerHTML='<div class="msg">'+e(er.error.message)+'</div>';return}
+  const d=er.data,W={pending:'Pending',processing:'Processing',approved:'Paid',rejected:'Rejected'};
+  const st=(v,l)=>'<div class="c"><b>'+money(v,'NGN')+'</b><small>'+l+'</small></div>';
+  $('#w').innerHTML='<div class="g">'+st(d.gross,'Gross sales')+st(d.commission,'Marketplace commission')+st(d.net,'Net earnings')+st(d.available,'Available')+st(d.pending,'Pending ('+d.hold_days+'-day hold)')+st(d.withdrawn,'Withdrawn')+'</div>'
+  +'<div class="c" style="margin-top:12px"><b style="font-size:14px">Withdraw earnings</b><p class="lb" style="margin:2px 0 8px">Minimum '+money(d.min_withdrawal,'NGN')+'. Paid manually to your bank account after admin review.</p><div id="werr"></div>'
+  +'<label class="lb">Amount (₦)</label><input class="fi" id="wa" type="number" min="0" step="0.01"/><label class="lb">Bank name</label><input class="fi" id="wb" maxlength="60"/><label class="lb">Account number</label><input class="fi" id="wn" inputmode="numeric" maxlength="20"/><label class="lb">Account name</label><input class="fi" id="wm" maxlength="80"/>'
+  +'<button class="btn" id="wgo" style="width:100%;height:34px">Request withdrawal</button></div>'
+  +'<div class="c" style="margin-top:12px"><b style="font-size:14px">Withdrawal history</b>'+((wr.data||[]).length?(wr.data).map(x=>'<div style="display:flex;justify-content:space-between;border-top:1px solid var(--l);padding:7px 0;margin-top:6px"><span>'+money(x.amount,'NGN')+' · '+new Date(x.created_at).toLocaleDateString()+'</span><span class="bd '+(x.status==='approved'?'completed':e(x.status))+'">'+e(W[x.status]||x.status)+'</span></div>').join(''):'<p class="lb" style="margin-top:6px">No withdrawals yet.</p>')+'</div>';
+  $('#wgo').onclick=async()=>{const b=$('#wgo');b.disabled=true;
+    const r=await sb.rpc('mp_request_withdrawal',{p_amount:Number($('#wa').value),p_bank:$('#wb').value,p_acc_num:$('#wn').value.trim(),p_acc_name:$('#wm').value});
+    if(r.error){$('#werr').innerHTML='<div class="msg">'+e(r.error.message)+'</div>';b.disabled=false;return}
+    toast('Withdrawal requested');earnings()};
+}
+
+async function reviewsV(){
+  $('#w').innerHTML='<div class="c">Loading…</div>';
+  const {data,error}=await sb.from('mp_reviews').select('id,rating,body,vendor_reply,hidden,created_at').eq('partner_id',P.id).order('created_at',{ascending:false}).limit(50);
+  if(error){$('#w').innerHTML='<div class="msg">'+e(error.message)+'</div>';return}
+  if(!data.length){$('#w').innerHTML='<div class="c" style="text-align:center;padding:26px"><b>No reviews yet</b><p class="lb">Buyers can review after a completed order.</p></div>';return}
+  $('#w').innerHTML=data.map(r=>'<div class="c" style="margin-bottom:8px"><div style="display:flex;justify-content:space-between"><b style="color:#d9971b;font-size:14px">'+'★'.repeat(r.rating)+'<span style="color:#d5dbe8">'+'★'.repeat(5-r.rating)+'</span></b><span class="lb">'+new Date(r.created_at).toLocaleDateString()+(r.hidden?' · hidden by admin':'')+'</span></div>'
+   +(r.body?'<div style="margin-top:4px;white-space:pre-wrap">'+e(r.body)+'</div>':'')
+   +(r.vendor_reply?'<div class="lb" style="margin-top:6px;white-space:pre-wrap">Your reply: '+e(r.vendor_reply)+'</div>':'')
+   +(!r.hidden?'<div class="row" style="margin-top:8px"><button class="btn gh" data-rr="'+e(r.id)+'">'+(r.vendor_reply?'Edit reply':'Reply')+'</button></div>':'')+'</div>').join('');
+}
+$('#w').addEventListener('click',async ev=>{
+  const b=ev.target.closest('[data-rr]');if(!b)return;const t=prompt('Your public reply to this review:');if(t===null)return;
+  const r=await sb.rpc('mp_reply_review',{p_review:b.dataset.rr,p_text:t});toast(r.error?r.error.message:'Reply posted');reviewsV();
+});
+async function followersV(){
+  $('#w').innerHTML='<div class="c">Loading…</div>';
+  const [f,pp]=await Promise.all([sb.rpc('mp_my_followers'),sb.rpc('mp_my_partner')]);
+  const n=pp.data?pp.data.followers_count:0,list=f.data||[];
+  $('#w').innerHTML='<div class="c"><b>'+(n||0)+'</b><small>Followers</small></div>'
+   +'<div class="c" style="margin-top:10px"><b style="font-size:14px">Message your followers</b><p class="lb" style="margin:2px 0 8px">Followers who enabled this type of update will get a notification. Up to 5 per day.</p><div id="aerr"></div>'
+   +'<select class="fi" id="ak"><option value="announce">Announcement</option><option value="promo">Promotion</option></select><textarea class="fi" id="at" maxlength="300" placeholder="What would you like to share?"></textarea><button class="btn" id="ago" style="width:100%;height:34px">Send</button></div>'
+   +'<div class="c" style="margin-top:10px"><b style="font-size:14px">Recent followers</b>'+(list.length?list.map(x=>'<div style="border-top:1px solid var(--l);padding:7px 0;margin-top:6px">@'+e(x.username)+' <span class="lb">· '+new Date(x.since).toLocaleDateString()+'</span></div>').join(''):'<p class="lb" style="margin-top:6px">No followers yet.</p>')+'</div>';
+  $('#ago').onclick=async()=>{const b=$('#ago');b.disabled=true;const r=await sb.rpc('mp_post_announcement',{p_kind:$('#ak').value,p_text:$('#at').value});b.disabled=false;
+    if(r.error){$('#aerr').innerHTML='<div class="msg">'+e(r.error.message)+'</div>';return}toast('Sent to '+r.data+' follower'+(r.data===1?'':'s'));$('#at').value='';$('#aerr').innerHTML=''};
+}
+init();
+</script></body></html>
